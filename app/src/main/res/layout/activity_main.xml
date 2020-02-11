@@ -22,5 +22,7 @@
         android:layout_height="wrap_content"
         android:text="Notification"
         tools:layout_editor_absoluteX="27dp"
-        tools:layout_editor_absoluteY="39dp" />
+        tools:layout_editor_absoluteY="39dp"
+        android:onClick="startService"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

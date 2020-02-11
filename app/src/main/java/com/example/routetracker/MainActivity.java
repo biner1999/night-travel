@@ -21,16 +21,13 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private static final String CHANNEL_ID = "channel1";
 
     private void getLocationPermission() {
 
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-        }
-        else
-        {
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -45,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         getLocationPermission();
 
-        createNotificationChannel();
 
         Button testbtn = findViewById(R.id.testLoginBtn);
         testbtn.setOnClickListener(new View.OnClickListener() {
@@ -55,16 +51,20 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(nextScreen);
             }
         });
-
-        Button test_button = findViewById(R.id.test_button);
-        test_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNotification();
-            }
-        });
     }
-    private void addNotification(){
+
+    public void startService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        startService(serviceIntent);
+        //ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    public void stopService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        stopService(serviceIntent);
+    }
+}
+/*    private void addNotification(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle("Level 1 Alert")
@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(1, builder.build());
 
-/*        Intent notificationIntent = new Intent(this, MainActivity.class);
+*//*        Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);*/
+        builder.setContentIntent(contentIntent);*//*
 
     }
     private void createNotificationChannel() {
@@ -93,6 +93,4 @@ public class MainActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-}
+    }*/
