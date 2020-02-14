@@ -1,8 +1,6 @@
 package com.example.routetracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -21,9 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -79,6 +75,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_homescreen);
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
