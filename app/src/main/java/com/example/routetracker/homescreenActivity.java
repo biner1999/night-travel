@@ -24,6 +24,7 @@ import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsResult;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -36,6 +37,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -64,6 +66,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private static final String TAG = "UserListFragment";
     private List<Address> addresses;
     private Marker destMarker;
+    private String mCurrentLocality;
 
     //widgets
     private EditText mSearchText;
@@ -74,6 +77,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             markLocation(position);
+            EditText editText = findViewById(R.id.input_search);
+            editText.getText().clear();
         }
     };
 
@@ -90,6 +95,22 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                             mCurrentLocation.getLongitude());
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationCoords, DEFAULT_ZOOM));
                     locMarker.position(locationCoords);
+
+                    Geocoder geocoder = new Geocoder(homescreenActivity.this, Locale.ENGLISH);
+                    try {
+                        List<Address> currentAddress = geocoder.getFromLocation(mCurrentLocation.getLatitude(),
+                                mCurrentLocation.getLongitude(), 20);
+                        if (currentAddress.size() > 0) {
+                            for (Address adr : currentAddress) {
+                                if (adr.getLocality() != null && adr.getLocality().length() > 0) {
+                                    Log.d(TAG, "getDeviceLocation SUBLOCALITY : " + adr.getLocality());
+                                    mCurrentLocality = adr.getLocality();
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -154,6 +175,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     .apiKey(getString(R.string.google_maps_key))
                     .build();
         }
+
+
+
     }
 
     private void init() {
@@ -179,7 +203,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Geocoder geocoder = new Geocoder(homescreenActivity.this);
         addresses = new ArrayList<>();
         try {
-            addresses = geocoder.getFromLocationName(searchInput, 5);
+            Log.e(TAG, "mCurrentLocality : " + mCurrentLocality);
+            addresses = geocoder.getFromLocationName(searchInput + mCurrentLocality, 5);
             if(addresses.size() > 0) {
                 String[] addressStrings = new String[addresses.size()];
 
@@ -194,6 +219,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                 addressList.setVisibility(View.VISIBLE);
                 addressList.setOnItemClickListener(addressListClick);
+
+                View view = this.getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+                }
             }
             else {
                 Toast noResultsToast = Toast.makeText(homescreenActivity.this,
@@ -224,6 +256,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         destMarker = mMap.addMarker( new MarkerOptions()
                 .position(addressLtLn).title(address.getAddressLine(0))
                 .draggable(true));
+
+        addresses.clear();
 
     }
 
