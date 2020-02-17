@@ -20,6 +20,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
 
     private void getLocationPermission() {
 
@@ -84,44 +86,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void startService(View v) {
+    public void startForegroundService(View v) {
         Intent serviceIntent = new Intent(this, NotificationsService.class);
-        startService(serviceIntent);
-        //ContextCompat.startForegroundService(this, serviceIntent);
+        startForegroundService(serviceIntent);
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
 
-    public void stopService(View v) {
+    public void stopNotificationService(View v) {
         Intent serviceIntent = new Intent(this, NotificationsService.class);
         stopService(serviceIntent);
     }
-}
-/*    private void addNotification(){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Level 1 Alert")
-                .setContentText("Level 1 Alert")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
-        manager.notify(1, builder.build());
-
-*//*        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);*//*
-
+    public void startL1Service(View v) {
+        Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
+        startService(L1ServiceIntent);
     }
-    private void createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+
+    public void stopL1Service(View v) {
+        Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
+        stopService(L1ServiceIntent);
+    }
+
+    public void sendSMS() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
         }
-    }*/
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("07706473014", null, "Working", null, null);
+    }
+}

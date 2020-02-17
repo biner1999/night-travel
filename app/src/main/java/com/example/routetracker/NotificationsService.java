@@ -28,13 +28,14 @@ public class NotificationsService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Level 1 Alert")
                 .setContentText("Level 1 Alert")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                //.setFullScreenIntent(pendingIntent, true)
                 .setContentIntent(pendingIntent)
                 .build();
-
+        //starts in foreground to prevent shutting it down
         startForeground(1, notification);
-
-        return START_NOT_STICKY;
+        //restarts the service in case of crash with previous intent
+        return START_REDELIVER_INTENT;
 
 
     }

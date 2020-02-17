@@ -8,6 +8,8 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
 
     <application
@@ -47,6 +49,10 @@
             </intent-filter>
         </activity>
         <service android:name=".NotificationsService" />
+        <service android:name=".L1NotificationsService" />
+<!--        <service android:name=".L2NotificationsService" />
+        <service android:name=".L3NotificationsService" />
+        <service android:name=".L4NotificationsService" />-->
     </application>
 
 </manifest>
