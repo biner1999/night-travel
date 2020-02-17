@@ -1,12 +1,9 @@
 package com.example.routetracker;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -15,7 +12,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 //import static com.example.routetracker.App.CHANNEL_ID;
 
-public class NotificationsService extends Service {
+public class L1NotificationsService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
@@ -23,19 +20,19 @@ public class NotificationsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID_2)
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle("Level 1 Alert")
                 .setContentText("Level 1 Alert")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                //.setFullScreenIntent(pendingIntent, true)
-                .setContentIntent(pendingIntent)
-                .build();
-        //starts in foreground to prevent shutting it down
-        startForeground(1, notification);
-        //restarts the service in case of crash with previous intent
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+        manager.notify(2, builder.build());
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
         return START_REDELIVER_INTENT;
 
 

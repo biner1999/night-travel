@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         stopService(L1ServiceIntent);
     }
 
-    public void sendSMS() {
+    public void sendSMS(View v) {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
