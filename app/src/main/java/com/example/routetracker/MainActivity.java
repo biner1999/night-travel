@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //Test To See If Commit Changes
+    //Additional Test To See If Changes Occur
     private void alertMessageNoGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("GPS is disabled; GPS is required for this app to work").setCancelable(false)
