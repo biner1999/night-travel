@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     }
 //Test To See If Commit Changes
     //Additional Test To See If Changes Occur
+
+    //EVEN MORE
     private void alertMessageNoGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("GPS is disabled; GPS is required for this app to work").setCancelable(false)
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         getLocationPermission();
         isMapsEnabled();
 
+        createNewUser();
 
         Button testbtn = findViewById(R.id.testLoginBtn);
         testbtn.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +84,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent nextScreen = new Intent(MainActivity.this, homescreenActivity.class);
                 startActivity(nextScreen);
+            }
+        });
+    }
+
+    private void createNewUser(){
+        Button btnCreateUser = (Button) findViewById(R.id.button_Create_User);
+        btnCreateUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CreateUserActivity.class));
             }
         });
     }
