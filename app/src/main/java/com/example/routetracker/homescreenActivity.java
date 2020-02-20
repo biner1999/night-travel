@@ -40,6 +40,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -135,6 +136,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_homescreen);
+
+        settingsView();
+
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -177,8 +181,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
 
 
-
     }
+
+    private void settingsView(){
+        Button btnSettings = findViewById(R.id.button_settings);
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
+    }
+
 
     private void init() {
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {

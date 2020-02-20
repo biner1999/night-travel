@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editName, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId;
+    EditText editFirst_Name,editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
     Button btnAddData;
     Button btnviewAll;
     Button btnViewUpdate;
@@ -27,19 +27,23 @@ public class CreateUserActivity extends AppCompatActivity {
         myDb = new DatabaseFunctions(this);
 
 
-        editName = (EditText)findViewById(R.id.editText_name);
+        editFirst_Name = (EditText)findViewById(R.id.editText_FirstName);
+        editSurname= (EditText)findViewById(R.id.editText_SurnameName);
         editPassword = (EditText)findViewById(R.id.editText_Password);
         editQuestion = (EditText)findViewById(R.id.editText_Question);
         editAnswer = (EditText)findViewById(R.id.editText_Answer);
         editDistance = (EditText)findViewById(R.id.editText_Distance);
         editTime= (EditText)findViewById(R.id.editText_Time);
-        //TODO Create add, edit, update buttons
         editTextId = (EditText) findViewById(R.id.editText_ID);
-//
+        editEmergencyContact = (EditText)findViewById(R.id.editText_EmergancyContact);
+        //editAlertLevel = (EditText)findViewById(R.id.editText_AlertLevel);
+
+
         btnAddData = (Button)findViewById(R.id.buttonCreateAccount);
         btnviewAll = (Button)findViewById(R.id.buttonView);
         btnViewUpdate = (Button)findViewById(R.id.button_update);
         btnDelete = (Button)findViewById(R.id.button_delete);
+
         AddData();
         viewAll();
         UpdateData();
@@ -64,14 +68,18 @@ public class CreateUserActivity extends AppCompatActivity {
         btnViewUpdate.setOnClickListener(
                 v -> {
                     boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
-                            editName.getText().toString(),
+                            editFirst_Name.getText().toString(),
+                            editSurname.getText().toString(),
                             editPassword.getText().toString(),
                             editQuestion.getText().toString(),
                             editAnswer.getText().toString(),
                             editDistance.getText().toString(),
-                            editTime.getText().toString());
+                            editTime.getText().toString(),
+                            editEmergencyContact.getText().toString(),
+                            editAlertLevel.getText().toString()
+                            );
 
-                    if(isUpdate == true){
+                    if(isUpdate){
                         Toast.makeText(CreateUserActivity.this,"Data Updated", Toast.LENGTH_LONG).show();
                     }else{
                         Toast.makeText(CreateUserActivity.this,"Data Not Updated", Toast.LENGTH_LONG).show();
@@ -84,14 +92,18 @@ public class CreateUserActivity extends AppCompatActivity {
     public void AddData() {
         btnAddData.setOnClickListener(
                 v -> {
-                    boolean isInserted = myDb.insertDataUser(editName.getText().toString(),
+                    boolean isInserted = myDb.insertDataUser(editFirst_Name.getText().toString(),
+                            editSurname.getText().toString(),
                             editPassword.getText().toString(),
                             editQuestion.getText().toString(),
                             editAnswer.getText().toString(),
                             editDistance.getText().toString(),
-                            editTime.getText().toString());
+                            editTime.getText().toString(),
+                            editEmergencyContact.getText().toString(),
+                            "False"
+                            );
 
-                    if(isInserted == true){
+                    if(isInserted){
                         Toast.makeText(CreateUserActivity.this,"Data Inserted", Toast.LENGTH_LONG).show();
                     }else{
                         Toast.makeText(CreateUserActivity.this,"Data Not Inserted", Toast.LENGTH_LONG).show();
@@ -103,32 +115,33 @@ public class CreateUserActivity extends AppCompatActivity {
 
     public void viewAll(){
         btnviewAll.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                v -> {
 
-                        Cursor res = myDb.getAllData();
-                        if (res.getCount() == 0){
-                            //show message
-                            showMessage("Error", "Nothing Found");
-                            return;
-                        }
-
-                        StringBuffer buffer = new StringBuffer();
-                        while(res.moveToNext()){
-                            buffer.append("ID :" + res.getString(0)+ "\n");
-                            buffer.append("Name :" + res.getString(1)+ "\n");
-                            buffer.append("Password :" + res.getString(2)+ "\n");
-                            buffer.append("Question :" + res.getString(3)+ "\n");
-                            buffer.append("Answer :" + res.getString(4)+ "\n");
-                            buffer.append("Distance :" + res.getString(5)+ "\n");
-                            buffer.append("Time :" + res.getString(6)+ "\n\n");
-
-
-                        }
-                        //Show All Data
-                        showMessage("Data",buffer.toString());
+                    Cursor res = myDb.getAllData();
+                    if (res.getCount() == 0){
+                        //show message
+                        showMessage("Error", "Nothing Found");
+                        return;
                     }
+
+                    StringBuffer buffer = new StringBuffer();
+                    while(res.moveToNext()){
+                        buffer.append("ID :" + res.getString(0)+ "\n");
+                        buffer.append("First Name :" + res.getString(1)+ "\n");
+                        buffer.append("Surname Name :" + res.getString(2)+ "\n");
+                        buffer.append("Password :" + res.getString(3)+ "\n");
+                        buffer.append("Question :" + res.getString(4)+ "\n");
+                        buffer.append("Answer :" + res.getString(5)+ "\n");
+                        buffer.append("Distance :" + res.getString(6)+ "\n");
+                        buffer.append("Time :" + res.getString(7)+ "\n");
+                        buffer.append("Emergency Contact :" + res.getString(8)+ "\n");
+                        buffer.append("Alert Level :" + res.getString(9)+ "\n\n");
+
+
+
+                    }
+                    //Show All Data
+                    showMessage("Data",buffer.toString());
                 }
         );
     }
