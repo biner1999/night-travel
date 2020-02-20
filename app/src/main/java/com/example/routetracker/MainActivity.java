@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    
 
     public void startForegroundService(View v) {
         Intent serviceIntent = new Intent(this, NotificationsService.class);
