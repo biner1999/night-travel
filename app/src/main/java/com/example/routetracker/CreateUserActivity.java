@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editFirst_Name,editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact;
+    EditText editFirst_Name,editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
     Button btnAddData;
     Button btnviewAll;
     Button btnViewUpdate;
@@ -36,6 +36,7 @@ public class CreateUserActivity extends AppCompatActivity {
         editTime= (EditText)findViewById(R.id.editText_Time);
         editTextId = (EditText) findViewById(R.id.editText_ID);
         editEmergencyContact = (EditText)findViewById(R.id.editText_EmergancyContact);
+        //editAlertLevel = (EditText)findViewById(R.id.editText_AlertLevel);
 
 
         btnAddData = (Button)findViewById(R.id.buttonCreateAccount);
@@ -75,7 +76,8 @@ public class CreateUserActivity extends AppCompatActivity {
                             editDistance.getText().toString(),
                             editTime.getText().toString(),
                             editEmergencyContact.getText().toString(),
-                            "");
+                            editAlertLevel.getText().toString()
+                            );
 
                     if(isUpdate){
                         Toast.makeText(CreateUserActivity.this,"Data Updated", Toast.LENGTH_LONG).show();
@@ -98,7 +100,7 @@ public class CreateUserActivity extends AppCompatActivity {
                             editDistance.getText().toString(),
                             editTime.getText().toString(),
                             editEmergencyContact.getText().toString(),
-                            ""
+                            "False"
                             );
 
                     if(isInserted){

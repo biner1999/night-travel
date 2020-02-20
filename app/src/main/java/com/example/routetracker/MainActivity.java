@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void createNewUser(){
         Button btnCreateUser = (Button) findViewById(R.id.button_Create_User);
         btnCreateUser.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+
 
     public void startForegroundService(View v) {
         Intent serviceIntent = new Intent(this, NotificationsService.class);
