@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-//Test To See If Commit Changes
+    //Test To See If Commit Changes
     //Additional Test To See If Changes Occur
 
     //EVEN MORE
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    
+
 
     public void startForegroundService(View v) {
         Intent serviceIntent = new Intent(this, NotificationsService.class);
@@ -121,6 +121,18 @@ public class MainActivity extends AppCompatActivity {
         stopService(L1ServiceIntent);
     }
 
+    public void startL2Service(View v) {
+        Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
+        startService(L2ServiceIntent);
+    }
+
+    public void stopL2Service(View v) {
+        Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
+        stopService(L2ServiceIntent);
+    }
+
+
+    //to be moved out of here
     public void sendSMS(View v) {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)

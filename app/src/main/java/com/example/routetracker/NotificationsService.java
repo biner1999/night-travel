@@ -19,18 +19,23 @@ public class NotificationsService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
+    public static final String GROUP_ID_1 = "Group 1";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, homescreenActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
-                .setContentTitle("Level 1 Alert")
-                .setContentText("Level 1 Alert")
+                .setSmallIcon(R.drawable.ic_my_location)
+                .setContentTitle("You're on route")
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .setSummaryText("ETA: X - Distance: X")
+                        .addLine("ETA: X")
+                        .addLine("Distance: X"))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                //.setFullScreenIntent(pendingIntent, true)
+
                 .setContentIntent(pendingIntent)
                 .build();
         //starts in foreground to prevent shutting it down

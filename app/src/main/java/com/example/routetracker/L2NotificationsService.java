@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 //import static com.example.routetracker.App.CHANNEL_ID;
 
-public class L1NotificationsService extends Service {
+public class L2NotificationsService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
@@ -21,16 +21,15 @@ public class L1NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
-        Intent notificationIntent = new Intent(this, homescreenActivity.class);
+        Intent notificationIntent = new Intent(this, homescreenActivity.class); //will call login activity later
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)
-                .setContentTitle("Level 1 Alert")
+                .setContentTitle("Level 2 Alert")
                 .setContentText("Enter the Route Tracker to give yourself more time")
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                //.setFullScreenIntent(contentIntent, true) test it when notification can go off automatically
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .build();
