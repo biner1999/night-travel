@@ -32,11 +32,7 @@ public class CreateUserActivity extends AppCompatActivity {
         editPassword = (EditText)findViewById(R.id.editText_Password);
         editQuestion = (EditText)findViewById(R.id.editText_Question);
         editAnswer = (EditText)findViewById(R.id.editText_Answer);
-        editDistance = (EditText)findViewById(R.id.editText_Distance);
-        editTime= (EditText)findViewById(R.id.editText_Time);
-        editTextId = (EditText) findViewById(R.id.editText_ID);
         editEmergencyContact = (EditText)findViewById(R.id.editText_EmergancyContact);
-        //editAlertLevel = (EditText)findViewById(R.id.editText_AlertLevel);
 
 
         btnAddData = (Button)findViewById(R.id.buttonCreateAccount);
