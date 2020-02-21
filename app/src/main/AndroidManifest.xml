@@ -8,8 +8,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
+
 
     <application
         android:name=".App"
@@ -19,9 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SavedDestinationActivity"></activity>
-        <activity android:name=".CreateUserActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SettingsActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -49,10 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service android:name=".NotificationsService" />
-        <service android:name=".L1NotificationsService" />
-        <service android:name=".L2NotificationsService" />
     </application>
 
 </manifest>

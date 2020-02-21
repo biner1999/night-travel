@@ -2,37 +2,31 @@ package com.example.routetracker;
 
 import android.app.Application;
 import android.app.NotificationChannel;
-import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.os.Build;
 
 public class App extends Application {
 
-    public static final String CHANNEL_ID_1 = "Foreground channel";
-    public static final String CHANNEL_ID_2 = "Alerts channel";
-    public static final String GROUP_ID_1 = "Group 1";
+    public static final String CHANNEL_ID = "main channel";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        createNotificationChannel1();
-
+        createNotificationChannel();
     }
 
-    private void createNotificationChannel1() {
+    private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.channel_name);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID_1, "Foreground channel", importance);
-            NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID_2, "Alerts channel", importance);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel1);
-            notificationManager.createNotificationChannel(channel2);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }
