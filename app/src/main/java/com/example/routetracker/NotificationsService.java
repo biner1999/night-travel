@@ -17,31 +17,24 @@ import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationsService extends Service {
 
-    public static final String CHANNEL_ID_1 = "Foreground channel";
-    public static final String CHANNEL_ID_2 = "Alerts channel";
-    public static final String GROUP_ID_1 = "Group 1";
+    private static final String CHANNEL_ID = "main channel";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
 
-        Intent notificationIntent = new Intent(this, homescreenActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
-                .setSmallIcon(R.drawable.ic_my_location)
-                .setContentTitle("You're on route")
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .setSummaryText("ETA: X - Distance: X")
-                        .addLine("ETA: X")
-                        .addLine("Distance: X"))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Level 1 Alert")
+                .setContentText("Level 1 Alert")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .build();
-        //starts in foreground to prevent shutting it down
+
         startForeground(1, notification);
-        //restarts the service in case of crash with previous intent
-        return START_REDELIVER_INTENT;
+
+        return START_NOT_STICKY;
 
 
     }
