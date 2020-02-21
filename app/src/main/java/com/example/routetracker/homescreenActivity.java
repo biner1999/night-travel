@@ -17,8 +17,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -54,7 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private MapView mMapView;
@@ -70,11 +68,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private List<Address> addresses;
     private Marker destMarker;
     private String mCurrentLocality;
-    private MarkerOptions destination;
-    private Polyline currentPolyline;
-    Button getDirection;
-
-
 
     //widgets
     private EditText mSearchText;
@@ -143,17 +136,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_homescreen);
+
+        settingsView();
+
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-            }
-        });
 
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -193,24 +181,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
 
 
-
     }
 
-    private String getUrl(Location origin, LatLng dest, String directionMode) {
-        // Origin of route
-        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude(); //String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-        // Mode
-        String mode = "mode=" + directionMode;
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode;
-        // Output format
-        String output = "json";
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
-        return url;
+    private void settingsView(){
+        Button btnSettings = findViewById(R.id.button_settings);
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
     }
+
 
     private void init() {
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -271,7 +248,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    public MarkerOptions markLocation(int listIndex) {
+    public void markLocation(int listIndex) {
         Address address = addresses.get(listIndex);
         Log.d(TAG, "markLocation: found a location: " + address.toString());
 
@@ -290,10 +267,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 .draggable(true));
 
         addresses.clear();
-
-        destination = new MarkerOptions().position(new LatLng(address.getLatitude(), address.getLongitude())).title("Location 2");
-
-        return destination;
 
     }
 
@@ -323,7 +296,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         } else {
             finish();
         }
-
 
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
@@ -362,12 +334,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 Log.e(TAG, "onFailure: " + e.getMessage() );
             }
         });
-    }
-
-    public void onTaskDone(Object... values) {
-        if (currentPolyline != null)
-            currentPolyline.remove();
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 
     @Override
