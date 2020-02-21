@@ -3,7 +3,6 @@ package com.example.routetracker;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
+
     EditText editFirst_Name,editSurname, editGender,editAge, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
     Button btnAddData;
     Button btnviewAll;
@@ -43,10 +43,12 @@ public class CreateUserActivity extends AppCompatActivity {
 //        btnViewUpdate = (Button)findViewById(R.id.button_update);
 //        btnDelete = (Button)findViewById(R.id.button_delete);
 
+        //Initalise Buttons
         AddData();
         viewAll();
         //UpdateData();
         //DeleteData();
+        myDb.autoCreateDatabase();
         configureBackButton();
     }
 
@@ -66,7 +68,7 @@ public class CreateUserActivity extends AppCompatActivity {
     public void UpdateData(){
         btnViewUpdate.setOnClickListener(
                 v -> {
-                    boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
+                    boolean isUpdate = myDb.updateUserData(editTextId.getText().toString(),
                             editFirst_Name.getText().toString(),
                             editSurname.getText().toString(),
                             editGender.getText().toString(),
@@ -128,7 +130,7 @@ public class CreateUserActivity extends AppCompatActivity {
         btnviewAll.setOnClickListener(
                 v -> {
 
-                    Cursor res = myDb.getAllData();
+                    Cursor res = myDb.getAllUserData();
                     if (res.getCount() == 0){
                         //show message
                         showMessage("Error", "Nothing Found");

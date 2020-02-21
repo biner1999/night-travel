@@ -73,7 +73,7 @@
         android:text="Settings" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonSavedDestinations"
         android:layout_width="109dp"
         android:layout_height="63dp"
         android:layout_alignParentEnd="true"
