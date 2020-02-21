@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editFirst_Name,editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
+    EditText editFirst_Name,editSurname, editGender, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
     Button btnAddData;
     Button btnviewAll;
     Button btnViewUpdate;
@@ -29,6 +29,9 @@ public class CreateUserActivity extends AppCompatActivity {
 
         editFirst_Name = (EditText)findViewById(R.id.editText_FirstName);
         editSurname= (EditText)findViewById(R.id.editText_SurnameName);
+
+        editGender= (EditText)findViewById(R.id.editTextGender);
+
         editPassword = (EditText)findViewById(R.id.editText_Password);
         editQuestion = (EditText)findViewById(R.id.editText_Question);
         editAnswer = (EditText)findViewById(R.id.editText_Answer);
@@ -36,14 +39,14 @@ public class CreateUserActivity extends AppCompatActivity {
 
 
         btnAddData = (Button)findViewById(R.id.buttonCreateAccount);
-        btnviewAll = (Button)findViewById(R.id.buttonView);
-        btnViewUpdate = (Button)findViewById(R.id.button_update);
-        btnDelete = (Button)findViewById(R.id.button_delete);
+        //btnviewAll = (Button)findViewById(R.id.buttonView);
+//        btnViewUpdate = (Button)findViewById(R.id.button_update);
+//        btnDelete = (Button)findViewById(R.id.button_delete);
 
         AddData();
-        viewAll();
-        UpdateData();
-        DeleteData();
+        //viewAll();
+        //UpdateData();
+        //DeleteData();
         configureBackButton();
     }
 
@@ -66,6 +69,11 @@ public class CreateUserActivity extends AppCompatActivity {
                     boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
                             editFirst_Name.getText().toString(),
                             editSurname.getText().toString(),
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
                             editPassword.getText().toString(),
                             editQuestion.getText().toString(),
                             editAnswer.getText().toString(),
@@ -90,11 +98,16 @@ public class CreateUserActivity extends AppCompatActivity {
                 v -> {
                     boolean isInserted = myDb.insertDataUser(editFirst_Name.getText().toString(),
                             editSurname.getText().toString(),
+                            editGender.getText().toString(),
+                            "",
+                            "",
+                            "",
+                            "",
                             editPassword.getText().toString(),
                             editQuestion.getText().toString(),
                             editAnswer.getText().toString(),
-                            editDistance.getText().toString(),
-                            editTime.getText().toString(),
+                            "0",
+                            "0",
                             editEmergencyContact.getText().toString(),
                             "False"
                             );
