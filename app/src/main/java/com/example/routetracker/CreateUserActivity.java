@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editFirst_Name,editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
+    EditText editFirst_Name, editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
     Button btnAddData;
     Button btnviewAll;
     Button btnViewUpdate;
@@ -26,7 +28,23 @@ public class CreateUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_user);
         myDb = new DatabaseFunctions(this);
 
+        Spinner securitySpinner = findViewById(R.id.securQSpinner);
+        ArrayAdapter<CharSequence> securQAdapter = ArrayAdapter.createFromResource(this,
+                R.array.security_array, android.R.layout.simple_spinner_item);
+        securQAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        securitySpinner.setAdapter(securQAdapter);
+        securitySpinner.setSelection(0);
 
+        Spinner genderSpinner = findViewById(R.id.genderSpinner);
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(genderAdapter);
+        genderSpinner.setSelection(0);
+
+
+
+        /*
         editFirst_Name = (EditText)findViewById(R.id.editText_FirstName);
         editSurname= (EditText)findViewById(R.id.editText_SurnameName);
         editPassword = (EditText)findViewById(R.id.editText_Password);
@@ -45,8 +63,11 @@ public class CreateUserActivity extends AppCompatActivity {
         UpdateData();
         DeleteData();
         configureBackButton();
-    }
 
+        */
+    }
+}
+/*
     public void DeleteData(){
         btnDelete.setOnClickListener(
                 v -> {
@@ -93,8 +114,8 @@ public class CreateUserActivity extends AppCompatActivity {
                             editPassword.getText().toString(),
                             editQuestion.getText().toString(),
                             editAnswer.getText().toString(),
-                            editDistance.getText().toString(),
-                            editTime.getText().toString(),
+                            "0",
+                            "0",
                             editEmergencyContact.getText().toString(),
                             "False"
                             );
@@ -155,4 +176,4 @@ public class CreateUserActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 }
-
+*/
