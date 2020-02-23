@@ -137,7 +137,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         setContentView(R.layout.activity_homescreen);
 
+        //Initialise Buttons
         settingsView();
+        savedDestinationsView();
 
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
@@ -186,6 +188,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
         btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
+    }
+
+    private void savedDestinationsView(){
+        Button btnSavedDestinations = findViewById(R.id.buttonSavedDestinations);
+        btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
     }
 
 

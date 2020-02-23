@@ -151,4 +151,6 @@ public class MainActivity extends AppCompatActivity {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("07706473014", null, "Working", null, null);
     }
+
+
 }

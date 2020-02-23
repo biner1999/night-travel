@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,112 +17,73 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editFirst_Name, editSurname, editPassword, editQuestion, editAnswer, editDistance, editTime, editTextId, editEmergencyContact, editAlertLevel;
-    Button btnAddData;
-    Button btnviewAll;
-    Button btnViewUpdate;
-    Button btnDelete;
+    EditText editFirst_Name,editSurname, editPin, editAnswer, editAge, editHeight;
+    Button btnAddData, btnviewAll;
+    Spinner editQuestion, editGender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_user);
+
+        // Initialise database
         myDb = new DatabaseFunctions(this);
 
-        Spinner securitySpinner = findViewById(R.id.securQSpinner);
-        ArrayAdapter<CharSequence> securQAdapter = ArrayAdapter.createFromResource(this,
-                R.array.security_array, android.R.layout.simple_spinner_item);
-        securQAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        securitySpinner.setAdapter(securQAdapter);
-        securitySpinner.setSelection(0);
+        // Initialise form
+        editFirst_Name = findViewById(R.id.inputFirstName);
+        editSurname= findViewById(R.id.inputSurname);
+        editPin = findViewById(R.id.inputPin);
+        editQuestion = findViewById(R.id.securQSpinner);
+        editAnswer = findViewById(R.id.inputSecAns);
+        editAge = findViewById(R.id.inputAge);
+        editHeight = findViewById(R.id.inputHeight);
+        editQuestion = findViewById(R.id.securQSpinner);
+        editGender = findViewById(R.id.genderSpinner);
 
-        Spinner genderSpinner = findViewById(R.id.genderSpinner);
-        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,
-                R.array.gender_array, android.R.layout.simple_spinner_item);
-        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderSpinner.setAdapter(genderAdapter);
-        genderSpinner.setSelection(0);
-
-
-
-        /*
-        editFirst_Name = (EditText)findViewById(R.id.editText_FirstName);
-        editSurname= (EditText)findViewById(R.id.editText_SurnameName);
-        editPassword = (EditText)findViewById(R.id.editText_Password);
-        editQuestion = (EditText)findViewById(R.id.editText_Question);
-        editAnswer = (EditText)findViewById(R.id.editText_Answer);
-        editEmergencyContact = (EditText)findViewById(R.id.editText_EmergancyContact);
+        // Initialise buttons
+        btnAddData = findViewById(R.id.btnSubmit);
 
 
-        btnAddData = (Button)findViewById(R.id.buttonCreateAccount);
-        btnviewAll = (Button)findViewById(R.id.buttonView);
-        btnViewUpdate = (Button)findViewById(R.id.button_update);
-        btnDelete = (Button)findViewById(R.id.button_delete);
+        // Initialise spinners
+        ArrayAdapter<CharSequence> qAdapter = ArrayAdapter.createFromResource(this,
+                R.array.security_array, R.layout.spinner_format);
+
+        ArrayAdapter<CharSequence> gAdapter = ArrayAdapter.createFromResource(this,
+                R.array.gender_array, R.layout.spinner_format);
+
+        initSpinner(editQuestion,qAdapter);
+        initSpinner(editGender,gAdapter);
+
+
+
 
         AddData();
-        viewAll();
-        UpdateData();
-        DeleteData();
-        configureBackButton();
-
-        */
     }
-}
-/*
-    public void DeleteData(){
-        btnDelete.setOnClickListener(
-                v -> {
-                    Integer deletedRows = myDb.deleteUserData(editTextId.getText().toString());
-                    if(deletedRows > 0){
-                        Toast.makeText(CreateUserActivity.this,"Data Deleted", Toast.LENGTH_LONG).show();
-                    }else{
-                        Toast.makeText(CreateUserActivity.this,"Data Not Deleted", Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-    }
-
-    public void UpdateData(){
-        btnViewUpdate.setOnClickListener(
-                v -> {
-                    boolean isUpdate = myDb.updateData(editTextId.getText().toString(),
-                            editFirst_Name.getText().toString(),
-                            editSurname.getText().toString(),
-                            editPassword.getText().toString(),
-                            editQuestion.getText().toString(),
-                            editAnswer.getText().toString(),
-                            editDistance.getText().toString(),
-                            editTime.getText().toString(),
-                            editEmergencyContact.getText().toString(),
-                            editAlertLevel.getText().toString()
-                            );
-
-                    if(isUpdate){
-                        Toast.makeText(CreateUserActivity.this,"Data Updated", Toast.LENGTH_LONG).show();
-                    }else{
-                        Toast.makeText(CreateUserActivity.this,"Data Not Updated", Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-    }
-
 
     public void AddData() {
         btnAddData.setOnClickListener(
                 v -> {
-                    boolean isInserted = myDb.insertDataUser(editFirst_Name.getText().toString(),
+                    boolean isInserted = myDb.insertDataUser(
+                            editFirst_Name.getText().toString(),
                             editSurname.getText().toString(),
-                            editPassword.getText().toString(),
-                            editQuestion.getText().toString(),
+                            editGender.getSelectedItem().toString(),
+                            editAge.getText().toString(),
+                            editHeight.getText().toString(),
+                            null,
+                            null,
+                            null,
+                            editPin.getText().toString(),
+                            editQuestion.getSelectedItem().toString(),
                             editAnswer.getText().toString(),
-                            "0",
-                            "0",
-                            editEmergencyContact.getText().toString(),
-                            "False"
+                            null,
+                            null,
+                            null,
+                            null
                             );
 
                     if(isInserted){
-                        Toast.makeText(CreateUserActivity.this,"Data Inserted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateUserActivity.this,"User Created", Toast.LENGTH_LONG).show();
+                        finish();
                     }else{
                         Toast.makeText(CreateUserActivity.this,"Data Not Inserted", Toast.LENGTH_LONG).show();
 
@@ -130,50 +92,9 @@ public class CreateUserActivity extends AppCompatActivity {
         );
     }
 
-    public void viewAll(){
-        btnviewAll.setOnClickListener(
-                v -> {
-
-                    Cursor res = myDb.getAllData();
-                    if (res.getCount() == 0){
-                        //show message
-                        showMessage("Error", "Nothing Found");
-                        return;
-                    }
-
-                    StringBuffer buffer = new StringBuffer();
-                    while(res.moveToNext()){
-                        buffer.append("ID :" + res.getString(0)+ "\n");
-                        buffer.append("First Name :" + res.getString(1)+ "\n");
-                        buffer.append("Surname Name :" + res.getString(2)+ "\n");
-                        buffer.append("Password :" + res.getString(3)+ "\n");
-                        buffer.append("Question :" + res.getString(4)+ "\n");
-                        buffer.append("Answer :" + res.getString(5)+ "\n");
-                        buffer.append("Distance :" + res.getString(6)+ "\n");
-                        buffer.append("Time :" + res.getString(7)+ "\n");
-                        buffer.append("Emergency Contact :" + res.getString(8)+ "\n");
-                        buffer.append("Alert Level :" + res.getString(9)+ "\n\n");
-
-
-
-                    }
-                    //Show All Data
-                    showMessage("Data",buffer.toString());
-                }
-        );
-    }
-
-    public void showMessage (String title, String Message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(Message);
-        builder.show();
-    }
-
-    private void configureBackButton(){
-        Button backButton = (Button) findViewById(R.id.buttonCreateUserBack);
-        backButton.setOnClickListener(v -> finish());
+    private void initSpinner(Spinner spinner, ArrayAdapter adapter) {
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }
-*/
+

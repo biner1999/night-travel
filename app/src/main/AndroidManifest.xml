@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreateUserActivity"></activity>
+        <activity android:name=".SavedDestinationActivity"></activity>
+        <activity android:name=".CreateUserActivity" />
         <activity android:name=".SettingsActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,8 +53,6 @@
         <service android:name=".NotificationsService" />
         <service android:name=".L1NotificationsService" />
         <service android:name=".L2NotificationsService" />
-        <!--                <service android:name=".L3NotificationsService" />
-                <service android:name=".L4NotificationsService" />-->
     </application>
 
 </manifest>
