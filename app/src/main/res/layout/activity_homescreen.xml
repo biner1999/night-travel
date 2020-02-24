@@ -85,6 +85,19 @@
         android:text="Saved Destinations"
         android:textSize="10sp" />
 
+    <Button
+        android:id="@+id/btnGetDirection"
+        android:layout_width="109dp"
+        android:layout_height="63dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="150dp"
+        android:layout_marginRight="150dp"
+        android:layout_marginBottom="20dp"
+        android:text="Get Directions"
+        android:textSize="10sp" />
+
     <ListView
         android:id="@+id/addressList"
         android:layout_width="373dp"

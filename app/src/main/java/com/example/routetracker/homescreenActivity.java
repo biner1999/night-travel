@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -68,6 +70,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private List<Address> addresses;
     private Marker destMarker;
     private String mCurrentLocality;
+    //ciprian
+    private MarkerOptions destination;
+    private Polyline currentPolyline;
+    Button getDirection;
+    //ciprian
 
     //widgets
     private EditText mSearchText;
@@ -145,6 +152,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        //ciprian
+        getDirection = findViewById(R.id.btnGetDirection);
+        getDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+            }
+        });
+        //ciprian
+
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -184,6 +201,29 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     }
+
+    //ciprian
+    private String getUrl(Location origin, LatLng dest, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude(); //String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        return url;
+    }
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+    }
+    //ciprian
 
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
@@ -255,7 +295,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    public void markLocation(int listIndex) {
+    public MarkerOptions markLocation(int listIndex) {
         Address address = addresses.get(listIndex);
         Log.d(TAG, "markLocation: found a location: " + address.toString());
 
@@ -274,6 +314,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 .draggable(true));
 
         addresses.clear();
+        //ciprian
+        destination = new MarkerOptions().position(new LatLng(address.getLatitude(), address.getLongitude())).title("Location 2");
+        return destination;
+        //ciprian
 
     }
 
@@ -342,6 +386,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
     }
+
 
     @Override
     public void onStart() {
