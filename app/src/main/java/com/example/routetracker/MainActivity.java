@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent nextScreen = new Intent(MainActivity.this, homescreenActivity.class);
+                Intent nextScreen = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(nextScreen);
             }
         });
