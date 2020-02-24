@@ -54,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
     private GoogleMap mMap;
     private MapView mMapView;
