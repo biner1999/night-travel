@@ -56,7 +56,7 @@ import java.util.Locale;
 
 
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     private MapView mMapView;
@@ -139,6 +139,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private void startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
     }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -338,6 +341,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapClickListener(this);
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -389,6 +393,18 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        Log.d("myTag", "This is my message");
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+        mMap.clear();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+        mMap.addMarker(markerOptions);
     }
 
 
