@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+
+
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
     private GoogleMap mMap;
@@ -218,11 +220,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
         return url;
     }
-    public void onTaskDone(Object... values) {
-        if (currentPolyline != null)
-            currentPolyline.remove();
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-    }
+
     //ciprian
 
     private void settingsView(){
@@ -385,6 +383,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 Log.e(TAG, "onFailure: " + e.getMessage() );
             }
         });
+    }
+
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
-    String directionMode = "driving";
+    String directionMode = "walking";
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
