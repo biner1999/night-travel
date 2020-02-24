@@ -155,13 +155,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         //ciprian
-        getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-            }
-        });
+        getDirectionButtonClick();
+        
         //ciprian
 
         locMarker = new MarkerOptions();
@@ -222,6 +217,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //ciprian
+
+
+        private  void getDirectionButtonClick(){
+            getDirection = findViewById(R.id.btnGetDirection);
+            getDirection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                }
+            });
+        }
 
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
