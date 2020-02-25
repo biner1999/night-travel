@@ -309,7 +309,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         LatLng addressLtLn = new LatLng(address.getLatitude(), address.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(addressLtLn));
-
+        mMap.clear();
         destMarker = mMap.addMarker( new MarkerOptions()
                 .position(addressLtLn).title(address.getAddressLine(0))
                 .draggable(true));
