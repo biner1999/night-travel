@@ -30,7 +30,6 @@ public class L1NotificationsService extends Service {
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                //.setFullScreenIntent(contentIntent, true) test it when notification can go off automatically
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .build();

@@ -1,6 +1,7 @@
 package com.example.routetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.database.Cursor;
@@ -9,10 +10,17 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class SavedDestinationActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
     EditText editEndDestination;
+
+    private RecyclerView mRV;
+    private RecyclerView.LayoutManager mLM;
+    private RecyclerView.Adapter mA;
+    private ArrayList<String> mData;
 
     Button btnviewAll;
 
@@ -23,6 +31,23 @@ public class SavedDestinationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_saved_destination);
         myDb = new DatabaseFunctions(this);
 
+        mRV = (RecyclerView) findViewById(R.id.recycler_view);
+        mData = new ArrayList<>();
+
+        Cursor res = myDb.getAllRouteData();
+        if (res.getCount() == 0){
+            //show message
+            showMessage("Error", "Nothing Found");
+            return;
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            buffer.append("ID :" + res.getString(0)+ "\n");
+            buffer.append("UserID :" + res.getString(1)+ "\n");
+            buffer.append("End Destination :" + res.getString(2)+ "\n\n");
+
+        }
 
         btnviewAll = (Button)findViewById(R.id.buttonViewAll);
 
