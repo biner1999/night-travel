@@ -397,7 +397,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.d("myTag", "This is my message");
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.title(latLng.latitude + " : " + latLng.longitude);
@@ -405,6 +404,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
 
         mMap.addMarker(markerOptions);
+        destination = new MarkerOptions().position(latLng);
     }
 
 
