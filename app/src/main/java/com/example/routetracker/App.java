@@ -4,6 +4,9 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
+import android.content.ContentResolver;
+import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
 
 public class App extends Application {
@@ -30,9 +33,17 @@ public class App extends Application {
             NotificationChannel channel2 = new NotificationChannel(CHANNEL_ID_2, "Alerts channel", importance);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
+            AudioAttributes aa = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
+
+            Uri ss = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.l2sound);
+            channel2.setSound(ss, aa);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel1);
             notificationManager.createNotificationChannel(channel2);
         }
     }
 }
+

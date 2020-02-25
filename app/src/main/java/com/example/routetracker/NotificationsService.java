@@ -35,7 +35,6 @@ public class NotificationsService extends Service {
                         .addLine("ETA: X")
                         .addLine("Distance: X"))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-
                 .setContentIntent(pendingIntent)
                 .build();
         //starts in foreground to prevent shutting it down

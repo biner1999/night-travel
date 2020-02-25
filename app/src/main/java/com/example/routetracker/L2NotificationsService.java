@@ -5,7 +5,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.IBinder;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -30,12 +33,26 @@ public class L2NotificationsService extends Service {
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                //.setFullScreenIntent(contentIntent, true)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .build();
+        notification.flags |= Notification.FLAG_INSISTENT;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(2, notification);
+
+/*
+        Window window = .getWindow();
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
+*/
+
 
         return START_REDELIVER_INTENT;
 

@@ -19,6 +19,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -125,14 +126,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void startL2Service(View v) {
         Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
-        startService(L2ServiceIntent);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startService(L2ServiceIntent);
+            }
+        }, 10000);
+
     }
 
     public void stopL2Service(View v) {
         Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
         stopService(L2ServiceIntent);
     }
-
 
     //to be moved out of here
     public void sendSMS(View v) {
