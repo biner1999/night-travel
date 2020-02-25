@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DatabaseFunctions extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "StorageAgain.db";
+    public static final String DATABASE_NAME = "StorageAgainAgain.db";
 
     public static final String User_Table_Name = "User_Table";
     public static final String Route_Table_Name = "Route_Table";
@@ -142,6 +142,13 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
         db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
         return true;
+    }
+
+    public Boolean checkpassword(String Password){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from User_Table where Password=?", new String[]{Password});
+        if(cursor.getCount()>0) return true;
+        else return false;
     }
 
     //Deletes a users data, will delete the entire row(Requires an ID as reference)

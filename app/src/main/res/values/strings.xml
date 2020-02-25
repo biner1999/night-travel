@@ -3,4 +3,16 @@
     <string name="title_activity_homescreen">Home</string>
     <string name="channel_name">a</string>
     <string name="description">b</string>
+
+    <string-array name="security_array">
+        <item>Mother\'s maiden name</item>
+        <item>Name of first pet</item>
+        <item>First school teacher</item>
+    </string-array>
+
+    <string-array name="gender_array">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
 </resources>
