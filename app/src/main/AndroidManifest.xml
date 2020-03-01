@@ -55,6 +55,8 @@
         <service android:name=".NotificationsService" />
         <service android:name=".L1NotificationsService" />
         <service android:name=".L2NotificationsService" />
+        <service android:name=".L3NotificationsService" />
+        <service android:name=".L4NotificationsService" />
     </application>
 
 </manifest>
