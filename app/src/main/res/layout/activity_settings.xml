@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-
-
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
@@ -13,7 +8,7 @@ android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".SettingsActivity">
 
         <Button
@@ -23,7 +18,9 @@ android:fillViewport="true">
             android:layout_marginStart="120dp"
             android:layout_marginLeft="120dp"
             android:layout_marginTop="692dp"
-            android:text="Delete Account"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:textColor="#FFFFFF"
+            android:text="@string/DeleteAcc"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,7 +32,7 @@ android:fillViewport="true">
             android:layout_marginLeft="46dp"
             android:layout_marginTop="640dp"
             android:ems="10"
-            android:hint="Age"
+            android:hint="@string/age"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +45,7 @@ android:fillViewport="true">
             android:layout_marginLeft="46dp"
             android:layout_marginTop="584dp"
             android:ems="10"
-            android:hint="Hair Colour"
+            android:hint="@string/hair"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -60,7 +57,9 @@ android:fillViewport="true">
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="688dp"
-            android:text="Back"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:textColor="#FFFFFF"
+            android:text="@string/back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +70,9 @@ android:fillViewport="true">
             android:layout_marginStart="268dp"
             android:layout_marginLeft="268dp"
             android:layout_marginTop="688dp"
-            android:text="Save Changes"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:textColor="#FFFFFF"
+            android:text="@string/savechanges"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,7 +83,7 @@ android:fillViewport="true">
             android:layout_marginStart="46dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="284dp"
-            android:text="Accelerometers And Gyroscopes"
+            android:text="@string/accel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,7 +94,7 @@ android:fillViewport="true">
             android:layout_marginStart="46dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="340dp"
-            android:text="Contact Police"
+            android:text="@string/contactpolice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -104,7 +105,9 @@ android:fillViewport="true">
             android:layout_marginStart="46dp"
             android:layout_marginLeft="152dp"
             android:layout_marginTop="200dp"
-            android:text="Change Pin"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:textColor="#FFFFFF"
+            android:text="@string/changepin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -137,8 +140,8 @@ android:fillViewport="true">
             android:layout_marginLeft="46dp"
             android:layout_marginTop="468dp"
             android:ems="10"
-            android:hint="Weight"
-            android:inputType="textPersonName"
+            android:hint="@string/weight"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -150,8 +153,8 @@ android:fillViewport="true">
             android:layout_marginLeft="46dp"
             android:layout_marginTop="532dp"
             android:ems="10"
-            android:hint="Height"
-            android:inputType="textPersonName"
+            android:hint="@string/height"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -162,7 +165,7 @@ android:fillViewport="true">
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="34dp"
-            android:text="Distance : "
+            android:text="@string/distance"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,7 +176,7 @@ android:fillViewport="true">
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="94dp"
-            android:text="Time  : "
+            android:text="@string/time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -185,7 +188,7 @@ android:fillViewport="true">
             android:layout_marginLeft="46dp"
             android:layout_marginTop="400dp"
             android:ems="10"
-            android:hint="Emergancy Contact"
+            android:hint="@string/emergencycontact"
             android:inputType="phone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

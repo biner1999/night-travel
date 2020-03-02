@@ -223,11 +223,18 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
         private  void getDirectionButtonClick(){
+
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                    if (destination != null)
+                        new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                    else {
+                        Toast noDestinationToast = Toast.makeText(getApplicationContext(),
+                                "No Destination Selected", Toast.LENGTH_LONG);
+                        noDestinationToast.show();
+                    }
                 }
             });
         }
@@ -362,37 +369,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDeviceLocation();
             init();
         }
-    }
-
-    private void calculateDirections(Marker marker) {
-        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
-                marker.getPosition().latitude,
-                marker.getPosition().longitude
-        );
-        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
-
-        directions.alternatives(true);
-        directions.origin(
-                new com.google.maps.model.LatLng(
-                        mCurrentLocation.getLatitude(),
-                        mCurrentLocation.getLongitude()
-                )
-        );
-
-        directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
-            @Override
-            public void onResult(DirectionsResult result) {
-                Log.d(TAG,"calculateDirections : routes: " + result.routes[0].toString());
-                Log.d(TAG, "calculateDirections : duration " + result.routes[0].legs[0].duration);
-                Log.d(TAG, "calculateDirections : distance " + result.routes[0].legs[0].distance);
-                Log.d(TAG, "calculateDirections : geoCodedWayPoints " + result.geocodedWaypoints[0].toString());
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                Log.e(TAG, "onFailure: " + e.getMessage() );
-            }
-        });
     }
 
     public void onTaskDone(Object... values) {
