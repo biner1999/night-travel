@@ -2,8 +2,14 @@ package com.example.routetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,15 +18,20 @@ import android.widget.Toast;
 import java.net.PasswordAuthentication;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText e2;
-    Button login, newuser, DEBUG;
-    DatabaseFunctions db;
-
+    private EditText e2;
+    private Button login, newuser, DEBUG;
+    private DatabaseFunctions db;
+    private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
+    private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        getPermission();
+        isMapsEnabled();
+
         db = new DatabaseFunctions(this);
 
         e2 = findViewById(R.id.login_pin);
@@ -68,6 +79,37 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkUserExists(){ // NEEDS IMPLEMENTING
        return false;
+    }
+
+    private void getPermission() {
+        requestPermissions(new String[]{
+                        //just add a permission in here for user to allow it
+                        Manifest.permission.SEND_SMS,
+                        Manifest.permission.ACCESS_FINE_LOCATION},
+                        ASK_MULTIPLE_PERMISSION_REQUEST_CODE);
+    }
+
+    private void alertMessageNoGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("GPS is disabled; GPS is required for this app to work").setCancelable(false)
+                .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent enableGPSIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(enableGPSIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    private void isMapsEnabled() {
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            alertMessageNoGPS();
+        }
     }
 
 }
