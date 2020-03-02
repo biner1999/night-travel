@@ -69,16 +69,17 @@ public class CreateUserActivity extends AppCompatActivity {
                             editGender.getSelectedItem().toString(),
                             editAge.getText().toString(),
                             editHeight.getText().toString(),
-                            null,
-                            null,
-                            null,
+                            "0",
+                            "0",
+                            "0",
                             editPin.getText().toString(),
                             editQuestion.getSelectedItem().toString(),
                             editAnswer.getText().toString(),
-                            null,
-                            null,
-                            null,
-                            null
+                            100,
+                            15,
+                            "",
+                            0,
+                            1
                             );
 
                     if(isInserted){

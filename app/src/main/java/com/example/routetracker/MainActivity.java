@@ -27,20 +27,22 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
+    private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
 
-    private void getLocationPermission() {
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
+/*    private void getPermission() {
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS};
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+    }*/
+    private void getPermission() {
+        requestPermissions(new String[]{
+                //just add a permission in here for user to allow it
+                        Manifest.permission.SEND_SMS,
+                        Manifest.permission.ACCESS_FINE_LOCATION},
+                ASK_MULTIPLE_PERMISSION_REQUEST_CODE);
     }
     //Test To See If Commit Changes
     //Additional Test To See If Changes Occur
@@ -75,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        getLocationPermission();
+        getPermission();
         isMapsEnabled();
 
         createNewUser();
@@ -141,8 +142,17 @@ public class MainActivity extends AppCompatActivity {
         stopService(L2ServiceIntent);
     }
 
+    public void startL3Service(View v) {
+        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        startService(L3ServiceIntent);
+    }
+
+    public void stopL3Service(View v) {
+        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        stopService(L3ServiceIntent);
+    }
     //to be moved out of here
-    public void sendSMS(View v) {
+/*    public void sendSMS(View v) {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -157,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage("07706473014", null, "Working", null, null);
-    }
+    }*/
 
 
 }

@@ -1,49 +1,88 @@
 package com.example.routetracker;
 
+import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.IBinder;
+import android.telephony.SmsManager;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 //import static com.example.routetracker.App.CHANNEL_ID;
 
-public class NotificationsService extends Service {
+public class L4NotificationsService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
     public static final String GROUP_ID_1 = "Group 1";
+    private String phoneNumber = "07706473014";
+    private String name = "Bart";
+    private String timeLate = "20";
+    private String destination = "21 Street";
+    private String startingLocation = "22 Street";
+    private String textMessage = "This is an automated text sent by RouteTracker from " + name + ". I am currently " + timeLate + " minutes late on my journey from " + startingLocation + " to " + destination + ". Try to get a hold of me.";
+
+    public void sendSMS() {
+        boolean mSMSPermissionGranted = false;
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_GRANTED) {
+            mSMSPermissionGranted = true;
+        } else {
+
+        }
+
+        if (mSMSPermissionGranted) {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, textMessage, null, null);
+        }
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
-
-        Intent notificationIntent = new Intent(this, LoginActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
-                .setSmallIcon(R.drawable.ic_my_location)
-                .setContentTitle("You're on route")
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .setSummaryText("ETA: X - Distance: X")
-                        .addLine("ETA: X")
-                        .addLine("Distance: X"))
+        sendSMS();
+        Intent notificationIntent = new Intent(this, LoginActivity.class); //will call login activity later
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
+                .setSmallIcon(R.drawable.ic_warning)
+                .setContentTitle("Level 3 Alert")
+                .setContentText("A text has been sent to " + "-name-." + " Enter the Route Tracker to give yourself more time")
+                .setColor(Color.RED)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
+                //.setFullScreenIntent(contentIntent, true)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
                 .build();
-        //starts in foreground to prevent shutting it down
-        startForeground(1, notification);
-        //restarts the service in case of crash with previous intent
+        notification.flags |= Notification.FLAG_INSISTENT;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
+        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+        manager.notify(2, notification);
+
+/*
+        Window window = .getWindow();
+
+        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+
+*/
+
+
         return START_REDELIVER_INTENT;
 
 
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,6 +98,7 @@ public class NotificationsService extends Service {
     public void onDestroy() {
         super.onDestroy();
     }
+
 }
 
 

@@ -21,7 +21,7 @@ public class L1NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
-        Intent notificationIntent = new Intent(this, homescreenActivity.class);
+        Intent notificationIntent = new Intent(this, LoginActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)

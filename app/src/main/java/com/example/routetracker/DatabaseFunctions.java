@@ -32,6 +32,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public static final String User_Table_Name_COL_14 = "Time";
     public static final String User_Table_Name_COL_15 = "EmergencyContact";
     public static final String User_Table_Name_COL_16 = "AlertLevel";
+    public static final String User_Table_Name_COL_17 = "AccelerometersAndGryo";
+
 
     public static final String Route_Table_Name_COL_1 = "ID";
     public static final String Route_Table_Name_COL_2 = "UserID";
@@ -47,7 +49,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     //Creates Tables in the Database
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + User_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT,SURNAME TEXT,GENDER TEXT,AGE TEXT, HEIGHT TEXT, HAIRCOLOUR TEXT,WEIGHT TEXT,ETHNICITY TEXT,PASSWORD TEXT, QUESTION TEXT, ANSWER TEXT, DISTANCE INTEGER, TIME INTEGER, EMERGENCYCONTACT BOOLEAN, ALERTLEVEL STRING)");
+        db.execSQL("create table " + User_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT,SURNAME TEXT,GENDER TEXT,AGE TEXT, HEIGHT TEXT, HAIRCOLOUR TEXT,WEIGHT TEXT,ETHNICITY TEXT,PASSWORD TEXT, QUESTION TEXT, ANSWER TEXT, DISTANCE INTEGER, TIME INTEGER, EMERGENCYCONTACT TEXT, ALERTLEVEL BOOLEAN, ACCELEROMETERSANDGRYO BOOLEAN)");
         db.execSQL("create table " + Route_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERID INTEGER REFERENCES User_Table_Name(ID), ENDDESTINATION INTEGER)");
 
     }
@@ -64,7 +66,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
 
     //Inserts User Data
-    public boolean insertDataUser(String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, String Distance, String Time, String EmergencyContact, String Alert_Level){
+    public boolean insertDataUser(String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(User_Table_Name_COL_2,First_Name);
@@ -82,6 +84,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_14, Time);
         contentValues.put(User_Table_Name_COL_15, EmergencyContact);
         contentValues.put(User_Table_Name_COL_16, Alert_Level);
+        contentValues.put(User_Table_Name_COL_17, AccelerometersAndGryo);
+
 
 
         long result = db.insert(User_Table_Name, null, contentValues);
@@ -101,11 +105,19 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getUserIDOne(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from User_Table where ID = 1", null);
+        return res;
+    }
+
     //Automatically Creates The Database
     public void autoCreateDatabase(){
         SQLiteDatabase db = this.getWritableDatabase();
 
     }
+
+
 
     //Updates the AlertLevel in UserTable (Requires an ID as reference)
     public boolean updateAlertLevel(String id, String AlertLevel){
@@ -119,7 +131,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Updates User Data (Requires a ID as a reference)
-    public boolean updateUserData(String id, String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, String Distance, String Time, String EmergencyContact, String Alert_Level){
+    public boolean updateUserData(String id,  String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -139,6 +151,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_14, Time);
         contentValues.put(User_Table_Name_COL_15, EmergencyContact);
         contentValues.put(User_Table_Name_COL_16, Alert_Level);
+        contentValues.put(User_Table_Name_COL_17, AccelerometersAndGryo);
+
 
         db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
         return true;
@@ -183,12 +197,14 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         return res;
     }
 
-    //Returns a User's
+    //Returns a User's End Destination?
     public Cursor getUserRouteData(String UserID){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select ENDDESTINATION from "+ Route_Table_Name + "where UserID = " + UserID, null);
         return res;
     }
+
+
 
 
 
