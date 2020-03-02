@@ -81,25 +81,23 @@ public class MainActivity extends AppCompatActivity {
         isMapsEnabled();
 
         createNewUser();
+        sensorGoTo();
 
         Button testbtn = findViewById(R.id.testLoginBtn);
-        testbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent nextScreen = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(nextScreen);
-            }
+        testbtn.setOnClickListener(v -> {
+            Intent nextScreen = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(nextScreen);
         });
     }
 
     private void createNewUser(){
-        Button btnCreateUser = (Button) findViewById(R.id.button_Create_User);
-        btnCreateUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CreateUserActivity.class));
-            }
-        });
+        Button btnCreateUser = findViewById(R.id.button_Create_User);
+        btnCreateUser.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateUserActivity.class)));
+    }
+
+    private void sensorGoTo(){
+        Button btnCreateUser = findViewById(R.id.buttonSensor);
+        btnCreateUser.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SensorActivity.class)));
     }
 
 
