@@ -1,6 +1,7 @@
 package com.example.routetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
@@ -37,17 +38,23 @@ public class SavedDestinationActivity extends AppCompatActivity {
         Cursor res = myDb.getAllRouteData();
         if (res.getCount() == 0){
             //show message
-            showMessage("Error", "Nothing Found");
+            showMessage("Empty", "No Saves Found");
             return;
         }
 
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
-            buffer.append("ID :" + res.getString(0)+ "\n");
+            mData.add("ID :" + res.getString(0)+ "\n UserID :" + res.getString(1)+
+                    "\n End Destination :" + res.getString(2)+ "\n\n");
+            /*buffer.append("ID :" + res.getString(0)+ "\n");
             buffer.append("UserID :" + res.getString(1)+ "\n");
-            buffer.append("End Destination :" + res.getString(2)+ "\n\n");
-
+            buffer.append("End Destination :" + res.getString(2)+ "\n\n");*/
         }
+        mLM = new LinearLayoutManager(this);
+        mRV.setHasFixedSize(true);
+        mA = new SaveAdapter(mData);
+        mRV.setLayoutManager(mLM);
+        mRV.setAdapter(mA);
 
         btnviewAll = (Button)findViewById(R.id.buttonViewAll);
 
