@@ -35,6 +35,9 @@ public class SavedDestinationActivity extends AppCompatActivity {
         mRV = (RecyclerView) findViewById(R.id.recycler_view);
         mData = new ArrayList<>();
 
+        //hard coding data in
+        myDb.insertRouteData("1", "51.471895, -3.157569");
+
         Cursor res = myDb.getAllRouteData();
         if (res.getCount() == 0){
             //show message
