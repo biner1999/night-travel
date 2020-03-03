@@ -1,6 +1,7 @@
 package com.example.routetracker;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -83,10 +84,12 @@ public class CreateUserActivity extends AppCompatActivity {
                             );
 
                     if(isInserted){
-                        Toast.makeText(CreateUserActivity.this,"User Created", Toast.LENGTH_LONG).show();
-                        finish();
+                        Toast.makeText(getApplicationContext(),"User Created", Toast.LENGTH_LONG).show();
+                        Intent loginScreen = new Intent(CreateUserActivity.this, LoginActivity.class);
+                        startActivity(loginScreen);
+                        CreateUserActivity.this.finish();
                     }else{
-                        Toast.makeText(CreateUserActivity.this,"Data Not Inserted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Data Not Inserted", Toast.LENGTH_LONG).show();
 
                     }
                 }

@@ -29,6 +29,7 @@
     <string name="distance">Distance : </string>
     <string name="emergencycontact">Emergency Contact</string>
     <string name="time">Time : </string>
+    <string name="routetracker">Route Tracker</string>
 
     <string-array name="security_array">
         <item>Mother\'s maiden name</item>
