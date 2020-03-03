@@ -19,6 +19,10 @@ public class MyBaseActivity extends Activity {
     private static Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
         System.out.println("Disconnect");
+
+
+
+
     };
 
     public void resetDisconnectTimer(){
@@ -30,6 +34,11 @@ public class MyBaseActivity extends Activity {
     public void stopDisconnectTimer(){
         System.out.println("Stop Disconnect Timer");
         disconnectHandler.removeCallbacks(disconnectCallback);
+    }
+
+    public void startDisconnectTimer(){
+        System.out.println("Start Disconnect Timer");
+        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
 
 

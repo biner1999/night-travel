@@ -26,6 +26,7 @@ public class SensorActivity extends MyBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor);
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
@@ -58,6 +59,8 @@ public class SensorActivity extends MyBaseActivity {
         };
 
         configureBackButtonSettings();
+        stopDisconnectTimer();
+
     }
 
 
