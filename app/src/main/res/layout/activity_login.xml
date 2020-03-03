@@ -31,17 +31,6 @@
         android:text="@string/login"
         android:textColor="#FFFFFF" />
 
-    <Button
-        android:id="@+id/newuser_btn"
-        android:layout_width="109dp"
-        android:layout_height="52dp"
-        android:layout_below="@+id/login_btn"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/left_btn_rounded_corners"
-        android:text="@string/newuser"
-        android:textColor="#FFFFFF" />
-
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="wrap_content"
