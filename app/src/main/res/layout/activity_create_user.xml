@@ -8,7 +8,7 @@
     android:fillViewport="true">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".CreateUserActivity">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -23,7 +23,7 @@
                 android:id="@+id/inputFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="First Name"
+                android:hint="@string/firstname"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:inputType="textCapWords"
@@ -44,7 +44,7 @@
                 android:id="@+id/inputSurname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Surname"
+                android:hint="@string/surname"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:inputType="textCapWords"
@@ -66,7 +66,7 @@
                 android:id="@+id/inputPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="PIN"
+                android:hint="@string/pin"
                 android:inputType="numberPassword"
                 android:maxLength="4"
                 android:maxLines="1"
@@ -82,7 +82,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="260dp"
-            android:text="Security Question:"
+            android:text="@string/securityquestion"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -109,7 +109,7 @@
                 android:id="@+id/inputSecAns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Answer"
+                android:hint="@string/answer"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:inputType="textCapWords"
@@ -130,7 +130,7 @@
                 android:id="@+id/inputAge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Age"
+                android:hint="@string/age"
                 android:inputType="number"
                 android:maxLength="3"
                 android:maxLines="1"
@@ -151,7 +151,7 @@
                 android:id="@+id/inputHeight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Height (cm)"
+                android:hint="@string/height"
                 android:inputType="number"
                 android:maxLength="3"
                 android:maxLines="1"
@@ -167,7 +167,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="420dp"
-            android:text="Sex:"
+            android:text="@string/sex"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -187,7 +187,9 @@
             android:layout_height="45dp"
             android:layout_marginTop="640dp"
             android:background="@drawable/left_btn_rounded_corners"
-            android:text="Submit"
+            android:textColor="#FFFFFF"
+            android:text="@string/submit"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -196,7 +198,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="New User"
+            android:text="@string/newuser"
             android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

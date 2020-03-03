@@ -1,37 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LoginActivity">
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/login_pin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="79dp"
-        android:layout_marginLeft="79dp"
-        android:layout_marginTop="389dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:layout_marginBottom="292dp"
-        android:ems="10"
-        android:hint="PIN"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:ems="4"
+        android:hint="@string/pin"
         android:inputType="numberPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:autofillHints="@string/pin"
+        android:maxLength="4"
+        android:maxLines="1"
+        android:textSize="22sp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/login_btn"
+        android:layout_width="109dp"
+        android:layout_height="52dp"
+        android:layout_below="@+id/login_pin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/left_btn_rounded_corners"
+        android:text="@string/login"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/newuser_btn"
+        android:layout_width="109dp"
+        android:layout_height="52dp"
+        android:layout_below="@+id/login_btn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/left_btn_rounded_corners"
+        android:text="@string/newuser"
+        android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/textTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="181dp"
-        android:layout_marginLeft="181dp"
-        android:layout_marginTop="504dp"
-        android:text="Login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginTop="58dp"
+        android:text="@string/login"
+        android:textSize="22sp"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/DEBUG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginTop="13dp"
+        android:text="DEBUG" />
+
+</RelativeLayout>

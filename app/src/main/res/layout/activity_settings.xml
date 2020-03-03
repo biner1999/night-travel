@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-
-
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
@@ -13,65 +8,58 @@ android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".SettingsActivity">
 
         <Button
             android:id="@+id/buttonDeleteAccount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
-            android:layout_marginLeft="120dp"
-            android:layout_marginTop="692dp"
-            android:text="Delete Account"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editAge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="640dp"
-            android:ems="10"
-            android:hint="Age"
-            android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextHairColour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="584dp"
-            android:ems="10"
-            android:hint="Hair Colour"
-            android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="109dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="660dp"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:text="@string/DeleteAcc"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@id/buttonSaveChanges"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/buttonCreateUserBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="688dp"
-            android:text="Back"
+            android:layout_width="109dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="660dp"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:text="@string/back"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/buttonSaveChanges"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="268dp"
-            android:layout_marginLeft="268dp"
-            android:layout_marginTop="688dp"
-            android:text="Save Changes"
+            android:layout_width="109dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="660dp"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:text="@string/savechanges"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@id/buttonCreateUserBack"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/buttonChangePin"
+            android:layout_width="109dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="160dp"
+            android:background="@drawable/left_btn_rounded_corners"
+            android:text="@string/changepin"
+            android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,10 +67,23 @@ android:fillViewport="true">
             android:id="@+id/switchAccelerometerAndGyroscope"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="284dp"
-            android:text="Accelerometers And Gyroscopes"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="244dp"
+            android:text="@string/accel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextEmergancyContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="352dp"
+            android:ems="10"
+            android:hint="@string/emergencycontact"
+            android:inputType="phone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -90,21 +91,62 @@ android:fillViewport="true">
             android:id="@+id/switchPoliceContact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="340dp"
-            android:text="Contact Police"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="300dp"
+            android:text="@string/contactpolice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/buttonChangePin"
+        <EditText
+            android:id="@+id/editTextWeight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="152dp"
-            android:layout_marginTop="200dp"
-            android:text="Change Pin"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="408dp"
+            android:ems="10"
+            android:hint="@string/weight"
+            android:inputType="number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="464dp"
+            android:ems="10"
+            android:hint="@string/height"
+            android:inputType="number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextHairColour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="524dp"
+            android:ems="10"
+            android:hint="@string/hair"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="576dp"
+            android:ems="10"
+            android:hint="@string/age"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -129,32 +171,6 @@ android:fillViewport="true">
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editTextWeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="468dp"
-            android:ems="10"
-            android:hint="Weight"
-            android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextHeight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="532dp"
-            android:ems="10"
-            android:hint="Height"
-            android:inputType="textPersonName"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/textViewDistance"
             android:layout_width="wrap_content"
@@ -162,7 +178,7 @@ android:fillViewport="true">
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="34dp"
-            android:text="Distance : "
+            android:text="@string/distance"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,20 +189,7 @@ android:fillViewport="true">
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
             android:layout_marginTop="94dp"
-            android:text="Time  : "
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextEmergancyContact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="46dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="400dp"
-            android:ems="10"
-            android:hint="Emergancy Contact"
-            android:inputType="phone"
+            android:text="@string/time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

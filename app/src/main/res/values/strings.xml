@@ -3,6 +3,32 @@
     <string name="title_activity_homescreen">Home</string>
     <string name="channel_name">a</string>
     <string name="description">b</string>
+    <string name="searchbar">  Enter Location Address or Postcode</string>
+    <string name="settingsbtn">Settings</string>
+    <string name="getdirectionsbtn">Get Directions</string>
+    <string name="saveddestbtn">Saved Destinations</string>
+    <string name="pin">PIN</string>
+    <string name="login">Login</string>
+    <string name="firstname">First Name</string>
+    <string name="surname">Surname</string>
+    <string name="securityquestion">Security Question:</string>
+    <string name="answer">Answer</string>
+    <string name="age">Age</string>
+    <string name="sex">Sex:</string>
+    <string name="height">Height (cm)</string>
+    <string name="submit">Submit</string>
+    <string name="newuser">New User</string>
+    <string name="DeleteAcc">Delete Account</string>
+    <string name="back">Back</string>
+    <string name="savechanges">Save Changes</string>
+    <string name="hair">Hair Colour</string>
+    <string name="accel">Accelerometers and Gyroscopes</string>
+    <string name="contactpolice">Contact Police</string>
+    <string name="changepin">Change PIN</string>
+    <string name="weight">Weight</string>
+    <string name="distance">Distance : </string>
+    <string name="emergencycontact">Emergency Contact</string>
+    <string name="time">Time : </string>
 
     <string-array name="security_array">
         <item>Mother\'s maiden name</item>
