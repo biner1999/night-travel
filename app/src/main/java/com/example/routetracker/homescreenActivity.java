@@ -174,7 +174,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
-
         
         //ciprian
 
@@ -435,6 +434,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDeviceLocation();
             init();
         }
+
+        // Remove Navigation & GPS pointer Google buttons
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+
     }
 
     public void onTaskDone(Object... values) {

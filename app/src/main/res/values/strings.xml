@@ -25,11 +25,14 @@
     <string name="accel">Accelerometers and Gyroscopes</string>
     <string name="contactpolice">Contact Police</string>
     <string name="changepin">Change PIN</string>
-    <string name="weight">Weight</string>
+    <string name="weight">Weight (kg)</string>
     <string name="distance">Distance : </string>
     <string name="emergencycontact">Emergency Contact</string>
     <string name="time">Time : </string>
     <string name="routetracker">Route Tracker</string>
+    <string name="optionalinfo">The following information is optional, it will be used to help police
+        better identify you</string>
+    <string name="ethnicity">Ethnicity</string>
 
     <string-array name="security_array">
         <item>Mother\'s maiden name</item>

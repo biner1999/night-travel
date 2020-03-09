@@ -180,15 +180,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <Button
             android:id="@+id/btnSubmit"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="125dp"
             android:layout_height="45dp"
-            android:layout_marginTop="640dp"
+            android:layout_marginTop="880dp"
+            android:layout_marginBottom="30dp"
             android:background="@drawable/left_btn_rounded_corners"
-            android:textColor="#FFFFFF"
             android:text="@string/submit"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -203,6 +206,80 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textOptional"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/optionalinfo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutHeight" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutWeight"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textOptional">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputWeight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/weight"
+                android:inputType="number"
+                android:maxLength="3"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutEthnicity"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutWeight">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputEthnicity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/ethnicity"
+                android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutHairColour"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5.5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutEthnicity">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputHairColour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hair"
+                android:inputType="text"
+                android:maxLength="10"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
