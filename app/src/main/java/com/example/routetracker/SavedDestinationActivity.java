@@ -9,10 +9,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class SavedDestinationActivity extends AppCompatActivity implements SaveAdapter.OnCardListener{
 
@@ -24,6 +26,8 @@ public class SavedDestinationActivity extends AppCompatActivity implements SaveA
     private RecyclerView.Adapter mA;
     private ArrayList<String> mData;
 
+    private static final String TAG = "SavedDestinationActivit";
+    
     Button btnviewAll;
 
 
@@ -109,9 +113,7 @@ public class SavedDestinationActivity extends AppCompatActivity implements SaveA
 
     @Override
     public void onCardClick(int position) {
-        /* mData.get(position);
-        Intent intent = new Intent(this, );
-        startActivity(intent); */
+        Log.d(TAG, "onNoteClick: clicked."+position);
     }
 
 }
