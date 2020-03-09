@@ -131,7 +131,7 @@ public class SettingsActivity extends AppCompatActivity {
                             answer,
                             editDistance.getProgress(),
                             editTime.getProgress(),
-                            //TODO CHANGE EMERGANCY CONTACT SECTION
+                            //TODO CHANGE EMERGENCY CONTACT SECTION
                             editEmergancyContact.getText().toString(),
                             state(editPoliceContact.isChecked()),
                             state(editAccelAndGyro.isChecked())
