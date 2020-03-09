@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public class SavedDestinationActivity extends AppCompatActivity {
+public class SavedDestinationActivity extends AppCompatActivity implements SaveAdapter.OnCardListener{
 
     DatabaseFunctions myDb;
     EditText editEndDestination;
@@ -37,6 +38,7 @@ public class SavedDestinationActivity extends AppCompatActivity {
 
         //hard coding data in
         myDb.insertRouteData("1", "51.471895, -3.157569");
+        myDb.insertRouteData("1", "51.479657, -3.171926");
 
         Cursor res = myDb.getAllRouteData();
         if (res.getCount() == 0){
@@ -55,7 +57,7 @@ public class SavedDestinationActivity extends AppCompatActivity {
         }
         mLM = new LinearLayoutManager(this);
         mRV.setHasFixedSize(true);
-        mA = new SaveAdapter(mData);
+        mA = new SaveAdapter(mData, this);
         mRV.setLayoutManager(mLM);
         mRV.setAdapter(mA);
 
@@ -90,11 +92,6 @@ public class SavedDestinationActivity extends AppCompatActivity {
                         buffer.append("ID :" + res.getString(0)+ "\n");
                         buffer.append("UserID :" + res.getString(1)+ "\n");
                         buffer.append("End Destination :" + res.getString(2)+ "\n\n");
-
-
-
-
-
                     }
                     //Show All Data
                     showMessage("Data",buffer.toString());
@@ -109,4 +106,12 @@ public class SavedDestinationActivity extends AppCompatActivity {
         builder.setMessage(Message);
         builder.show();
     }
+
+    @Override
+    public void onCardClick(int position) {
+        /* mData.get(position);
+        Intent intent = new Intent(this, );
+        startActivity(intent); */
+    }
+
 }
