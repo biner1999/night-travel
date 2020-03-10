@@ -8,7 +8,9 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_width="0px"
-        android:layout_height="0px"/>
+        android:layout_height="0px">
+
+    </LinearLayout>
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
@@ -25,6 +27,22 @@
         android:layout_marginBottom="91dp"
         android:background="#00FFFFFF"
         android:focusable="auto" />
+
+    <ToggleButton
+        android:id="@+id/dropMarker"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="74dp"
+        android:background="#D5FFFFFF"
+        android:drawableStart="@drawable/ic_marker"
+        android:drawableLeft="@drawable/ic_marker"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingLeft="8dp"
+        android:textOff=""
+        android:textOn="" />
 
     <ListView
         android:id="@+id/addressList"
@@ -43,7 +61,10 @@
         android:background="#00FFFFFF"
         android:cacheColorHint="#FF000000"
         android:choiceMode="singleChoice"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:elevation="2dp">
+
+    </ListView>
 
     <RelativeLayout
         android:layout_width="match_parent"
