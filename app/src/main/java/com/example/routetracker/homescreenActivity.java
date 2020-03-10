@@ -446,7 +446,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //if (currentPolyline != null)
             //currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-        //currentPolyline = mMap.addPolyline((PolylineOptions) values[1]);
+
     }
 
     @Override
