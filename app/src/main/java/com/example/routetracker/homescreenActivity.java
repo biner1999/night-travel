@@ -49,11 +49,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +64,7 @@ import java.util.Locale;
 
 
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, GoogleMap.OnMapClickListener {
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
 
     private GoogleMap mMap;
     private MapView mMapView;
@@ -168,6 +170,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         savedDestinationsView();
         //ciprian
         getDirectionButtonClick();
+        dropMarkerButton();
 
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
@@ -316,6 +319,31 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
     }
 
+    private void dropMarkerButton(){
+        ToggleButton mDropMarkerBtn = findViewById(R.id.dropMarker);
+        mDropMarkerBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mDropMarkerBtn.setBackgroundColor(0xD5B1B1B1);
+                mMap.setOnMapClickListener(latLng -> {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                    mMap.clear();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                    mMap.addMarker(markerOptions);
+                    destination = markerOptions;
+                    mDropMarkerBtn.setChecked(false);
+                });
+            } else {
+                mDropMarkerBtn.setBackgroundColor(0xD5FFFFFF);
+                mMap.setOnMapClickListener(latLng -> {
+                    // Other map click listener code here
+                });
+            }
+        });
+    }
+
 
     private void init() {
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -421,7 +449,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setOnMapClickListener(this);
+        //
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -448,20 +476,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
 
     }
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-        mMap.clear();
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-        mMap.addMarker(markerOptions);
-        destination = new MarkerOptions().position(latLng);
-    }
-
-
 
     private static Handler disconnectHandler = new Handler(msg -> {
         // todo
