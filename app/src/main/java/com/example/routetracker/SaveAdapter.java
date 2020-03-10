@@ -3,57 +3,55 @@ package com.example.routetracker;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.ViewHolder> {
+public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder> {
 
-    private ArrayList<String> mData;
-    private OnCardListener mOnCardListener;
+    private ArrayList<SaveDestinationItem> mSaveList;
 
-    public SaveAdapter(ArrayList<String> data, OnCardListener onCardListener){
-        this.mData = data;
-        this.mOnCardListener = onCardListener;
-    }
+    public static class SaveViewHolder extends RecyclerView.ViewHolder{
 
-    @Override
-    public SaveAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.save_destination_row, parent, false);
-        return new ViewHolder(v, mOnCardListener);
-    }
+        public ImageView mImageView;
+        public TextView mTextView1;
+        public TextView mTextView2;
 
-    @Override
-    public void onBindViewHolder(SaveAdapter.ViewHolder holder, int pos){
-        holder.mTitle.setText(mData.get(pos));
-    }
-
-    public int getItemCount(){
-        return mData.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTitle;
-
-        OnCardListener onCardListener;
-
-        public ViewHolder(View itemView, OnCardListener onCardListener){
+        public SaveViewHolder(@NonNull View itemView) {
             super(itemView);
-            mTitle = itemView.findViewById(R.id.title);
-            this.onCardListener = onCardListener;
-
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            onCardListener.onCardClick(getAdapterPosition());
+            mImageView = itemView.findViewById(R.id.imageView);
+            mTextView1 = itemView.findViewById(R.id.textView1);
+            mTextView2 = itemView.findViewById(R.id.textView2);
         }
     }
 
-    public interface OnCardListener{
-        void onCardClick(int position);
+    public SaveAdapter(ArrayList<SaveDestinationItem> saveList){
+        mSaveList = saveList;
     }
+
+    @Override
+    public SaveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.save_destinations_card, parent, false);
+        SaveViewHolder svh = new SaveViewHolder(v);
+        return svh;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SaveViewHolder holder, int position) {
+        SaveDestinationItem currentItem = mSaveList.get(position);
+
+        holder.mImageView.setImageResource(currentItem.getmImageResource());
+        holder.mTextView1.setText(currentItem.getmText1());
+        holder.mTextView2.setText(currentItem.getmText2());
+    }
+
+    @Override
+    public int getItemCount() {
+        return mSaveList.size();
+    }
+
 }

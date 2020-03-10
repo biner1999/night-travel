@@ -5,102 +5,101 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
-public class SavedDestinationActivity extends AppCompatActivity implements SaveAdapter.OnCardListener{
+public class SavedDestinationActivity extends AppCompatActivity{
+
+    private ArrayList<SaveDestinationItem> mSaveList;
 
     DatabaseFunctions myDb;
-    EditText editEndDestination;
 
-    private RecyclerView mRV;
-    private RecyclerView.LayoutManager mLM;
-    private RecyclerView.Adapter mA;
-    private ArrayList<String> mData;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManger;
+    private RecyclerView.Adapter mAdapter;
 
-    private static final String TAG = "SavedDestinationActivit";
-    
-    Button btnviewAll;
+    private Button buttonRemove;
+    private Button buttonBack;
+    private Button buttonSelect;
+    private EditText editTextRemove;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_destination);
+
         myDb = new DatabaseFunctions(this);
 
-        mRV = (RecyclerView) findViewById(R.id.recycler_view);
-        mData = new ArrayList<>();
+        createSaveList();
+        buildRecyclerView();
 
-        //hard coding data in
+        buttonRemove = findViewById(R.id.buttonRemove);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonSelect = findViewById(R.id.buttonSelect);
+        editTextRemove = findViewById(R.id.edittext_remove);
+
+        buttonRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = Integer.parseInt(editTextRemove.getText().toString());
+                removeItem(pos);
+            }
+        });
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+    }
+
+    public void removeItem(int position){
+        mSaveList.remove(position-1);
+        mAdapter.notifyItemRemoved(position-1);
+    }
+
+    public void createSaveList(){
         myDb.insertRouteData("1", "51.471895, -3.157569");
-        myDb.insertRouteData("1", "51.479657, -3.171926");
 
         Cursor res = myDb.getAllRouteData();
+
+        mSaveList = new ArrayList<>();
+
         if (res.getCount() == 0){
             //show message
             showMessage("Empty", "No Saves Found");
             return;
         }
 
-        StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            mData.add("ID :" + res.getString(0)+ "\n UserID :" + res.getString(1)+
-                    "\n End Destination :" + res.getString(2)+ "\n\n");
-            /*buffer.append("ID :" + res.getString(0)+ "\n");
-            buffer.append("UserID :" + res.getString(1)+ "\n");
-            buffer.append("End Destination :" + res.getString(2)+ "\n\n");*/
+        while (res.moveToNext()) {
+            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(2)));
         }
-        mLM = new LinearLayoutManager(this);
-        mRV.setHasFixedSize(true);
-        mA = new SaveAdapter(mData, this);
-        mRV.setLayoutManager(mLM);
-        mRV.setAdapter(mA);
-
-        btnviewAll = (Button)findViewById(R.id.buttonViewAll);
-
-
-        //Initalise
-        configureBackButton();
-        myDb.autoCreateDatabase();
-
-        viewAll();
     }
 
-    private void configureBackButton(){
-        Button backButton = findViewById(R.id.buttonSavedDestinationBack);
-        backButton.setOnClickListener(v -> finish());
-    }
+    public void buildRecyclerView(){
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mLayoutManger = new LinearLayoutManager(this);
+        mAdapter = new SaveAdapter(mSaveList);
 
-    public void viewAll(){
-        btnviewAll.setOnClickListener(
-                v -> {
-
-                    Cursor res = myDb.getAllRouteData();
-                    if (res.getCount() == 0){
-                        //show message
-                        showMessage("Error", "Nothing Found");
-                        return;
-                    }
-
-                    StringBuffer buffer = new StringBuffer();
-                    while(res.moveToNext()){
-                        buffer.append("ID :" + res.getString(0)+ "\n");
-                        buffer.append("UserID :" + res.getString(1)+ "\n");
-                        buffer.append("End Destination :" + res.getString(2)+ "\n\n");
-                    }
-                    //Show All Data
-                    showMessage("Data",buffer.toString());
-                }
-        );
+        mRecyclerView.setLayoutManager(mLayoutManger);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     public void showMessage (String title, String Message){
@@ -109,11 +108,6 @@ public class SavedDestinationActivity extends AppCompatActivity implements SaveA
         builder.setTitle(title);
         builder.setMessage(Message);
         builder.show();
-    }
-
-    @Override
-    public void onCardClick(int position) {
-        Log.d(TAG, "onNoteClick: clicked."+position);
     }
 
 }
