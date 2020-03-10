@@ -259,8 +259,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
         // Mode
         String mode = "mode=" + directionMode;
+        // Alternative routes
+        String alte = "&alternatives=true";
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        String parameters = str_origin + "&" + str_dest + "&" + mode + alte;
         // Output format
         String output = "json";
         // Building the url to the web service
@@ -441,9 +443,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-        if (currentPolyline != null)
-            currentPolyline.remove();
+        //if (currentPolyline != null)
+            //currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+        //currentPolyline = mMap.addPolyline((PolylineOptions) values[1]);
     }
 
     @Override
