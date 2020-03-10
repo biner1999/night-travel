@@ -12,6 +12,10 @@ public class SaveDestinationItem {
         mText2 = text2;
     }
 
+    public void changeImage(int image){
+        mImageResource = image;
+    }
+
     public int getmImageResource(){
         return mImageResource;
     }

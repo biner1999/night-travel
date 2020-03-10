@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="25dp"
         android:text="Back"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp" />
+        android:layout_marginLeft="20dp" />
 
     <Button
         android:id="@+id/buttonSelect"
@@ -24,11 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="25dp"
         android:text="Select"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="20dp"
         android:layout_alignParentRight="true" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -40,27 +40,6 @@
         android:background="@android:color/darker_gray"
         android:padding="4dp"
         android:scrollbars="vertical" />
-
-    <EditText
-        android:id="@+id/edittext_remove"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="145dp"
-        android:layout_marginBottom="25dp"
-        android:inputType="number"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="145dp" />
-
-    <Button
-        android:id="@+id/buttonRemove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/edittext_remove"
-        android:layout_toEndOf="@+id/edittext_remove"
-        android:text="Remove"
-        android:layout_toRightOf="@+id/edittext_remove" />
 
     <TextView
         android:id="@+id/Title"

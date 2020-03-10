@@ -23,7 +23,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManger;
-    private RecyclerView.Adapter mAdapter;
+    private SaveAdapter mAdapter;
 
     private Button buttonRemove;
     private Button buttonBack;
@@ -40,39 +40,19 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         createSaveList();
         buildRecyclerView();
+        setButtons();
 
-        buttonRemove = findViewById(R.id.buttonRemove);
-        buttonBack = findViewById(R.id.buttonBack);
-        buttonSelect = findViewById(R.id.buttonSelect);
-        editTextRemove = findViewById(R.id.edittext_remove);
-
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = Integer.parseInt(editTextRemove.getText().toString());
-                removeItem(pos);
-            }
-        });
-
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        buttonSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
     }
 
     public void removeItem(int position){
-        mSaveList.remove(position-1);
-        mAdapter.notifyItemRemoved(position-1);
+        mSaveList.remove(position);
+        mAdapter.notifyItemRemoved(position);
+    }
+
+    public void changeItem(int position, int image){
+        mSaveList.add(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2()));
+        mAdapter.notifyItemChanged(position);
     }
 
     public void createSaveList(){
@@ -100,6 +80,29 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         mRecyclerView.setLayoutManager(mLayoutManger);
         mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new SaveAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                changeItem(position, R.drawable.ic_check);
+            }
+
+            @Override
+            public void onDeleteClick(int position) {
+                removeItem(position);
+            }
+        });
+    }
+
+    public void setButtons(){
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonSelect = findViewById(R.id.buttonSelect);
+
+        buttonBack.setOnClickListener(v -> finish());
+
+        buttonSelect.setOnClickListener(v -> {
+
+        });
     }
 
     public void showMessage (String title, String Message){
