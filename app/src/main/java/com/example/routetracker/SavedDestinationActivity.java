@@ -67,10 +67,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
             showMessage("Empty", "No Saves Found");
             return;
         }
-
-        while (res.moveToNext()) {
+        int i = res.getCount();
+        while(i!=0) {
             mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(2)));
+            i--;
         }
+
     }
 
     public void buildRecyclerView(){
