@@ -67,10 +67,9 @@ public class SavedDestinationActivity extends AppCompatActivity{
             showMessage("Empty", "No Saves Found");
             return;
         }
-        int i = res.getCount();
-        while(i!=0) {
+
+        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
             mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(2)));
-            i--;
         }
 
     }
@@ -88,7 +87,6 @@ public class SavedDestinationActivity extends AppCompatActivity{
             public void onItemClick(int position) {
                 changeItem(position, R.drawable.ic_check);
             }
-
             @Override
             public void onDeleteClick(int position) {
                 removeItem(position);
