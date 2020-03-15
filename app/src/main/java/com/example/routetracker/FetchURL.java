@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class FetchURL extends AsyncTask<String, Void, String> {
     Context mContext;
-    String directionMode = "driving";
+    String directionMode = "walking";
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;

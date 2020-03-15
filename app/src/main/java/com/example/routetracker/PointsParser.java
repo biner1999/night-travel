@@ -18,6 +18,7 @@ import java.util.List;
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode = "walking";
+    int[] ColourList = {Color.MAGENTA, Color.GREEN, Color.YELLOW, Color.RED, Color.BLUE};
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
@@ -54,7 +55,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     protected void onPostExecute(List<List<HashMap<String, String>>> result) {
         ArrayList<LatLng> points;
         ArrayList<LatLng> fastestPoints;
-        PolylineOptions lineOptions = null;
+        ArrayList<PolylineOptions> lineOptions = new ArrayList<>();
         int totalRoutes = 0;
         PolylineOptions fastestRoute = new PolylineOptions();
         // Traversing through all the routes
@@ -62,7 +63,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             totalRoutes = totalRoutes + 1;
             points = new ArrayList<>();
             fastestPoints = new ArrayList<>();
-            lineOptions = new PolylineOptions();
+            PolylineOptions lineOption = new PolylineOptions();
             // Fetching i-th route
             List<HashMap<String, String>> path = result.get(i);
             // Fetching all the points in i-th route
@@ -80,24 +81,46 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
             }
             // Adding all the points in the route to LineOptions
-            lineOptions.addAll(points);
-            fastestRoute.addAll(fastestPoints);
 
-            if (totalRoutes == 1) {
-                lineOptions.width(10);
-                lineOptions.color(Color.MAGENTA);
-            } else {
-                lineOptions.width(10);
-                lineOptions.color(Color.GRAY);
-                //print all of the grey lines first
-                taskCallback.onTaskDone(lineOptions);
+            lineOption.addAll(points);
+            fastestRoute.addAll(fastestPoints);
+            lineOptions.add(lineOption);
+
+
+
             }
+
+        Log.d("TOTAL ROUTES: ", String.valueOf(totalRoutes));
+
+        for (int i = 0; i < lineOptions.size(); i++) {
+            lineOptions.get(i).width(10);
+            lineOptions.get(i).color(ColourList[i]);
+            taskCallback.onTaskDone(lineOptions.get(i));
+        }
+
+
+    /*
+        if (totalRoutes == 1) {
+            lineOptions.width(10);
+            lineOptions.color(Color.MAGENTA);
+        } else {
+            lineOptions.width(10);
+            lineOptions.color(Color.GRAY);
+            //print all of the grey lines first
+            taskCallback.onTaskDone(lineOptions);
             Log.d("mylog", "onPostExecute lineoptions decoded");
 
             //taskCallback.onTaskDone(lineOptions);
+
+     */
         }
         //print the fastest route last so the colour shows
+    /*
+        fastestRoute.color(Color.MAGENTA);
+        fastestRoute.width(10);
         taskCallback.onTaskDone(fastestRoute);
+
+     */
 
         // Drawing polyline in the Google Map for the i-th route
         /*if (lineOptions != null) {
@@ -107,5 +130,4 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         } else {
             Log.d("mylog", "without Polylines drawn");
         }*/
-    }
 }

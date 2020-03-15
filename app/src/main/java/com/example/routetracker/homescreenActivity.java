@@ -57,8 +57,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -93,6 +98,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private Polyline currentPolyline;
     Button getDirection;
     //ciprian
+
+
+
+    private ArrayList<Polyline> polyLineList = new ArrayList<>();
 
     //widgets
     private EditText mSearchText;
@@ -168,6 +177,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //Initialise Buttons
         settingsView();
         savedDestinationsView();
+        Button testbtn = findViewById(R.id.testbutton);
+        testbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listRoutesTest(polyLineList);
+            }
+        });
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
@@ -231,9 +247,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 };
 
-
-
-
             }
         };
 
@@ -276,7 +289,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     //ciprian
 
 
-        private  void getDirectionButtonClick(){
+        private void getDirectionButtonClick(){
 
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
@@ -471,10 +484,19 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-        //if (currentPolyline != null)
-            //currentPolyline.remove();
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
 
+        polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
+    }
+
+    private void listRoutesTest(ArrayList<Polyline> lines) {
+        for(int i=0; i < lines.size(); i++) {
+            Log.d("Route Points ", lines.get(i).getPoints().toString());
+        }
+
+        // TODO: For each polyline in ArrayList, get all points of that polyline - DONE
+        // TODO: For each point in polyline, get crime data from Police API, save street id
+        // TODO: If street id is saved already, ignore crime data
+        // TODO: Find total of crimes on that route
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
