@@ -1,5 +1,7 @@
 package com.example.routetracker;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,6 +16,7 @@ import java.util.List;
 
 
 public class DataParser {
+
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
