@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private Button buttonBack;
     private Button buttonSelect;
     private EditText editTextRemove;
+
+    private int pos = -1;
 
 
     @Override
@@ -85,7 +88,18 @@ public class SavedDestinationActivity extends AppCompatActivity{
         mAdapter.setOnItemClickListener(new SaveAdapter.onItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                changeItem(position, R.drawable.ic_check);
+                if(!(pos==-1)){
+                    changeItem(position, R.drawable.ic_check);
+                    pos = position;
+                }
+                else{
+                    for(int i =0; i<mSaveList.size();i++){
+                        mSaveList.get(i).changeImage(R.drawable.ic_map);
+                    }
+                    changeItem(position, R.drawable.ic_check);
+                    pos = position;
+                }
+
             }
             @Override
             public void onDeleteClick(int position) {
@@ -98,10 +112,10 @@ public class SavedDestinationActivity extends AppCompatActivity{
         buttonBack = findViewById(R.id.buttonBack);
         buttonSelect = findViewById(R.id.buttonSelect);
 
-        buttonBack.setOnClickListener(v -> finish());
+        buttonBack.setOnClickListener(v -> startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class)));
 
         buttonSelect.setOnClickListener(v -> {
-
+            startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class));
         });
     }
 

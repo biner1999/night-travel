@@ -56,6 +56,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder
                     }
                 }
             });
+
         }
     }
 
