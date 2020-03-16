@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-public class MyBaseActivity extends Activity {
+public class  MyBaseActivity extends Activity {
 
     public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
 

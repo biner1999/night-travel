@@ -69,6 +69,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
@@ -321,6 +323,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    startTriggers(view);
+
+
+                    //      //      //      //
                     if (destination != null)
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                     else {
@@ -539,6 +545,22 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         System.out.println("Start Disconnect Timer");
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
+    public void startTriggers(View v) {
+        int time = 5;
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        triggersIntent.putExtra("timeID", time);
+        startService(triggersIntent);
+    }
+
+    public void stopTriggers(View v) {
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        stopService(triggersIntent);
+    }
+
+
+
+
+
 
 
     @Override

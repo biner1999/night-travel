@@ -59,6 +59,7 @@
         <service android:name=".L2NotificationsService" />
         <service android:name=".L3NotificationsService" />
         <service android:name=".L4NotificationsService" />
+        <service android:name=".Triggers" />
     </application>
 
 </manifest>

@@ -1,27 +1,17 @@
 package com.example.routetracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 
@@ -29,14 +19,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
     private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
+    public boolean b = false;
 
-/*    private void getPermission() {
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS};
-        if(!hasPermissions(this, PERMISSIONS)){
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
-    }*/
+    /*    private void getPermission() {
+            int PERMISSION_ALL = 1;
+            String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.SEND_SMS};
+            if(!hasPermissions(this, PERMISSIONS)){
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            }
+        }*/
     private void getPermission() {
         requestPermissions(new String[]{
                 //just add a permission in here for user to allow it
@@ -90,6 +81,19 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        b = false;
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        b = true;
+    }
+
     private void createNewUser(){
         Button btnCreateUser = findViewById(R.id.button_Create_User);
         btnCreateUser.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateUserActivity.class)));
@@ -125,14 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startL2Service(View v) {
         Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startService(L2ServiceIntent);
-            }
-        }, 10000);
-
+        startService(L2ServiceIntent);
     }
 
     public void stopL2Service(View v) {
@@ -149,23 +146,23 @@ public class MainActivity extends AppCompatActivity {
         Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
         stopService(L3ServiceIntent);
     }
-    //to be moved out of here
-/*    public void sendSMS(View v) {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.SEND_SMS)) {
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.SEND_SMS},
-                        MY_PERMISSIONS_REQUEST_SEND_SMS);
-            }
-        }
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("07706473014", null, "Working", null, null);
-    }*/
+
+
+    public void startNotifications(View v) {
+        final Handler handler = new Handler();
+        boolean a = true;
+        if (a) {
+            startL1Service(v);
+                handler.postDelayed(() -> {
+                    if (b) {
+                        startL2Service(v);
+                    }
+                }, 5000);
+
+            //handler.postDelayed(() -> startL3Service(v), 15000);
+        }
+    }
 
 
 }

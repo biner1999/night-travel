@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.IBinder;
 import android.telephony.SmsManager;
@@ -19,6 +20,8 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.ArrayList;
+
 //import static com.example.routetracker.App.CHANNEL_ID;
 
 public class L3NotificationsService extends Service {
@@ -27,13 +30,16 @@ public class L3NotificationsService extends Service {
     public static final String CHANNEL_ID_2 = "Alerts channel";
     public static final String GROUP_ID_1 = "Group 1";
     private String phoneNumber = "07706473014";
-    private String name = "Bart";
-    private String timeLate = "20";
-    private String destination = "21 Street";
-    private String startingLocation = "22 Street";
-    private String textMessage = "This is an automated text sent by RouteTracker from " + name + ". I am currently " + timeLate + " minutes late on my journey from " + startingLocation + " to " + destination + ". Try to get a hold of me.";
+    DatabaseFunctions myDb;
 
     public void sendSMS() {
+        myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getAllUserData();
+        String x = "aaa";
+        String y = "aaa";
+        String z = "aaa";
+        String textMessage = "This is an automated text sent by RouteTracker from " + x + ". He might be in danger on his journey from " + x + " to " + y + ". He phone is currently at " + z + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
+
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.SEND_SMS)
@@ -45,7 +51,8 @@ public class L3NotificationsService extends Service {
 
         if (mSMSPermissionGranted) {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phoneNumber, null, textMessage, null, null);
+            ArrayList<String> newTextMessage = smsManager.divideMessage(textMessage);
+            smsManager.sendMultipartTextMessage(phoneNumber, null, newTextMessage, null, null);
         }
     }
 
