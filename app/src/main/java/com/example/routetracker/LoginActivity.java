@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                         //just add a permission in here for user to allow it
                         Manifest.permission.SEND_SMS,
                         Manifest.permission.ACCESS_FINE_LOCATION},
-                        ASK_MULTIPLE_PERMISSION_REQUEST_CODE);
+                ASK_MULTIPLE_PERMISSION_REQUEST_CODE);
     }
 
     private void alertMessageNoGPS() {

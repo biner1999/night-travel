@@ -316,12 +316,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //  FIRST TIME TRIGGER //
-                    Triggers trig = new Triggers();
-                    long time = 1000; // variable for time here
-                    trig.FirstTriggerStart(time);
-
-
+                    startTriggers(view);
 
 
                     //      //      //      //
@@ -540,6 +535,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void startDisconnectTimer(){
         System.out.println("Start Disconnect Timer");
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
+    }
+    public void startTriggers(View v) {
+        int time = 5;
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        triggersIntent.putExtra("timeID", time);
+        startService(triggersIntent);
+    }
+
+    public void stopTriggers(View v) {
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        stopService(triggersIntent);
     }
 
 
