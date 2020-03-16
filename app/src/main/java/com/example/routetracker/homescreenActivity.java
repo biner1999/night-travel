@@ -66,7 +66,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
@@ -291,6 +292,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
 
+
+
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
                                                                 getUrl(mCurrentLocation, destination.getPosition(),
@@ -302,8 +305,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             //TODO Start Route
 
 
+
             activeRoute = true;
             startDisconnectTimer();
+
 
 
 
@@ -311,6 +316,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //  FIRST TIME TRIGGER //
+                    Triggers trig = new Triggers();
+                    long time = 1000; // variable for time here
+                    trig.FirstTriggerStart(time);
+
+
+
+
+                    //      //      //      //
                     if (destination != null)
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                     else {
@@ -320,6 +334,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 }
             });
+
+
         }
 
     private void settingsView(){
@@ -525,6 +541,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         System.out.println("Start Disconnect Timer");
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
+
+
+
+
+
 
 
     @Override
