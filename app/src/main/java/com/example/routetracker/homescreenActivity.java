@@ -324,7 +324,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startTriggers(view);
+                    //startForegroundService(view);
+                    //startTriggers(view);
 
 
                     //      //      //      //
@@ -548,14 +549,27 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
     public void startTriggers(View v) {
         int time = 5;
-        Intent triggersIntent = new Intent(this, Triggers.class);
+        Intent triggersIntent = new Intent(this, TriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
     public void stopTriggers(View v) {
-        Intent triggersIntent = new Intent(this, Triggers.class);
+        Intent triggersIntent = new Intent(this, TriggerService.class);
         stopService(triggersIntent);
+    }
+
+    public void startForegroundService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        }
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    public void stopNotificationService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        stopService(serviceIntent);
     }
 
 

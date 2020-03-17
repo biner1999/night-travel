@@ -59,8 +59,8 @@ public class L4NotificationsService extends Service {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)
-                .setContentTitle("Level 3 Alert")
-                .setContentText("A text has been sent to " + "-name-." + " Enter the Route Tracker to give yourself more time")
+                .setContentTitle("Level 4 Alert")
+                .setContentText("A text has been sent to the police. Enter the Route Tracker to give yourself more time")
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

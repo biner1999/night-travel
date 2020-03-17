@@ -59,7 +59,8 @@
         <service android:name=".L2NotificationsService" />
         <service android:name=".L3NotificationsService" />
         <service android:name=".L4NotificationsService" />
-        <service android:name=".Triggers" />
+        <service android:name=".TriggerService" />
+        <service android:name=".NotificationRestartService" />
     </application>
 
 </manifest>
