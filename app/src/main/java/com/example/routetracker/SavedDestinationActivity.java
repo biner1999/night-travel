@@ -94,7 +94,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
                 }
                 else{
                     for(int i =0; i<mSaveList.size();i++){
-                        mSaveList.get(i).changeImage(R.drawable.ic_map);
+                        changeItem(i+1, R.drawable.ic_map);
                     }
                     changeItem(position, R.drawable.ic_check);
                     pos = position;
@@ -116,6 +116,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         buttonSelect.setOnClickListener(v -> {
             startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class));
+            markLocation(mSaveList.get(pos).getmText2());
         });
     }
 
