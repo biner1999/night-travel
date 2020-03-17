@@ -295,6 +295,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String output = "json";
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        String dataURL = "maps.googleapis.com/maps/api/distancematrix/json?units=imperial&" + output + "&key=" + getString(R.string.google_maps_key);
         return url;
     }
 
