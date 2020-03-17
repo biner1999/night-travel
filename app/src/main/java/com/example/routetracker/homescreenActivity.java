@@ -62,10 +62,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -182,7 +185,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         testbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listRoutesTest(polyLineList);
+                try {
+                    listRoutesTest(polyLineList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
             }
         });
         //ciprian
@@ -292,8 +303,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
 
-
-
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
                                                                 getUrl(mCurrentLocation, destination.getPosition(),
@@ -305,10 +314,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             //TODO Start Route
 
 
-
             activeRoute = true;
             startDisconnectTimer();
-
 
 
 
@@ -329,8 +336,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 }
             });
-
-
         }
 
     private void settingsView(){
@@ -499,14 +504,18 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
     }
 
-    private void listRoutesTest(ArrayList<Polyline> lines) {
+    private void listRoutesTest(ArrayList<Polyline> lines) throws IOException, ExecutionException, InterruptedException {
         for(int i=0; i < lines.size(); i++) {
-            Log.d("Route Points ", lines.get(i).getPoints().toString());
+            List<LatLng> points = lines.get(i).getPoints();
+            Log.d("Route Points " + i + "/" + lines.size(), Arrays.toString(points.toArray()) + " Point count: " + points.size());
+
+            CrimeCollector crimeCollector = new CrimeCollector();
+            Log.d("Route crimes " + i, String.valueOf(crimeCollector.execute(points).get()));
         }
 
         // TODO: For each polyline in ArrayList, get all points of that polyline - DONE
-        // TODO: For each point in polyline, get crime data from Police API, save street id
-        // TODO: If street id is saved already, ignore crime data
+        // TODO: For each point in polyline, get crime data from Police API, save street id - DONE
+        // TODO: If street id is saved already, ignore crime data - DONE
         // TODO: Find total of crimes on that route
     }
 
