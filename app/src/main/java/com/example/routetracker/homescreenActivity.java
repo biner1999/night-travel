@@ -57,11 +57,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.concurrent.ExecutionException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
@@ -93,6 +102,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private Polyline currentPolyline;
     Button getDirection;
     //ciprian
+
+
+
+    private ArrayList<Polyline> polyLineList = new ArrayList<>();
 
     //widgets
     private EditText mSearchText;
@@ -168,6 +181,21 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //Initialise Buttons
         settingsView();
         savedDestinationsView();
+        Button testbtn = findViewById(R.id.testbutton);
+        testbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    listRoutesTest(polyLineList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
@@ -231,9 +259,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 };
 
-
-
-
             }
         };
 
@@ -276,7 +301,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     //ciprian
 
 
-        private  void getDirectionButtonClick(){
+        private void getDirectionButtonClick(){
 
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
@@ -298,6 +323,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    startTriggers(view);
+
+
+                    //      //      //      //
                     if (destination != null)
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                     else {
@@ -471,10 +500,23 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-        //if (currentPolyline != null)
-            //currentPolyline.remove();
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
 
+        polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
+    }
+
+    private void listRoutesTest(ArrayList<Polyline> lines) throws IOException, ExecutionException, InterruptedException {
+        for(int i=0; i < lines.size(); i++) {
+            List<LatLng> points = lines.get(i).getPoints();
+            Log.d("Route Points " + i + "/" + lines.size(), Arrays.toString(points.toArray()) + " Point count: " + points.size());
+
+            CrimeCollector crimeCollector = new CrimeCollector();
+            Log.d("Route crimes " + i, String.valueOf(crimeCollector.execute(points).get()));
+        }
+
+        // TODO: For each polyline in ArrayList, get all points of that polyline - DONE
+        // TODO: For each point in polyline, get crime data from Police API, save street id - DONE
+        // TODO: If street id is saved already, ignore crime data - DONE
+        // TODO: Find total of crimes on that route
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
@@ -503,6 +545,22 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         System.out.println("Start Disconnect Timer");
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
+    public void startTriggers(View v) {
+        int time = 5;
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        triggersIntent.putExtra("timeID", time);
+        startService(triggersIntent);
+    }
+
+    public void stopTriggers(View v) {
+        Intent triggersIntent = new Intent(this, Triggers.class);
+        stopService(triggersIntent);
+    }
+
+
+
+
+
 
 
     @Override
