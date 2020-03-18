@@ -108,6 +108,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private ArrayList<Polyline> polyLineList = new ArrayList<>();
 
+    private List<List<HashMap<String, String>>> duration_time;
+
     //widgets
     private EditText mSearchText;
     private ListView addressList;
@@ -304,15 +306,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
         private void getDirectionButtonClick(){
-            List<List<HashMap<String, String>>> duration_time;
             getDirection = findViewById(R.id.btnGetDirection);
-            getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
-                    getUrl(mCurrentLocation, destination.getPosition(),
-                    "walking"), "walking"));
 
-           duration_time = getRouteData.FetchData(getUrl(mCurrentLocation, destination.getPosition(), "walking"));
 
-           Log.d("TEST 4!!!!!!!!!!!!!!1", String.valueOf(duration_time));
+
 
             //TODO Add confirm route
             //TODO Add save route
@@ -334,14 +331,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                     //      //      //      //
 
-                    if (destination != null)
-
+                    if (destination != null) {
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-
-
-
-
-
+                        duration_time = getRouteData.FetchData(getUrl(mCurrentLocation, destination.getPosition(), "walking"));
+                        Log.d("TEST4:", String.valueOf(duration_time));
+                    }
 
                     else {
                         Toast noDestinationToast = Toast.makeText(getApplicationContext(),

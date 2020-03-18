@@ -68,7 +68,7 @@ public class SecondFetch {
         } catch (Exception e) {
             Log.d("mylog", "Exception downloading URL: " + e.toString());
         } finally {
-            iStream.close();
+            //iStream.close();
             urlConnection.disconnect();
         }
         return data;

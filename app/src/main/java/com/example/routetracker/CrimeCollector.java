@@ -37,6 +37,8 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
         if (month == 0 || month == 11)
             month++;
 
+        Log.d("MONTH:", String.valueOf(month));
+
         for (LatLng point : crimepoints) {
             String sURL = "https://data.police.uk/api/crimes-at-location?date=" + currentDate.get(Calendar.YEAR) + "-" + month
                     + "&lat=" + point.latitude + "&lng=" + point.longitude;
