@@ -34,7 +34,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         try {
             jObject = new JSONObject(jsonData[0]);
-            Log.d("mylog", jsonData[0].toString());
+            Log.d("TEST2!!!!!!!!!!!", jsonData[0].toString());
             DataParser parser = new DataParser();
             Log.d("mylog", parser.toString());
 

@@ -1,7 +1,5 @@
 package com.example.routetracker;
 
-import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -15,41 +13,23 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
+public class SecondFetch {
 
-public class FetchURL extends AsyncTask<String, Void, String> {
-    Context mContext;
-    String directionMode = "walking";
-
-    public FetchURL(Context mContext) {
-        this.mContext = mContext;
-    }
-
-    @Override
-    protected String doInBackground(String... strings) {
-        // For storing data from web service
+    public List<List<HashMap<String, String>>> FetchData (String url){
         String data = "";
-        directionMode = strings[1];
-        try {
-            // Fetching the data from web service
-            data = downloadUrl(strings[0]);
-            Log.d("mylog", "Background task data " + data.toString());
-        } catch (Exception e) {
-            Log.d("Background Task", e.toString());
+        List<List<HashMap<String, String>>> routes_data = null;
+        try{
+            data = downloadUrl(url);
+            routes_data = fetch_routes_data(data);
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return data;
+
+        return routes_data;
     }
 
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-        PointsParser parserTask = new PointsParser(mContext, directionMode);
-        Log.d("TEST!!!!!!!!!!!!", s);
-        // Invokes the thread for parsing the JSON data
-        parserTask.execute(s);
-        route_data(s);
-    }
-
-    private List<List<HashMap<String, String>>> route_data(String s){
+    private List<List<HashMap<String, String>>> fetch_routes_data(String s){
         JSONObject jObject;
         List<List<HashMap<String, String>>> routes_data = null;
         try {
@@ -94,4 +74,3 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         return data;
     }
 }
-

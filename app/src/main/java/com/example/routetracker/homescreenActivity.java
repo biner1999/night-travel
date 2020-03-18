@@ -101,6 +101,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private MarkerOptions destination;
     private Polyline currentPolyline;
     Button getDirection;
+    SecondFetch getRouteData = new SecondFetch();
     //ciprian
 
 
@@ -295,7 +296,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String output = "json";
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
-        String dataURL = "maps.googleapis.com/maps/api/distancematrix/json?units=imperial&" + output + "&key=" + getString(R.string.google_maps_key);
+
         return url;
     }
 
@@ -303,12 +304,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
         private void getDirectionButtonClick(){
-
+            List<List<HashMap<String, String>>> duration_time;
             getDirection = findViewById(R.id.btnGetDirection);
             getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
-                                                                getUrl(mCurrentLocation, destination.getPosition(),
-                                                                        "walking"), "walking"));
+                    getUrl(mCurrentLocation, destination.getPosition(),
+                    "walking"), "walking"));
 
+           duration_time = getRouteData.FetchData(getUrl(mCurrentLocation, destination.getPosition(), "walking"));
+
+           Log.d("TEST 4!!!!!!!!!!!!!!1", String.valueOf(duration_time));
 
             //TODO Add confirm route
             //TODO Add save route
@@ -329,8 +333,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
                     //      //      //      //
+
                     if (destination != null)
+
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+
+
+
+
+
+
                     else {
                         Toast noDestinationToast = Toast.makeText(getApplicationContext(),
                                 "No Destination Selected", Toast.LENGTH_LONG);
