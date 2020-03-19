@@ -3,6 +3,7 @@ package com.example.routetracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,14 +54,34 @@ public class LoginActivity extends AppCompatActivity {
 
                 String password = e2.getText().toString();
                 Boolean Chkpass = db.checkpassword(password);
-                if(Chkpass){
-                    Toast.makeText(getApplicationContext(),"Successfully logged in",Toast.LENGTH_SHORT).show();
-                    Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                    startActivity(homeScreen);}
-                else
+                if(Chkpass) {
+                    // login if user has an active route and NotificationRestarService is running instead of TriggerService
+                    if (NotificationRestartService.isRunning()) {
+                        stopNotificationsService(v);
+                        startNotificationsService(v);
+                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
+                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                        startActivity(homeScreen);
+                    }
+                    // login if user has an active route and less than 3 minutes on the first timer
+                    else if (TriggerService.isRunning() && true) {
+                        stopTriggersService(v);
+                        startNotificationsService(v);
+                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "TS", Toast.LENGTH_SHORT).show();
+                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                        startActivity(homeScreen);
+                    }
+                    //login if user has no active route or has an active route and more than 3 minutes left on the first timer
+                    else {
+                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "none", Toast.LENGTH_SHORT).show();
+                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                        startActivity(homeScreen);
+                    }
+
+                }
+                else {
                     Toast.makeText(getApplicationContext(),"Failed to log in",Toast.LENGTH_SHORT).show();
-
-
+                }
             }
         });
 
@@ -109,6 +130,21 @@ public class LoginActivity extends AppCompatActivity {
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             alertMessageNoGPS();
         }
+    }
+
+    public void startNotificationsService(View v) {
+        Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
+        startService(serviceIntent);
+    }
+
+    public void stopNotificationsService(View v) {
+        Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopTriggersService(View v) {
+        Intent serviceIntent = new Intent(this, TriggerService.class);
+        stopService(serviceIntent);
     }
 
 }

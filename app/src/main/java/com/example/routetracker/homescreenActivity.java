@@ -326,7 +326,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onClick(View view) {
                     //startForegroundService(view);
-                    //startTriggers(view);
+                    startTriggers(view);
 
 
                     //      //      //      //

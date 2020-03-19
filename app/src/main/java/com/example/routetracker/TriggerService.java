@@ -13,6 +13,8 @@ import java.util.TimerTask;
 
 
 public class TriggerService extends Service {
+    private static boolean isRunning;
+
 
     // First Time Trigger //
     public void FirstTriggerStart(long time) {
@@ -21,21 +23,26 @@ public class TriggerService extends Service {
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
         final Handler handler = new Handler();
-        handler.postDelayed(() -> {
-                startL1Service();
+/* proper code, commented out for testing        handler.postDelayed(() -> {
+            startL1Service();
+            handler.postDelayed(() -> {
+                startL2Service();
                 handler.postDelayed(() -> {
-                    startL2Service();
+                    startL3Service();
                     handler.postDelayed(() -> {
-                        startL3Service();
-                        handler.postDelayed(() -> {
-                            startL4Service();
-                        }, fourthNotificationDelay);
-                    }, thirdNotificationDelay);
+                        startL4Service();
+                        stopSelf();
+                    }, fourthNotificationDelay);
+                }, thirdNotificationDelay);
+            }, secondNotificationDelay);
+        }, firstNotificationDelay);*/
+        handler.postDelayed(() -> {
+            startL1Service();
+            handler.postDelayed(() -> {
+                startL2Service();
+                stopSelf();
             }, secondNotificationDelay);
         }, firstNotificationDelay);
-
-
-
     }
     public void startL1Service() {
         Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
@@ -54,8 +61,13 @@ public class TriggerService extends Service {
         startService(L4ServiceIntent);
     }
 
+    public static boolean isRunning() {
+        return isRunning;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        isRunning = true;
         int timeID = intent.getIntExtra("timeID", 0);
         FirstTriggerStart(timeID);
         return START_REDELIVER_INTENT;
@@ -65,5 +77,11 @@ public class TriggerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        isRunning = false;
+        super.onDestroy();
     }
 }
