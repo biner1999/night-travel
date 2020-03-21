@@ -23,14 +23,18 @@ public class DataParser {
         JSONArray jLegs;
         JSONArray jSteps;
 
+        ArrayList<ArrayList<LatLng>> routeSteps = new ArrayList<>();
+
 
         try {
             jRoutes = jObject.getJSONArray("routes");
+
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 String jDuration;
                 String jDistance;
+                ArrayList<LatLng> stepPoints = new ArrayList<>();
 
                 List path = new ArrayList<>();
                 /** Traversing all legs */
@@ -52,6 +56,13 @@ public class DataParser {
                         polyline = (String) ((JSONObject) ((JSONObject) jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
 
+                        //Log.d("STEPSTARTLOCATION", ((JSONObject) jSteps.get(k)).get("start_location").toString());
+                        //Log.d("STEPSTARTLOCATIONTYPE!!", ((JSONObject) jSteps.get(k)).get("start_location").getClass().toString());
+
+                        JSONObject thisStepPoint = (JSONObject) ((JSONObject) jSteps.get(k)).get("start_location");
+                        stepPoints.add(new LatLng(Double.parseDouble(thisStepPoint.optString("lat")), Double.parseDouble(thisStepPoint.optString("lng"))));
+
+
                         /** Traversing all points */
                         for (int l = 0; l < list.size(); l++) {
                             HashMap<String, String> hm = new HashMap<>();
@@ -62,12 +73,16 @@ public class DataParser {
                     }
                     routes.add(path);
                 }
+                routeSteps.add(stepPoints);
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
         }
+
+        homescreenActivity.stepPoints = routeSteps;
+
         return routes;
     }
 

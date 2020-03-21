@@ -110,6 +110,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private List<List<HashMap<String, String>>> duration_time;
 
+    public static ArrayList<ArrayList<LatLng>> stepPoints;
+
     //widgets
     private EditText mSearchText;
     private ListView addressList;
@@ -513,12 +515,21 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void listRoutesTest(ArrayList<Polyline> lines) throws IOException, ExecutionException, InterruptedException {
-        for(int i=0; i < lines.size(); i++) {
+        int counter = 0;
+        for(ArrayList<LatLng> step : stepPoints) {
+
+            CrimeCollector crimeCollector = new CrimeCollector();
+            Log.d("Route crimes" + counter, String.valueOf(crimeCollector.execute(step).get()));
+            counter++;
+
+            /*
             List<LatLng> points = lines.get(i).getPoints();
             Log.d("Route Points " + i + "/" + lines.size(), Arrays.toString(points.toArray()) + " Point count: " + points.size());
 
             CrimeCollector crimeCollector = new CrimeCollector();
             Log.d("Route crimes " + i, String.valueOf(crimeCollector.execute(points).get()));
+
+             */
         }
 
         // TODO: For each polyline in ArrayList, get all points of that polyline - DONE

@@ -108,7 +108,9 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         }
         taskCallback.onTaskDone(secondRoute);
 
-        taskCallback.onTaskDone(lineOptions);
+        if (lineOptions != null)
+            taskCallback.onTaskDone(lineOptions);
+
         taskCallback.onTaskDone(fastestRoute);
 
         //print the fastest route last so the colour shows
