@@ -74,6 +74,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.String.valueOf;
+
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
 
@@ -103,7 +105,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private MarkerOptions destination;
     private Polyline currentPolyline;
     Button getDirection;
-    SecondFetch getRouteData = new SecondFetch();
+    public static List<List<HashMap<String, String>>> routeDetails;
     //ciprian
 
 
@@ -119,7 +121,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     //widgets
     private EditText mSearchText;
     private ListView addressList;
-
 
     //other
     AdapterView.OnItemClickListener addressListClick = new AdapterView.OnItemClickListener() {
@@ -297,6 +298,25 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     //ciprian
 
+    private String getRouteDetails(List<List<HashMap<String, String>>> details) throws IOException, ExecutionException, InterruptedException {
+
+        for (int i = 0; i < details.size(); i++) {
+
+            // Fetching i-th route
+            List<HashMap<String, String>> path = details.get(i);
+            // Fetching all the points in i-th route
+            for (int j = 0; j < path.size(); j++) {
+                HashMap<String, String> point = path.get(j);
+                String duration = point.get("duration");
+                String distance = point.get("distance");
+                Log.d("XXXXXXXXXXXXX" + valueOf(duration), valueOf(distance));
+
+            }
+
+        }
+        return null;
+    }
+
 
         private void getDirectionButtonClick(){
             getDirection = findViewById(R.id.btnGetDirection);
@@ -325,9 +345,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     //      //      //      //
 
                     if (destination != null) {
-                        AsyncTask<String, Void, String> fetchTask = new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-                        duration_time = getRouteData.FetchData(getUrl(mCurrentLocation, destination.getPosition(), "walking"));
-
+                        new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                         Log.d("TEST4:", String.valueOf(duration_time));
                     }
 
@@ -504,6 +522,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onTaskDone(Object... values) {
 
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
+        try {
+            getRouteDetails(routeDetails);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void listRoutes() throws ExecutionException, InterruptedException {

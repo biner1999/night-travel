@@ -24,6 +24,7 @@ public class DataParser {
         JSONArray jSteps;
 
         ArrayList<ArrayList<LatLng>> routeSteps = new ArrayList<>();
+        List<List<HashMap<String, String>>> routeData = new ArrayList<>();
 
 
         try {
@@ -35,18 +36,18 @@ public class DataParser {
                 String jDuration;
                 String jDistance;
                 ArrayList<LatLng> stepPoints = new ArrayList<>();
-
+                List durationDistance = new ArrayList<>();
                 List path = new ArrayList<>();
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
-
+                    HashMap<String, String> hashMap = new HashMap<>();
 
                     jDuration = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("text");
                     jDistance = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("distance")).get("text");
 
-
-                    Log.d("mylog", "Executing duration and distance");
-                    Log.d("mylog", jDuration + " " + jDistance);
+                    hashMap.put("duration",jDuration);
+                    hashMap.put("distance", jDistance);
+                    durationDistance.add(hashMap);
 
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
 
@@ -74,6 +75,7 @@ public class DataParser {
                     routes.add(path);
                 }
                 routeSteps.add(stepPoints);
+                routeData.add(durationDistance);
             }
 
         } catch (JSONException e) {
@@ -82,6 +84,7 @@ public class DataParser {
         }
 
         homescreenActivity.stepPoints = routeSteps;
+        homescreenActivity.routeDetails = routeData;
 
         return routes;
     }
