@@ -31,7 +31,9 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         directionMode = strings[1];
         try {
             // Fetching the data from web service
-            data = downloadUrl(strings[0]);
+
+                    data = downloadUrl(strings[0]);
+            Log.d("CHECKING WHAT???", data);
             Log.d("mylog", "Background task data " + data.toString());
         } catch (Exception e) {
             Log.d("Background Task", e.toString());
@@ -46,23 +48,10 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         Log.d("TEST!!!!!!!!!!!!", s);
         // Invokes the thread for parsing the JSON data
         parserTask.execute(s);
-        route_data(s);
+        //route_data(s);
     }
 
-    private List<List<HashMap<String, String>>> route_data(String s){
-        JSONObject jObject;
-        List<List<HashMap<String, String>>> routes_data = null;
-        try {
-            jObject = new JSONObject(s);
-            DataParser_DD parser = new DataParser_DD();
 
-            routes_data = parser.parse_data(jObject);
-            Log.d("TEST3!!!!!!!!!!!!!!!", String.valueOf(routes_data));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return routes_data;
-    }
 
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
