@@ -13,15 +13,22 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
     String directionMode = "walking";
+    public FetchResponse delegate = null;
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
         this.directionMode = directionMode;
+        delegate = (FetchResponse) mContext;
+    }
+
+    public interface FetchResponse {
+        void listRoutes() throws ExecutionException, InterruptedException;
     }
 
     // Parsing the data in non-ui thread
@@ -112,6 +119,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             taskCallback.onTaskDone(lineOptions);
 
         taskCallback.onTaskDone(fastestRoute);
+
+        try {
+            delegate.listRoutes();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         //print the fastest route last so the colour shows
         //taskCallback.onTaskDone(fastestRoute);

@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -10,19 +11,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import javax.security.auth.callback.Callback;
 
 
 public class FetchURL extends AsyncTask<String, Void, String> {
-    Context mContext;
-    String directionMode = "walking";
+    private Context mContext;
+    private String directionMode = "walking";
+
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;
+
     }
+
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -36,6 +45,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         } catch (Exception e) {
             Log.d("Background Task", e.toString());
         }
+
         return data;
     }
 
@@ -47,6 +57,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         // Invokes the thread for parsing the JSON data
         parserTask.execute(s);
         route_data(s);
+
     }
 
     private List<List<HashMap<String, String>>> route_data(String s){

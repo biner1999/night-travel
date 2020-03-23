@@ -37,6 +37,7 @@ import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -73,7 +75,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
 
     private GoogleMap mMap;
     private MapView mMapView;
@@ -110,11 +112,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private List<List<HashMap<String, String>>> duration_time;
 
-    public static ArrayList<ArrayList<LatLng>> stepPoints;
+    public static volatile ArrayList<ArrayList<LatLng>> stepPoints;
+
+    private ArrayList<RouteDataItem> routeDataList = new ArrayList<>();
 
     //widgets
     private EditText mSearchText;
     private ListView addressList;
+
 
     //other
     AdapterView.OnItemClickListener addressListClick = new AdapterView.OnItemClickListener() {
@@ -186,21 +191,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //Initialise Buttons
         settingsView();
         savedDestinationsView();
-        Button testbtn = findViewById(R.id.testbutton);
-        testbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    listRoutesTest(polyLineList);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
@@ -334,8 +325,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     //      //      //      //
 
                     if (destination != null) {
-                        new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                        AsyncTask<String, Void, String> fetchTask = new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                         duration_time = getRouteData.FetchData(getUrl(mCurrentLocation, destination.getPosition(), "walking"));
+
                         Log.d("TEST4:", String.valueOf(duration_time));
                     }
 
@@ -514,28 +506,23 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
     }
 
-    private void listRoutesTest(ArrayList<Polyline> lines) throws IOException, ExecutionException, InterruptedException {
-        int counter = 0;
+    public void listRoutes() throws ExecutionException, InterruptedException {
+        int counter = 1;
         for(ArrayList<LatLng> step : stepPoints) {
 
             CrimeCollector crimeCollector = new CrimeCollector();
-            Log.d("Route crimes" + counter, String.valueOf(crimeCollector.execute(step).get()));
+            int crimeCount = crimeCollector.execute(step).get();
+
+            Log.d("Route crimes " + counter, String.valueOf(crimeCount));
+
+            routeDataList.add(new RouteDataItem(counter, crimeCount, "DIST", "TIME", R.drawable.ic_map));
+
             counter++;
-
-            /*
-            List<LatLng> points = lines.get(i).getPoints();
-            Log.d("Route Points " + i + "/" + lines.size(), Arrays.toString(points.toArray()) + " Point count: " + points.size());
-
-            CrimeCollector crimeCollector = new CrimeCollector();
-            Log.d("Route crimes " + i, String.valueOf(crimeCollector.execute(points).get()));
-
-             */
         }
 
-        // TODO: For each polyline in ArrayList, get all points of that polyline - DONE
-        // TODO: For each point in polyline, get crime data from Police API, save street id - DONE
-        // TODO: If street id is saved already, ignore crime data - DONE
-        // TODO: Find total of crimes on that route
+        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList)).commit();
+        FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
+        mFrameLayout.setVisibility(View.VISIBLE);
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
