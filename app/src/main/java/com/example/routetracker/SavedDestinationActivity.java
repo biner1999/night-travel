@@ -22,13 +22,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManger;
     private SaveAdapter mAdapter;
-    private Context mContext;
+    Context mContext;
 
     private Button buttonBack;
     private Button buttonSelect;
 
     private int pos = -1;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
