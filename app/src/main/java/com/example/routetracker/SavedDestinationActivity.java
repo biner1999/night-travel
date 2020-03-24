@@ -5,15 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SavedDestinationActivity extends AppCompatActivity{
@@ -25,6 +23,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManger;
     private SaveAdapter mAdapter;
+    private Context mContext;
 
     private Button buttonRemove;
     private Button buttonBack;
@@ -46,6 +45,11 @@ public class SavedDestinationActivity extends AppCompatActivity{
         setButtons();
 
 
+    }
+
+    public SavedDestinationActivity(Context context){
+        //your code.
+        this.mContext=context;
     }
 
     public void removeItem(int position){
@@ -116,7 +120,9 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         buttonSelect.setOnClickListener(v -> {
             startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class));
-            markLocation(mSaveList.get(pos).getmText2());
+            if(mContext instanceof MainActivity){
+                ((homescreenActivity) mContext).markLocation(Integer.parseInt(mSaveList.get(pos).getmText2()));
+            }
         });
     }
 
