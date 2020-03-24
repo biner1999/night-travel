@@ -297,7 +297,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     //ciprian
 
-    private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route) throws IOException, ExecutionException, InterruptedException {
+    private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
 
         List<HashMap<String, String>> test = null;
         for (int i = 0; i < details.size(); i++) {
@@ -530,17 +530,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
             String distance = null;
             String duration = null;
-            try {
-                List<HashMap<String, String>> details = getRouteDetails(routeDetails, count);
-                Log.d("test!!!!!!!", String.valueOf(details));
-                HashMap<String, String> point = details.get(0);
-                duration = point.get("duration");
-                HashMap<String, String> point2 = details.get(0);
-                distance = point2.get("distance");
+            List<HashMap<String, String>> details = getRouteDetails(routeDetails, count);
+            Log.d("test!!!!!!!", String.valueOf(details));
+            HashMap<String, String> point = details.get(0);
+            duration = point.get("duration");
+            HashMap<String, String> point2 = details.get(1);
+            distance = point2.get("distance");
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             count = count + 1;
 
             CrimeCollector crimeCollector = new CrimeCollector();
