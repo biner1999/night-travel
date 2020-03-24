@@ -1,14 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="0px"
-        android:layout_height="0px">
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
     </LinearLayout>
 
@@ -61,43 +62,44 @@
         android:background="#00FFFFFF"
         android:cacheColorHint="#FF000000"
         android:choiceMode="singleChoice"
-        android:visibility="gone"
-        android:elevation="2dp">
+        android:elevation="2dp"
+        android:visibility="gone">
 
     </ListView>
 
     <RelativeLayout
+        android:id="@+id/relLayout1"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:elevation="10dp"
         android:background="@drawable/white_border"
-        android:id="@+id/relLayout1">
+        android:elevation="10dp">
 
         <ImageView
+            android:id="@+id/ic_search"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:id="@+id/ic_search"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
-            app:srcCompat="@drawable/ic_search"
-            android:background="#fff"/>
+            android:background="#fff"
+            app:srcCompat="@drawable/ic_search" />
+
         <EditText
+            android:id="@+id/input_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@id/ic_search"
             android:layout_toRightOf="@id/ic_search"
-            android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textColor="#000"
-            android:id="@+id/input_search"
             android:hint="@string/searchbar"
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColor="#000"
+            android:textSize="15sp" />
 
 
     </RelativeLayout>
@@ -115,13 +117,13 @@
             android:id="@+id/button_settings"
             android:layout_width="0dp"
             android:layout_height="53dp"
-            android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
+            android:layout_weight="1"
+            android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/settingsbtn"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/left_btn_rounded_corners"/>
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/btnGetDirection"
@@ -131,10 +133,10 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_weight="1"
+            android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/getdirectionsbtn"
-            android:textSize="12sp"
             android:textColor="#FFFFFF"
-            android:background="@drawable/left_btn_rounded_corners"/>
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/buttonSavedDestinations"
@@ -144,24 +146,29 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_weight="1"
+            android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/saveddestbtn"
-            android:textSize="11sp"
             android:textColor="#FFFFFF"
-            android:background="@drawable/left_btn_rounded_corners"/>
+            android:textSize="11sp" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/testbutton"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="170dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="22dp"
-        android:layout_marginLeft="22dp"
-        android:layout_marginBottom="100dp"
-        android:text="LogRoutePoints" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginTop="428dp"
+        android:layout_marginEnd="9dp"
+        android:visibility="invisible">
+
+    </FrameLayout>
 
 
 </RelativeLayout>

@@ -37,6 +37,7 @@ import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,8 +74,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.String.valueOf;
 
-public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
+
+public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
 
     private GoogleMap mMap;
     private MapView mMapView;
@@ -101,11 +105,18 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private MarkerOptions destination;
     private Polyline currentPolyline;
     Button getDirection;
+    public static List<List<HashMap<String, String>>> routeDetails;
     //ciprian
 
 
 
     private ArrayList<Polyline> polyLineList = new ArrayList<>();
+
+    private List<List<HashMap<String, String>>> duration_time;
+
+    public static volatile ArrayList<ArrayList<LatLng>> stepPoints;
+
+    private ArrayList<RouteDataItem> routeDataList = new ArrayList<>();
 
     //widgets
     private EditText mSearchText;
@@ -180,21 +191,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //Initialise Buttons
         settingsView();
         savedDestinationsView();
-        Button testbtn = findViewById(R.id.testbutton);
-        testbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    listRoutesTest(polyLineList);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
@@ -294,18 +291,36 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String output = "json";
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+
         return url;
     }
 
     //ciprian
 
+    private String getRouteDetails(List<List<HashMap<String, String>>> details) throws IOException, ExecutionException, InterruptedException {
+
+        for (int i = 0; i < details.size(); i++) {
+
+            // Fetching i-th route
+            List<HashMap<String, String>> path = details.get(i);
+            // Fetching all the points in i-th route
+            for (int j = 0; j < path.size(); j++) {
+                HashMap<String, String> point = path.get(j);
+                String duration = point.get("duration");
+                String distance = point.get("distance");
+                Log.d("XXXXXXXXXXXXX" + valueOf(duration), valueOf(distance));
+
+            }
+
+        }
+        return null;
+    }
+
 
         private void getDirectionButtonClick(){
-
             getDirection = findViewById(R.id.btnGetDirection);
-            getDirection.setOnClickListener(view -> new FetchURL(homescreenActivity.this).execute(
-                                                                getUrl(mCurrentLocation, destination.getPosition(),
-                                                                        "walking"), "walking"));
+
+
 
 
             //TODO Add confirm route
@@ -322,12 +337,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //startForegroundService(view);
                     startTriggers(view);
 
 
                     //      //      //      //
-                    if (destination != null)
+
+                    if (destination != null) {
                         new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                        Log.d("TEST4:", String.valueOf(duration_time));
+                    }
+
                     else {
                         Toast noDestinationToast = Toast.makeText(getApplicationContext(),
                                 "No Destination Selected", Toast.LENGTH_LONG);
@@ -501,21 +521,34 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onTaskDone(Object... values) {
 
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
+        try {
+            getRouteDetails(routeDetails);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void listRoutesTest(ArrayList<Polyline> lines) throws IOException, ExecutionException, InterruptedException {
-        for(int i=0; i < lines.size(); i++) {
-            List<LatLng> points = lines.get(i).getPoints();
-            Log.d("Route Points " + i + "/" + lines.size(), Arrays.toString(points.toArray()) + " Point count: " + points.size());
+    public void listRoutes() throws ExecutionException, InterruptedException {
+        int counter = 1;
+        for(ArrayList<LatLng> step : stepPoints) {
 
             CrimeCollector crimeCollector = new CrimeCollector();
-            Log.d("Route crimes " + i, String.valueOf(crimeCollector.execute(points).get()));
+            int crimeCount = crimeCollector.execute(step).get();
+
+            Log.d("Route crimes " + counter, String.valueOf(crimeCount));
+
+            routeDataList.add(new RouteDataItem(counter, crimeCount, "DIST", "TIME", R.drawable.ic_map));
+
+            counter++;
         }
 
-        // TODO: For each polyline in ArrayList, get all points of that polyline - DONE
-        // TODO: For each point in polyline, get crime data from Police API, save street id - DONE
-        // TODO: If street id is saved already, ignore crime data - DONE
-        // TODO: Find total of crimes on that route
+        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList)).commit();
+        FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
+        mFrameLayout.setVisibility(View.VISIBLE);
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
@@ -546,14 +579,27 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
     public void startTriggers(View v) {
         int time = 5;
-        Intent triggersIntent = new Intent(this, Triggers.class);
+        Intent triggersIntent = new Intent(this, TriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
     public void stopTriggers(View v) {
-        Intent triggersIntent = new Intent(this, Triggers.class);
+        Intent triggersIntent = new Intent(this, TriggerService.class);
         stopService(triggersIntent);
+    }
+
+    public void startForegroundService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+        }
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
+
+    public void stopNotificationService(View v) {
+        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        stopService(serviceIntent);
     }
 
 

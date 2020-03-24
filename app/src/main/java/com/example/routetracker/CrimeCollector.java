@@ -25,7 +25,7 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
     private List<LatLng> crimepoints;
     private Calendar currentDate = Calendar.getInstance();
     public int totalCrimeCount = 0;
-    private ArrayList<Integer> streetIDs = new ArrayList<>();
+    private ArrayList<Integer> crimeIDs = new ArrayList<>();
 
     public CrimeCollector(){ }
 
@@ -33,13 +33,17 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
     protected Integer doInBackground(List<LatLng>... lists) {
         crimepoints = lists[0];
 
-        int month = currentDate.get(Calendar.MONTH);
+        int month = currentDate.get(Calendar.MONTH)-1;
         if (month == 0 || month == 11)
             month++;
+
+        Log.d("MONTH:", String.valueOf(month));
 
         for (LatLng point : crimepoints) {
             String sURL = "https://data.police.uk/api/crimes-at-location?date=" + currentDate.get(Calendar.YEAR) + "-" + month
                     + "&lat=" + point.latitude + "&lng=" + point.longitude;
+
+            //Log.d("HTTPURL:", sURL);
 
             URL url = null;
             try {
@@ -68,27 +72,46 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
                 e.printStackTrace();
             }
             JsonObject rootObj = null;
+            JsonArray rootArray = null;
 
-            if (root instanceof JsonObject) {
+
+            if (root.isJsonObject())
                 rootObj = root.getAsJsonObject();
-            }
+
+            else if (root.isJsonArray())
+                rootArray = root.getAsJsonArray();
 
             if (rootObj != null)
                 countCrimes(rootObj);
+
+            if (rootArray != null)
+                countCrimes(rootArray);
         }
 
         return totalCrimeCount;
     }
 
     private void countCrimes(JsonObject crimeJSON){
-        JsonArray crimeLocations = crimeJSON.getAsJsonArray("routes");
-        for (int i = 0; i < crimeLocations.size(); i++) {
-            int id = crimeLocations.get(i).getAsJsonObject().get("street").getAsJsonObject().get("id").getAsInt();
-            if (!streetIDs.contains(id)) {
-                streetIDs.add(id);
+        Log.d("CountCrimes: ", "Call to count crimes");
+        JsonArray jCrimeIDs = crimeJSON.getAsJsonArray("id");
+        for (int i = 0; i < jCrimeIDs.size(); i++) {
+            int id = jCrimeIDs.get(i).getAsInt();
+            if (!crimeIDs.contains(id)) {
+                crimeIDs.add(id);
                 totalCrimeCount++;
             }
         }
+    }
 
+    private void countCrimes(JsonArray crimeJSON){
+        Log.d("CountCrimes: ", "Call to count crimes");
+        JsonArray jCrimeIDs = crimeJSON.getAsJsonArray();
+        for (int i = 0; i < jCrimeIDs.size(); i++) {
+            int id = jCrimeIDs.get(i).getAsJsonObject().get("id").getAsInt();
+            if (!crimeIDs.contains(id)) {
+                crimeIDs.add(id);
+                totalCrimeCount++;
+            }
+        }
     }
 }

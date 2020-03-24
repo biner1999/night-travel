@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,12 +15,16 @@ import java.net.URL;
 
 
 public class FetchURL extends AsyncTask<String, Void, String> {
-    Context mContext;
-    String directionMode = "walking";
+    private Context mContext;
+    private String directionMode = "walking";
+
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;
+
     }
+
+
 
     @Override
     protected String doInBackground(String... strings) {
@@ -39,9 +45,13 @@ public class FetchURL extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         PointsParser parserTask = new PointsParser(mContext, directionMode);
+        Log.d("TEST!!!!!!!!!!!!", s);
         // Invokes the thread for parsing the JSON data
         parserTask.execute(s);
+        //route_data(s);
     }
+
+
 
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
