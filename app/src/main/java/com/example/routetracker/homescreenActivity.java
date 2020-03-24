@@ -534,8 +534,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("test!!!!!!!", String.valueOf(details));
             HashMap<String, String> point = details.get(0);
             duration = point.get("duration");
-            HashMap<String, String> point2 = details.get(1);
-            distance = point2.get("distance");
+            //HashMap<String, String> point2 = details.get(1);
+            //distance = point2.get("distance");
 
             count = count + 1;
 
@@ -545,7 +545,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("Route crimes " + counter, String.valueOf(crimeCount));
 
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, R.drawable.ic_map));
+            routeDataList.add(new RouteDataItem(counter, crimeCount, "DISTANCE", duration, R.drawable.ic_map));
 
             counter++;
         }
