@@ -42,8 +42,38 @@ public class SavedDestinationActivity extends AppCompatActivity{
         setButtons();
     }
 
+    public void buildRecyclerView(){
+        mRecyclerView = findViewById(R.id.recycler_view);
+        mLayoutManger = new LinearLayoutManager(this);
+        mAdapter = new SaveAdapter(mSaveList);
+
+        mRecyclerView.setLayoutManager(mLayoutManger);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new SaveAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                if(!(pos==-1)){
+                    changeItem(position, R.drawable.ic_check);
+                    pos = position;
+                }
+                else{
+                    for(int i =0; i<mSaveList.size();i++){
+                        changeItem(i+1, R.drawable.ic_map);
+                    }
+                    changeItem(position, R.drawable.ic_check);
+                    pos = position;
+                }
+
+            }
+            @Override
+            public void onDeleteClick(int position) {
+                removeItem(position);
+            }
+        });
+    }
+
     public SavedDestinationActivity(Context context){
-        //your code.
         this.mContext=context;
     }
 
@@ -75,37 +105,6 @@ public class SavedDestinationActivity extends AppCompatActivity{
             mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(1)));
         }
 
-    }
-
-    public void buildRecyclerView(){
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mLayoutManger = new LinearLayoutManager(this);
-        mAdapter = new SaveAdapter(mSaveList);
-
-        mRecyclerView.setLayoutManager(mLayoutManger);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.setOnItemClickListener(new SaveAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                if(!(pos==-1)){
-                    changeItem(position, R.drawable.ic_check);
-                    pos = position;
-                }
-                else{
-                    for(int i =0; i<mSaveList.size();i++){
-                        changeItem(i+1, R.drawable.ic_map);
-                    }
-                    changeItem(position, R.drawable.ic_check);
-                    pos = position;
-                }
-
-            }
-            @Override
-            public void onDeleteClick(int position) {
-                removeItem(position);
-            }
-        });
     }
 
     public void setButtons(){
