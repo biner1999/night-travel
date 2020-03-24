@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -25,10 +24,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private SaveAdapter mAdapter;
     private Context mContext;
 
-    private Button buttonRemove;
     private Button buttonBack;
     private Button buttonSelect;
-    private EditText editTextRemove;
 
     private int pos = -1;
 
@@ -43,8 +40,6 @@ public class SavedDestinationActivity extends AppCompatActivity{
         createSaveList();
         buildRecyclerView();
         setButtons();
-
-
     }
 
     public SavedDestinationActivity(Context context){
@@ -64,6 +59,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
     public void createSaveList(){
         myDb.insertRouteData("1", "51.471895, -3.157569");
+        myDb.insertRouteData("1", "51.481890, -3.167560");
 
         Cursor res = myDb.getAllRouteData();
 
