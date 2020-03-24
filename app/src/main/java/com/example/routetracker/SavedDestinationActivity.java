@@ -71,7 +71,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             return;
         }
 
-        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+        while (res.moveToNext()) {
             mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(1)));
         }
 
