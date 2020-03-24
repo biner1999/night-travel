@@ -37,7 +37,23 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         myDb = new DatabaseFunctions(this);
 
-        createSaveList();
+        myDb.insertRouteData("1", "51.471895, -3.157569");
+        myDb.insertRouteData("1", "51.481890, -3.167560");
+
+        Cursor res = myDb.getAllRouteData();
+
+        mSaveList = new ArrayList<>();
+
+        if (res.getCount() == 0){
+            //show message
+            showMessage("Empty", "No Saves Found");
+            return;
+        }
+
+        while (res.moveToNext()) {
+            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(1)));
+        }
+
         buildRecyclerView();
         setButtons();
     }
@@ -85,26 +101,6 @@ public class SavedDestinationActivity extends AppCompatActivity{
     public void changeItem(int position, int image){
         mSaveList.add(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2()));
         mAdapter.notifyItemChanged(position);
-    }
-
-    public void createSaveList(){
-        myDb.insertRouteData("1", "51.471895, -3.157569");
-        myDb.insertRouteData("1", "51.481890, -3.167560");
-
-        Cursor res = myDb.getAllRouteData();
-
-        mSaveList = new ArrayList<>();
-
-        if (res.getCount() == 0){
-            //show message
-            showMessage("Empty", "No Saves Found");
-            return;
-        }
-
-        while (res.moveToNext()) {
-            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(1)));
-        }
-
     }
 
     public void setButtons(){
