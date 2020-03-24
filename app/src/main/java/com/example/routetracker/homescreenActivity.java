@@ -121,7 +121,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     };
 
-
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
     private void getDeviceLocation() {
