@@ -527,6 +527,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Integer count = 0;
         for(ArrayList<LatLng> step : stepPoints) {
 
+
             String distance = null;
             String duration = null;
             try {
@@ -540,6 +541,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            count = count + 1;
 
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
