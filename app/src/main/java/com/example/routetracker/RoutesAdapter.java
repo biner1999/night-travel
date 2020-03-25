@@ -46,7 +46,14 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
         RouteDataItem currentItem = mRouteList.get(position);
 
         holder.mImageView.setImageResource(currentItem.getImage());
-        holder.mTextView1.setText("Route " + currentItem.getID());
+
+        if (position == 0) {
+            holder.mTextView1.setText("Safest Route");
+        }
+        else
+            holder.mTextView1.setText("Alternative Route");
+
+
         holder.mTextView2.setText("Crimes: " + currentItem.getCrimeCount()
                                   + "  Time: " + currentItem.getRouteTime()
                                   + "  Distance: " + currentItem.getRouteDistance());

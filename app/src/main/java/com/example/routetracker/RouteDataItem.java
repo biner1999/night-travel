@@ -23,4 +23,5 @@ public class RouteDataItem {
     public String getRouteDistance() {return distance;}
     public String getRouteTime() {return time;}
     public int getImage() {return image;}
+    public void setImage(int inImage) {image = inImage;}
 }

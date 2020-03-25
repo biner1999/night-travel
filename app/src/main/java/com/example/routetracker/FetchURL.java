@@ -3,6 +3,8 @@ package com.example.routetracker;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONObject;
 
@@ -17,14 +19,21 @@ import java.net.URL;
 public class FetchURL extends AsyncTask<String, Void, String> {
     private Context mContext;
     private String directionMode = "walking";
+    private ProgressBar progressBar;
 
 
-    public FetchURL(Context mContext) {
+    public FetchURL(Context mContext, ProgressBar progressBar) {
         this.mContext = mContext;
+        this.progressBar = progressBar;
 
     }
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        progressBar.setVisibility(View.VISIBLE);
 
+    }
 
     @Override
     protected String doInBackground(String... strings) {
@@ -49,6 +58,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         // Invokes the thread for parsing the JSON data
         parserTask.execute(s);
         //route_data(s);
+
     }
 
 
