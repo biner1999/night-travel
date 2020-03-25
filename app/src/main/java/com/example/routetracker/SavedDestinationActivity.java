@@ -88,8 +88,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
         });
     }
 
-    public SavedDestinationActivity(Context context){
-        this.mContext=context;
+    public SavedDestinationActivity(){
+        //no args constructor
     }
 
     public void removeItem(int position){
