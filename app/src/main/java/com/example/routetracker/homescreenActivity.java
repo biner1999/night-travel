@@ -297,23 +297,19 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     //ciprian
 
-    private String getRouteDetails(List<List<HashMap<String, String>>> details) throws IOException, ExecutionException, InterruptedException {
+    private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
 
+        List<HashMap<String, String>> test = null;
         for (int i = 0; i < details.size(); i++) {
-
             // Fetching i-th route
-            List<HashMap<String, String>> path = details.get(i);
+            List<HashMap<String, String>> path = details.get(route);
+            test = path;
             // Fetching all the points in i-th route
-            for (int j = 0; j < path.size(); j++) {
-                HashMap<String, String> point = path.get(j);
-                String duration = point.get("duration");
-                String distance = point.get("distance");
-                Log.d("XXXXXXXXXXXXX" + valueOf(duration), valueOf(distance));
-
+            //HashMap<String, String> point = path.get(route);
+            //String duration = point.get("duration");
+            //String distance = point.get("distance");
             }
-
-        }
-        return null;
+        return test;
     }
 
 
@@ -521,27 +517,35 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onTaskDone(Object... values) {
 
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
-        try {
-            getRouteDetails(routeDetails);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Log.d("DDDDDDDDDDD", String.valueOf(polyLineList));
+
     }
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
+
+        Integer count = 0;
         for(ArrayList<LatLng> step : stepPoints) {
+
+
+            String distance = null;
+            String duration = null;
+            List<HashMap<String, String>> details = getRouteDetails(routeDetails, count);
+            Log.d("test!!!!!!!", String.valueOf(details));
+            HashMap<String, String> point = details.get(0);
+            duration = point.get("duration");
+            //HashMap<String, String> point2 = details.get(1);
+            //distance = point2.get("distance");
+
+            count = count + 1;
 
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
             Log.d("Route crimes " + counter, String.valueOf(crimeCount));
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, "DIST", "TIME", R.drawable.ic_map));
+
+            routeDataList.add(new RouteDataItem(counter, crimeCount, "DISTANCE", duration, R.drawable.ic_map));
 
             counter++;
         }
