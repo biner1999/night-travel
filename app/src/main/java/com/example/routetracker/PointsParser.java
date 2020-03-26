@@ -113,12 +113,14 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
             //taskCallback.onTaskDone(lineOptions);
         }
+        taskCallback.onTaskDone(fastestRoute);
+
         taskCallback.onTaskDone(secondRoute);
 
         if (lineOptions != null)
             taskCallback.onTaskDone(lineOptions);
 
-        taskCallback.onTaskDone(fastestRoute);
+
 
         try {
             delegate.listRoutes();

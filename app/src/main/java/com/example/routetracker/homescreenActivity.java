@@ -55,6 +55,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -67,6 +68,8 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -93,6 +96,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private List<Address> addresses;
     private Marker destMarker;
     private String mCurrentLocality;
+    private ProgressBar progressBar;
 
     private boolean activeRoute = false;
     public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
@@ -199,6 +203,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
 
 
         
@@ -318,7 +325,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
 
-
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
@@ -333,6 +339,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Thread progressThread = new Thread();
+                    progressThread.start();
+
                     //startForegroundService(view);
                     startTriggers(view);
 
@@ -340,7 +349,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     //      //      //      //
 
                     if (destination != null) {
-                        new FetchURL(homescreenActivity.this).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
+                        new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
                         Log.d("TEST4:", String.valueOf(duration_time));
                     }
 
@@ -524,20 +533,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
 
-        Integer count = 0;
         for(ArrayList<LatLng> step : stepPoints) {
 
 
             String distance = null;
             String duration = null;
-            List<HashMap<String, String>> details = getRouteDetails(routeDetails, count);
-            Log.d("test!!!!!!!", String.valueOf(details));
+            List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
             HashMap<String, String> point = details.get(0);
             duration = point.get("duration");
-            //HashMap<String, String> point2 = details.get(1);
-            //distance = point2.get("distance");
-
-            count = count + 1;
+            distance = point.get("distance");
 
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
@@ -545,14 +549,40 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("Route crimes " + counter, String.valueOf(crimeCount));
 
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, "DISTANCE", duration, R.drawable.ic_map));
-
+            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0));
             counter++;
+        }
+
+        Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
+
+        if (routeDataList.size() == 3) {
+            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
+            routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
+            polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
+            polyLineList.get(routeDataList.get(1).getID()-1).setColor(Color.YELLOW);
+            polyLineList.get(routeDataList.get(2).getID()-1).setColor(Color.RED);
+        }
+        else if (routeDataList.size() == 2) {
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
+            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
+            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(0).getID()-1));
+            polyLineList.get(routeDataList.get(1).getID()).setColor(Color.RED);
+            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(1).getID()-1));
+        }
+        else if (routeDataList.size() == 1) {
+            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            polyLineList.get(routeDataList.get(0).getID()+1).setColor(Color.GREEN);
         }
 
         homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList)).commit();
         FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
         mFrameLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
