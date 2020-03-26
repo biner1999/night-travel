@@ -38,6 +38,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         myDb.insertRouteData("1", "51.471895, -3.157569");
         myDb.insertRouteData("1", "51.481890, -3.167560");
+        myDb.insertRouteData("1", "51.491897, -3.177567");
 
         Cursor res = myDb.getAllRouteData();
 
@@ -50,7 +51,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
         }
 
         while (res.moveToNext()) {
-            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(0), res.getString(1)));
+            for(SaveDestinationItem i: mSaveList) {
+                if(!(mSaveList.contains(i))){
+                    mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(2), res.getString(0)));
+                }
+
+            }
         }
 
         buildRecyclerView();
