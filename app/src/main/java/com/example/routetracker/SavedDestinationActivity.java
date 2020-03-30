@@ -55,7 +55,6 @@ public class SavedDestinationActivity extends AppCompatActivity{
                 if(!(mSaveList.contains(i))){
                     mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(2), res.getString(0)));
                 }
-
             }
         }
 
