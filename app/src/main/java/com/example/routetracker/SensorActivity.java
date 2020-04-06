@@ -17,20 +17,22 @@ import java.lang.reflect.Array;
 
 public class SensorActivity extends MyBaseActivity {
 
-    private SensorManager sensorManager;
+    private SensorManager sensorManagerGyro;
+    private SensorManager sensorManagerAccel;
+
     private Sensor gyroscopeSensor;
+    private Sensor accelSensor;
+
     private SensorEventListener gyroscopeEventListener;
     private SensorEventListener accelerometerEventListener;
 
-    TextView text_X;
-    TextView text_Y;
-    TextView text_Z;
+
     int index = 0;
 
 
-    float[] accelValuesX;
-    float[] accelValuesY;
-    float[] accelValuesZ;
+    float accelValuesX;
+    float accelValuesY;
+    float accelValuesZ;
 
 
 
@@ -44,30 +46,46 @@ public class SensorActivity extends MyBaseActivity {
 
 
 //        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-//        sensorManager.registerListener((SensorEventListener) this, sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER ),SensorManager.SENSOR_DELAY_NORMAL );
+//        sensorManagerAccel.registerListener((SensorEventListener) this, sensorManagerAccel.getDefaultSensor( Sensor.TYPE_ACCELEROMETER ),SensorManager.SENSOR_DELAY_NORMAL );
+//        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
 
 
-        text_X = findViewById(R.id.textViewXValue);
-        text_Y = findViewById(R.id.textViewYValue);
-        text_Z = findViewById(R.id.textViewZValue);
+        sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelSensor = sensorManagerAccel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        backGround = findViewById(R.id.constraintlayoutBackGround);
+
+
+
+        TextView text_X = findViewById(R.id.textViewXValue);
+        TextView text_Y = findViewById(R.id.textViewYValue);
+        TextView text_Z = findViewById(R.id.textViewZValue);
+
+        if (accelSensor == null){
+            Toast.makeText(this, "The device has no Accel", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
          accelerometerEventListener = new SensorEventListener() {
-
              @Override
              public void onSensorChanged(SensorEvent sensorEvent) {
-                 // TODO Auto-generated method stub
                  Sensor mySensor = sensorEvent.sensor;
+                 //System.out.println("Changed");
+                 //Toast.makeText(SensorActivity.this, "Changed", Toast.LENGTH_SHORT).show();
 
                  if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                     index++;
-                     accelValuesX[index] = sensorEvent.values[0];
-                     accelValuesY[index] = sensorEvent.values[1];
-                     accelValuesZ[index] = sensorEvent.values[2];
-                     if(index >= 127){
-                         index = 0;
-//                         accelManage.unregisterListener(this);
-//                         callFallRecognition();
-//                         accelManage.registerListener(this, senseAccel, SensorManager.SENSOR_DELAY_NORMAL);
+                     index = index + 1;
+                     accelValuesX = sensorEvent.values[0];
+                     accelValuesY = sensorEvent.values[1];
+                     accelValuesZ = sensorEvent.values[2];
+                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
+                     System.out.println("Rootsquare = " + rootSquare);
+                     if(rootSquare<2.0)
+                     {
+                         System.out.println("Fall Rootsquare = " + rootSquare);
+                         backGround.setBackgroundColor(Color.RED);
+                         Toast.makeText(SensorActivity.this, "Fall detected", Toast.LENGTH_SHORT).show();
+                         text_X.setText(String.valueOf(rootSquare));
                      }
                  }
              }
@@ -80,6 +98,39 @@ public class SensorActivity extends MyBaseActivity {
 
 
          };
+
+
+//         Goes in Oncreate
+    sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
+    gyroscopeSensor = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+
+        if (gyroscopeSensor == null){
+        Toast.makeText(this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    gyroscopeEventListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            if (sensorEvent.values[2] > 0.5f){
+                backGround.setBackgroundColor(Color.BLUE);
+                resetDisconnectTimer();
+
+            } else if (sensorEvent.values[2] < -0.5f){
+                backGround.setBackgroundColor(Color.YELLOW);
+                //Toast.makeText(SensorActivity.this, "YELLOW", Toast.LENGTH_SHORT).show();
+                resetDisconnectTimer();
+
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
         configureBackButtonSettings();
         stopDisconnectTimer();
 
@@ -90,13 +141,15 @@ public class SensorActivity extends MyBaseActivity {
     public void onResume() {
 
         super.onResume();
-//        sensorManager.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManagerGyro.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManagerAccel.registerListener(accelerometerEventListener,accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-//        sensorManager.unregisterListener(gyroscopeEventListener);
+        sensorManagerAccel.unregisterListener(accelerometerEventListener);
+        sensorManagerGyro.unregisterListener(gyroscopeEventListener);
     }
 
 
@@ -107,17 +160,7 @@ public class SensorActivity extends MyBaseActivity {
 
 
 
-    private void showValue(SensorEvent event){
-        float[] Value = event.values;//array che contiene i valori dell'accelerometro
-        //modifica del valore delle textView
 
-        text_X.setText("Value X: "+Value[0]);
-        text_Y.setText("Value Y: "+Value[1]);
-        text_Z.setText("Value Z: "+Value[2]);
-
-        System.out.println("Testing If I am here");
-
-    }
 
 
 // Goes in Oncreate
