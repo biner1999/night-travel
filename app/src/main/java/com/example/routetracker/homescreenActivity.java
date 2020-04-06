@@ -322,19 +322,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
             getDirection = findViewById(R.id.btnGetDirection);
-
-
-
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
 
-
             activeRoute = true;
             startDisconnectTimer();
-
-
-
 
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,7 +336,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     progressThread.start();
 
                     //startForegroundService(view);
-                    startTriggers(view);
+                    //startTriggers(view);
 
 
                     //      //      //      //

@@ -193,7 +193,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     //Returns all values in the route table
     public Cursor getAllRouteData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+ Route_Table_Name, null);
+        Cursor res = db.rawQuery("select * from Route_Table", null);
         return res;
     }
 
