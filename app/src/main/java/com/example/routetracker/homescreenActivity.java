@@ -250,7 +250,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 if (sensorEvent.values[2] > 0.5f){
-                    
+
                     if (activeRoute == true){
                         resetDisconnectTimer();
                     }
@@ -378,8 +378,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     Thread progressThread = new Thread();
                     progressThread.start();
 
-                    //startForegroundService(view);
-                    //startTriggers(view);
+                    startForegroundService(view);
+                    startTriggers(view);
 
                     //TODO Once a confirm route option is in then adapt and move this to it
                     activeRoute = true;
