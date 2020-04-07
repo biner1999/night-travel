@@ -35,6 +35,9 @@ public class L3NotificationsService extends Service {
     public void sendSMS() {
         myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getAllUserData();
+
+        String FirstName = res.getString(1);
+        int EmergancyContact = res.getInt(14);
         String x = "aaa";
         String y = "aaa";
         String z = "aaa";
