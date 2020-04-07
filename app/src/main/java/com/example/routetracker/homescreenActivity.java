@@ -294,7 +294,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
                     if(rootSquare<2.0)
                     {
-                        //TODO Once a confirm route option is in then adapt this to notify the alert system
+                        //TODO Once a confirm route option is in then adapt this to notify the alert system, Bart this detects a fall
                         if (activeRoute == true){
 
                         }
@@ -629,7 +629,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     });
 
     private static Runnable disconnectCallback = () -> {
-        //TODO Once a confirm route option is in then adapt this to notify the alert system
+        //TODO Once a confirm route option is in then adapt this to notify the alert system, Bart this is when the device has been still for 5mins
         System.out.println("Disconnect");
 
     };
