@@ -93,40 +93,4 @@ public class SensorActivity extends Activity {
         stopService(serviceIntent);
     }
 
-
-
-
-
-
-// Goes in Oncreate
-//    sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-//    gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-//
-//    backGround = findViewById(R.id.constraintlayoutBackGround);
-//
-//        if (gyroscopeSensor == null){
-//        Toast.makeText(this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
-//        finish();
-//    }
-//
-//    gyroscopeEventListener = new SensorEventListener() {
-//        @Override
-//        public void onSensorChanged(SensorEvent sensorEvent) {
-//            if (sensorEvent.values[2] > 0.5f){
-//                backGround.setBackgroundColor(Color.BLUE);
-//                resetDisconnectTimer();
-//
-//            } else if (sensorEvent.values[2] < -0.5f){
-//                backGround.setBackgroundColor(Color.YELLOW);
-//                Toast.makeText(SensorActivity.this, "YELLOW", Toast.LENGTH_SHORT).show();
-//                resetDisconnectTimer();
-//
-//            }
-//        }
-//
-//        @Override
-//        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-//
-//        }
-//    };
 }

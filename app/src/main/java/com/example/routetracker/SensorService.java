@@ -4,14 +4,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -22,19 +20,6 @@ import static com.example.routetracker.SensorActivity.CHANNEL_ID;
 
 //stopSelf(); will stop the service, some method to stop the service is required either from within or outside
 public class SensorService extends Service {
-
-    private SensorManager sensorManagerGyro;
-    private SensorManager sensorManagerAccel;
-
-    private Sensor gyroscopeSensor;
-    private Sensor accelSensor;
-
-    private SensorEventListener gyroscopeEventListener;
-    private SensorEventListener accelerometerEventListener;
-
-
-    int index = 0;
-
 
     float accelValuesX;
     float accelValuesY;
@@ -53,48 +38,49 @@ public class SensorService extends Service {
 
         String input = intent.getStringExtra("inputExtra");
 
-        sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelSensor = sensorManagerAccel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        SensorManager sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor accelSensor = sensorManagerAccel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         if (accelSensor == null){
             Toast.makeText(this, "The device has no Accelerometer", Toast.LENGTH_SHORT).show();
         }
 
-        accelerometerEventListener = new SensorEventListener() {
+        //TODO add funcionality with bart's notification system
+        SensorEventListener accelerometerEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
                 Sensor mySensor = sensorEvent.sensor;
                 if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    index = index + 1;
                     accelValuesX = sensorEvent.values[0];
                     accelValuesY = sensorEvent.values[1];
                     accelValuesZ = sensorEvent.values[2];
                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
-                    if(rootSquare<2.0)
-                    {
+                    if (rootSquare < 2.0) {
                         //TODO add funcionality with bart's notification system
                         System.out.println("Fall Rootsquare = " + rootSquare);
                     }
                 }
             }
+
             @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
         };
 
-        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
-        gyroscopeSensor = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        SensorManager sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor gyroscopeSensor = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         if (gyroscopeSensor == null){
             Toast.makeText(this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
         }
 
-        gyroscopeEventListener = new SensorEventListener() {
+        SensorEventListener gyroscopeEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
-                if (sensorEvent.values[2] > 0.5f){
+                if (sensorEvent.values[2] > 0.5f) {
                     resetDisconnectTimer();
                     System.out.println("GYRO CHANGED");
-                } else if (sensorEvent.values[2] < -0.5f){
+                } else if (sensorEvent.values[2] < -0.5f) {
                     resetDisconnectTimer();
                     System.out.println("GYRO CHANGED");
                 }
@@ -115,8 +101,10 @@ public class SensorService extends Service {
                 .setSmallIcon(R.drawable.ic_android_sensor)
                 .setContentIntent(pendingIntent)
                 .build();
-        sensorManagerGyro.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManagerAccel.registerListener(accelerometerEventListener,accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
+
+
+        sensorManagerGyro.registerListener(gyroscopeEventListener, gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManagerAccel.registerListener(accelerometerEventListener, accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
 
         startForeground(1, notification);
 
