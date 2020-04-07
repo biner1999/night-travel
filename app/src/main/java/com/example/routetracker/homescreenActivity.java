@@ -99,20 +99,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private ProgressBar progressBar;
 
     private boolean activeRoute = false;
-    //TODO Once a confirm route option is in then change this to a 5min
-    public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
-    private SensorManager sensorManagerGyro;
-    private SensorManager sensorManagerAccel;
-    private Sensor accelSensor;
-    private Sensor gyroscopeSensor;
-    private SensorEventListener gyroscopeEventListener;
-    private SensorEventListener accelerometerEventListener;
-
-    float accelValuesX;
-    float accelValuesY;
-    float accelValuesZ;
-
-
 
     //ciprian
     private MarkerOptions destination;
@@ -239,74 +225,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
 
-        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
-        gyroscopeSensor = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        if (gyroscopeSensor == null){
-            Toast.makeText(homescreenActivity.this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        gyroscopeEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                if (sensorEvent.values[2] > 0.5f){
 
-                    if (activeRoute == true){
-                        resetDisconnectTimer();
-                    }
 
-                    //Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                    System.out.println("DETECTED ");
-
-                } else if (sensorEvent.values[2] < -0.5f){
-                    if (activeRoute == true){
-                        resetDisconnectTimer();
-                    }
-                    //Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                    System.out.println("DETECTED ");
-
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-            }
-        };
-
-        sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accelSensor = sensorManagerAccel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        if (accelSensor == null){
-            Toast.makeText(this, "The device has no Accelerometer", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        accelerometerEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                Sensor mySensor = sensorEvent.sensor;
-
-                if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    accelValuesX = sensorEvent.values[0];
-                    accelValuesY = sensorEvent.values[1];
-                    accelValuesZ = sensorEvent.values[2];
-                    double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
-                    if(rootSquare<2.0)
-                    {
-                        //TODO Once a confirm route option is in then adapt this to notify the alert system, Bart this detects a fall
-                        if (activeRoute == true){
-
-                        }
-                        System.out.println("Fall Detected");
-                        //Toast.makeText(homescreenActivity.this, "Fall detected", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-        };
 
 
 
@@ -378,12 +299,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     Thread progressThread = new Thread();
                     progressThread.start();
 
-                    startForegroundService(view);
-                    startTriggers(view);
+
+//                    startForegroundService(view);
+//                    startTriggers(view);
 
                     //TODO Once a confirm route option is in then adapt and move this to it
                     activeRoute = true;
-                    startDisconnectTimer();
+
 
                     //      //      //      //
 
@@ -628,27 +550,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     });
 
-    private static Runnable disconnectCallback = () -> {
-        //TODO Once a confirm route option is in then adapt this to notify the alert system, Bart this is when the device has been still for 5mins
-        System.out.println("Disconnect");
 
-    };
 
-    public void resetDisconnectTimer(){
-        System.out.println("Reset Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-
-    public void stopDisconnectTimer(){
-        System.out.println("Stop Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-    }
-
-    public void startDisconnectTimer(){
-        System.out.println("Start Disconnect Timer");
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
     public void startTriggers(View v) {
         int time = 5;
         Intent triggersIntent = new Intent(this, TriggerService.class);
@@ -687,8 +590,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onPause();
         mMapView.onPause();
 
-        sensorManagerAccel.unregisterListener(accelerometerEventListener);
-        sensorManagerGyro.unregisterListener(gyroscopeEventListener);
     }
 
     @Override
@@ -697,9 +598,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onResume();
 
         startLocationUpdates();
-
-        sensorManagerGyro.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManagerAccel.registerListener(accelerometerEventListener,accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -714,11 +612,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onLowMemory();
     }
 
-    @Override
-    public void onUserInteraction(){
-        System.out.println("User Interaction");
-//        resetDisconnectTimer();
-    }
+
 
 }
 
