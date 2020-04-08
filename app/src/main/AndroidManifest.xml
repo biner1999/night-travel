@@ -53,7 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <service android:name=".SensorService"/>
         <service android:name=".NotificationsService" />
         <service android:name=".L1NotificationsService" />
         <service android:name=".L2NotificationsService" />
