@@ -35,13 +35,13 @@ public class L3NotificationsService extends Service {
     public void sendSMS() {
         myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getAllUserData();
-
+        res.moveToNext();
         String FirstName = res.getString(1);
-        int EmergancyContact = res.getInt(14);
-        String x = "aaa";
-        String y = "aaa";
-        String z = "aaa";
-        String textMessage = "This is an automated text sent by RouteTracker from " + x + ". He might be in danger on his journey from " + x + " to " + y + ". He phone is currently at " + z + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
+        String LastName = res.getString(2);
+
+        String x = "31";
+        int EmergencyContact = res.getInt(14);
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from " + x + " to " + x + ". He phone is currently at " + x + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
@@ -67,7 +67,7 @@ public class L3NotificationsService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)
                 .setContentTitle("Level 3 Alert")
-                .setContentText("A text has been sent to " + "-name-." + " Enter the Route Tracker to give yourself more time")
+                .setContentText("A text has been sent to your emergency contact. Enter the Route Tracker to give yourself more time")
                 .setColor(Color.RED)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

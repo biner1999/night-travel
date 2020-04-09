@@ -30,11 +30,19 @@ public class L4NotificationsService extends Service {
 
     public void sendSMS() {
         myDb = new DatabaseFunctions(this);
-        Cursor res = myDb.getAllRouteData();
-        String x = "aaa";
-        String y = "aaa";
-        String z = "aaa";
-        String textMessage = "This is an automated text sent by RouteTracker from " + x + ". He might be in danger on his journey from " + x + " to " + y + ". He phone is currently at " + z + ". His age is " + x + ". His heigh is " + y + ". His ethnicity is " + z;
+        Cursor res = myDb.getAllUserData();
+        res.moveToNext();
+        String FirstName = res.getString(1);
+        String LastName = res.getString(2);
+        int Age = res.getInt(4);
+        int Height = res.getInt(5);
+        int Weight = res.getInt(7);
+        String HairColour = res.getString(6);
+        String Ethnicity = res.getString(8);
+
+        String x = "3123123";
+
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from " + x + " to " + x + ". He phone is currently at " + x + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),

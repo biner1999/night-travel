@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startL3Service(View v) {
-        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        Intent L3ServiceIntent = new Intent(this, L4NotificationsService.class);
         startService(L3ServiceIntent);
     }
 
