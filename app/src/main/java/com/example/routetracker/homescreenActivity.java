@@ -508,6 +508,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     public void highlightRoute(Integer r){
+
         PolylineOptions polylineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);;
         polylineOptions.addAll(polyLineList.get(r).getPoints());
         Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
