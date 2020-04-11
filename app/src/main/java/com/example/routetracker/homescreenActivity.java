@@ -101,6 +101,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private Marker destMarker;
     private String mCurrentLocality;
     private ProgressBar progressBar;
+    private RelativeLayout parent_layout;
 
     private boolean activeRoute = false;
 
@@ -495,16 +496,15 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
         //Log.d("hey", "test!!!!", polyLineList);
         Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
-        mMap.clear();
-        highlightRoute(0);
+
     }
 
     //ciprian
-    /*public void confirmRoute(){
-        RelativeLayout parent_layout;
+    public void confirmRoute(){
+
         View inflatedView = getLayoutInflater().inflate(R.layout.route_card, null);
         parent_layout = (RelativeLayout) inflatedView.findViewById(R.id.parentLayout);
-    }*/
+    }
 
 
     public void highlightRoute(Integer r){
@@ -567,7 +567,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             polyLineList.get(routeDataList.get(0).getID()+1).setColor(Color.GREEN);
         }
 
-        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList)).commit();
+        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
         FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
         mFrameLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);

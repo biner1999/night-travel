@@ -1,6 +1,7 @@
 package com.example.routetracker;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
     private ArrayList<RouteDataItem> mRouteList;
     private RoutesAdapter.onItemClickListener mListener;
     private Context context;
+    private homescreenActivity activity;
 
 
     public interface onItemClickListener{
@@ -30,9 +32,10 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
 
     public void setOnItemClickListener(RoutesAdapter.onItemClickListener listener) {mListener = listener;}
 
-    RoutesAdapter(Context inContext, ArrayList<RouteDataItem> inRouteList) {
+    RoutesAdapter(Context inContext, ArrayList<RouteDataItem> inRouteList, homescreenActivity inActivity) {
         mRouteList = inRouteList;
         context = inContext;
+        activity = inActivity;
     }
 
     @NonNull
@@ -73,6 +76,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
                 String distance = currentItem.getRouteDistance();
 
                 Log.d("heelo!!!!!!!!!!!!", String.valueOf(currentItem.getID()));
+
+                activity.highlightRoute(currentItem.getID()-1);
 
 
             }

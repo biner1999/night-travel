@@ -23,8 +23,6 @@ public class SettingsActivity extends AppCompatActivity {
      TextView text_view_distance, getText_view_time;
      Button btnSaveChanges, btnChangePin;
 
-     String firsName, surname, gender, question, answer, ethnicity, password;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,7 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                             res.getString(2),
                             res.getString(3),
                             editAge.getText().toString(),
-                           editHeight.getText().toString(),
+                            editHeight.getText().toString(),
                             editHairColour.getText().toString(),
                             editWeight.getText().toString(),
                             res.getString(8),
