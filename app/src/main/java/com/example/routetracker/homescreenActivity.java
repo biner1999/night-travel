@@ -200,7 +200,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
-        confirmRoute();
+
 
 
         mSearchText = findViewById(R.id.input_search);
@@ -500,11 +500,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //ciprian
-    public void confirmRoute(){
+    /*public void confirmRoute(){
         RelativeLayout parent_layout;
         View inflatedView = getLayoutInflater().inflate(R.layout.route_card, null);
         parent_layout = (RelativeLayout) inflatedView.findViewById(R.id.parentLayout);
-    }
+    }*/
 
 
     public void highlightRoute(Integer r){
