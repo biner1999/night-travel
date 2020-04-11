@@ -512,7 +512,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         PolylineOptions polylineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);;
         polylineOptions.addAll(polyLineList.get(r).getPoints());
         Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
-        mMap.addPolyline(polylineOptions);
+        for(int i = 0 ; i < polyLineList.size(); i++) {
+            if(i != r) {
+                currentPolyline = polyLineList.get(i);
+                currentPolyline.remove();
+            }
+            else{
+                continue;
+            }
+        }
+
     }
 
     //ciprian
