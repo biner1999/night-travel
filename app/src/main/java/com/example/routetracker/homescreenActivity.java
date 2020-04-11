@@ -201,7 +201,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
-        confirmRoute();
+
 
 
         mSearchText = findViewById(R.id.input_search);
