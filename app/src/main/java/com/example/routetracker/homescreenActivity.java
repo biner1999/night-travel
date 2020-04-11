@@ -1,6 +1,8 @@
 package com.example.routetracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -26,6 +28,7 @@ import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsResult;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,6 +59,7 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -110,6 +114,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private Polyline currentPolyline;
     Button getDirection;
     public static List<List<HashMap<String, String>>> routeDetails;
+    private Object PolylineOptions;
     //ciprian
 
 
@@ -137,6 +142,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+
 
     private void getDeviceLocation() {
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -199,6 +205,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
+        confirmRoute();
+
 
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
@@ -350,7 +358,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                     if (destination != null) {
                         new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-                        Log.d("TEST4:", String.valueOf(duration_time));
+                        Log.d("TEST4:", valueOf(duration_time));
                     }
 
                     else {
@@ -524,17 +532,36 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
-        Log.d("DDDDDDDDDDD", String.valueOf(polyLineList));
-
+        //Log.d("hey", "test!!!!", polyLineList);
+        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
+        mMap.clear();
+        highlightRoute(0);
     }
+
+    //ciprian
+    public void confirmRoute(){
+        RelativeLayout parent_layout;
+        View inflatedView = getLayoutInflater().inflate(R.layout.route_card, null);
+        parent_layout = (RelativeLayout) inflatedView.findViewById(R.id.parentLayout);
+    }
+
+
+    public void highlightRoute(Integer r){
+        PolylineOptions polylineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);;
+        polylineOptions.addAll(polyLineList.get(r).getPoints());
+        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
+        mMap.addPolyline(polylineOptions);
+    }
+
+    //ciprian
+
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
 
         for(ArrayList<LatLng> step : stepPoints) {
-
+            Log.d("hey", "TEST2!!!!!" + String.valueOf(polyLineList));
 
             String distance = null;
             String duration = null;
@@ -546,7 +573,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            Log.d("Route crimes " + counter, String.valueOf(crimeCount));
+            Log.d("Route crimes " + counter, valueOf(crimeCount));
 
 
             routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0));
@@ -556,7 +583,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
 
         if (routeDataList.size() == 3) {
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
             routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
@@ -567,14 +594,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         else if (routeDataList.size() == 2) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
-            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(0).getID()-1));
+            Log.d("ROUTECOLOR", valueOf(routeDataList.get(0).getID()-1));
             polyLineList.get(routeDataList.get(1).getID()).setColor(Color.RED);
-            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(1).getID()-1));
+            Log.d("ROUTECOLOR", valueOf(routeDataList.get(1).getID()-1));
         }
         else if (routeDataList.size() == 1) {
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             polyLineList.get(routeDataList.get(0).getID()+1).setColor(Color.GREEN);
         }
