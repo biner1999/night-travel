@@ -300,7 +300,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     progressThread.start();
 
                     //startForegroundService(view);
-                    startTriggers(view);
+                    //startTimeTriggers(view);
 
                     //TODO Once a confirm route option is in then adapt and move this to it
                     activeRoute = true;
@@ -551,20 +551,20 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
 
-    public void startTriggers(View v) {
-        int time = 5;
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void startTimeTriggers(View v) {
+        long time = 0;
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
-    public void stopTriggers(View v) {
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void stopTimeTriggers(View v) {
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         stopService(triggersIntent);
     }
 
     public void startForegroundService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         }
@@ -572,7 +572,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void stopNotificationService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
     }
 

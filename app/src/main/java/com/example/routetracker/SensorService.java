@@ -15,12 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-//TODO likely needs changing?
-import static com.example.routetracker.SensorActivity.CHANNEL_ID;
 
 
 //stopSelf(); will stop the service, some method to stop the service is required either from within or outside
 public class SensorService extends Service {
+
+    public static final String CHANNEL_ID_1 = "Foreground channel";
 
     float accelValuesX;
     float accelValuesY;
@@ -34,7 +34,7 @@ public class SensorService extends Service {
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startID) {
 
         //Declarations
         String input = intent.getStringExtra("inputExtra");
@@ -64,6 +64,7 @@ public class SensorService extends Service {
                     if (rootSquare < 2.0) {
                         //TODO add funcionality with bart's notification system, this is the accelerometer
                         System.out.println("Fall Rootsquare = " + rootSquare);
+                        startSensorTriggerService();
                     }
                 }
             }
@@ -94,15 +95,21 @@ public class SensorService extends Service {
 
 
         //Creates a notification
-        Intent notificationIntent = new Intent(this, SensorActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0,notificationIntent,0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Sensor's Active")
-                .setContentText(input)
-                .setSmallIcon(R.drawable.ic_android_sensor)
+        Intent notificationIntent = new Intent(this, LoginActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
+                .setSmallIcon(R.drawable.ic_my_location)
+                .setContentTitle("You're on route")
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .setSummaryText("ETA: X - Distance: X")
+                        .addLine("ETA: X")
+                        .addLine("Distance: X"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .build();
+        //starts in foreground to prevent shutting it down
+        startForeground(1, notification);
 
         //Registers the sensors
         sensorManagerGyro.registerListener(gyroscopeEventListener, gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
@@ -112,7 +119,7 @@ public class SensorService extends Service {
         //TODO implement a stop condition?
         startForeground(1, notification);
 
-        return START_NOT_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
 
@@ -154,9 +161,14 @@ public class SensorService extends Service {
     }
     // TODO add functionality to bart's notification's, this is the gyroscopes
     //When timer has elapsed this function is called
-    private static Runnable disconnectCallback = () -> {
+    private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
         System.out.println("Disconnect test");
+        startSensorTriggerService();
     };
 
+    public void startSensorTriggerService() {
+        Intent serviceIntent = new Intent(this, SensorTriggerService.class);
+        startService(serviceIntent);
+    }
 }

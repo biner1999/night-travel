@@ -35,9 +35,6 @@ public class SensorActivity extends Activity {
 //        sensorManagerAccel.registerListener((SensorEventListener) this, sensorManagerAccel.getDefaultSensor( Sensor.TYPE_ACCELEROMETER ),SensorManager.SENSOR_DELAY_NORMAL );
 //        sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        createNotificationChannel();
-
-
     }
 
 

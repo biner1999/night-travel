@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -31,6 +32,7 @@ public class L3NotificationsService extends Service {
     public static final String GROUP_ID_1 = "Group 1";
     private String phoneNumber = "07706473014";
     DatabaseFunctions myDb;
+
 
     public void sendSMS() {
         myDb = new DatabaseFunctions(this);

@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
@@ -10,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -55,18 +57,26 @@ public class LoginActivity extends AppCompatActivity {
                 String password = e2.getText().toString();
                 Boolean Chkpass = db.checkpassword(password);
                 if(Chkpass) {
-                    // login if user has an active route and NotificationRestarService is running instead of TriggerService
+                    // login if user has an active route and NotificationRestarService is running instead of TimeTriggerService
                     if (NotificationRestartService.isRunning()) {
-                        stopNotificationsService(v);
-                        startNotificationsService(v);
+                        stopNotificationsRestartService(v);
+                        startNotificationsRestartService(v);
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
                     }
                     // login if user has an active route and less than 3 minutes on the first timer
-                    else if (TriggerService.isRunning() && true) {
-                        stopTriggersService(v);
-                        startNotificationsService(v);
+                    else if (TimeTriggerService.isRunning() && true) {
+                        stopTimeTriggersService(v);
+                        startNotificationsRestartService(v);
+                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "TS", Toast.LENGTH_SHORT).show();
+                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                        startActivity(homeScreen);
+                    }
+                    //login if sensor triggered the notifications
+                    else if (SensorTriggerService.isRunning()) {
+                        stopSensorTriggerService(v);
+                        //startTimeLeftTriggerService(v);
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "TS", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
@@ -101,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
         return (res.getCount() == 0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void getPermission() {
         requestPermissions(new String[]{
                         //just add a permission in here for user to allow it
@@ -132,20 +143,31 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public void startNotificationsService(View v) {
+    public void startNotificationsRestartService(View v) {
         Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
         startService(serviceIntent);
     }
 
-    public void stopNotificationsService(View v) {
+    public void stopNotificationsRestartService(View v) {
         Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
         stopService(serviceIntent);
     }
 
-    public void stopTriggersService(View v) {
-        Intent serviceIntent = new Intent(this, TriggerService.class);
+    public void stopTimeTriggersService(View v) {
+        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
         stopService(serviceIntent);
     }
+
+    public void stopSensorTriggerService(View v) {
+        Intent serviceIntent = new Intent(this, SensorTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void startTimeLeftTriggerService(View v) {
+        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
+        stopService(serviceIntent);
+    }
+
 
 }
 
