@@ -53,13 +53,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".NotificationsService" />
+        <service android:name=".SensorService"/>
+        <service android:name=".SensorTriggerService"/>
         <service android:name=".L1NotificationsService" />
         <service android:name=".L2NotificationsService" />
         <service android:name=".L3NotificationsService" />
         <service android:name=".L4NotificationsService" />
-        <service android:name=".TriggerService" />
+        <service android:name=".TimeTriggerService" />
         <service android:name=".NotificationRestartService" />
     </application>
 

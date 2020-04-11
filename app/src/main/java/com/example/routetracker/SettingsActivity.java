@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -20,9 +21,9 @@ public class SettingsActivity extends AppCompatActivity {
     Switch editPoliceContact, editAccelAndGyro;
     SeekBar editDistance, editTime;
      TextView text_view_distance, getText_view_time;
-     Button btnSaveChanges;
+     Button btnSaveChanges, btnChangePin;
 
-     String firsName, surname, gender, question, answer, ethnicity;
+     String firsName, surname, gender, question, answer, ethnicity, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         saveChanges();
+        changePIN();
+
     }
 
     public void seebbarr(){
@@ -117,21 +120,19 @@ public class SettingsActivity extends AppCompatActivity {
         btnSaveChanges.setOnClickListener(
                 v -> {
                     boolean isUpdated = myDb.updateUserData("1",
-                            firsName,
-                            surname,
-                            gender,
+                            res.getString(1),
+                            res.getString(2),
+                            res.getString(3),
                             editAge.getText().toString(),
                            editHeight.getText().toString(),
                             editHairColour.getText().toString(),
                             editWeight.getText().toString(),
-                            ethnicity,
-                            //TODO CHANGE PASSWORD SECTION
-                            "1234",
-                            question,
-                            answer,
+                            res.getString(8),
+                            res.getString(9),
+                            res.getString(10),
+                            res.getString(11),
                             editDistance.getProgress(),
                             editTime.getProgress(),
-                            //TODO CHANGE EMERGENCY CONTACT SECTION
                             editEmergancyContact.getText().toString(),
                             state(editPoliceContact.isChecked()),
                             state(editAccelAndGyro.isChecked())
@@ -147,6 +148,16 @@ public class SettingsActivity extends AppCompatActivity {
                 }
         );
 
+    }
+
+    private void changePIN() {
+        btnChangePin = findViewById(R.id.buttonChangePin);
+
+        btnChangePin.setOnClickListener(v -> {
+            if (getSupportFragmentManager().findFragmentById(android.R.id.content)==null) {
+                SettingsActivity.this.getSupportFragmentManager().beginTransaction().add(android.R.id.content, ChangePinFragment.newInstance(getApplicationContext())).commit();
+            }
+        });
     }
 
     public Integer state(Boolean State){

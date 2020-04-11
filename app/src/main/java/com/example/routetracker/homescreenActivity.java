@@ -103,11 +103,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private ProgressBar progressBar;
 
     private boolean activeRoute = false;
-    public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
-    private SensorManager sensorManager;
-    private Sensor gyroscopeSensor;
-    private SensorEventListener gyroscopeEventListener;
-
 
     //ciprian
     private MarkerOptions destination;
@@ -214,11 +209,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-
-
         
         //ciprian
-
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -237,41 +229,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     LatLng locationCoords = new  LatLng(location.getLatitude(),
                             location.getLongitude());
                     locMarker.position(locationCoords);
-
                 }
-
-                sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-                gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-                if (gyroscopeSensor == null){
-                    Toast.makeText(homescreenActivity.this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-
-                gyroscopeEventListener = new SensorEventListener() {
-                    @Override
-                    public void onSensorChanged(SensorEvent sensorEvent) {
-                        if (sensorEvent.values[2] > 0.5f){
-                            resetDisconnectTimer();
-                            Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                            System.out.println("DETECTED ");
-
-                        } else if (sensorEvent.values[2] < -0.5f){
-                            resetDisconnectTimer();
-                            Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                            System.out.println("DETECTED ");
-
-                        }
-                    }
-
-                    @Override
-                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-                    }
-                };
-
             }
         };
+
+
+
+
+
+
+
 
         if(savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -330,19 +297,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
             getDirection = findViewById(R.id.btnGetDirection);
-
-
-
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
-
-
-            activeRoute = true;
-            startDisconnectTimer();
-
-
-
 
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -351,7 +308,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     progressThread.start();
 
                     //startForegroundService(view);
-                    startTriggers(view);
+                    //startTimeTriggers(view);
+
+                    //TODO Once a confirm route option is in then adapt and move this to it
+                    activeRoute = true;
 
 
                     //      //      //      //
@@ -613,45 +573,25 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
-        // todo
         return true;
     });
 
-    private static Runnable disconnectCallback = () -> {
-        // Perform any required operation on disconnect
-        System.out.println("Disconnect");
 
-    };
 
-    public void resetDisconnectTimer(){
-        System.out.println("Reset Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-
-    public void stopDisconnectTimer(){
-        System.out.println("Stop Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-    }
-
-    public void startDisconnectTimer(){
-        System.out.println("Start Disconnect Timer");
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-    public void startTriggers(View v) {
-        int time = 5;
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void startTimeTriggers(View v) {
+        long time = 0;
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
-    public void stopTriggers(View v) {
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void stopTimeTriggers(View v) {
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         stopService(triggersIntent);
     }
 
     public void startForegroundService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         }
@@ -659,15 +599,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void stopNotificationService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
     }
-
-
-
-
-
-
 
     @Override
     public void onStart() {
@@ -681,7 +615,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        //sensorManager.unregisterListener(gyroscopeEventListener);
 
     }
 
@@ -691,8 +624,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onResume();
 
         startLocationUpdates();
-        //sensorManager.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
-
     }
 
     @Override
@@ -705,12 +636,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
-    }
-
-    @Override
-    public void onUserInteraction(){
-        System.out.println("User Interaction");
-        resetDisconnectTimer();
     }
 
 
