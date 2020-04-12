@@ -67,12 +67,11 @@ public class SavedDestinationActivity extends AppCompatActivity{
             @Override
             public void onItemClick(int position) {
                 if(!(pos==-1)){
+                    changeItem(pos, R.drawable.ic_map);
                     changeItem(position, R.drawable.ic_check);
                     pos = position;
                 }
                 else{
-                    changeItem(pos, R.drawable.ic_map);
-
                     changeItem(position, R.drawable.ic_check);
                     pos = position;
                 }
@@ -81,6 +80,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             @Override
             public void onDeleteClick(int position) {
                 removeItem(position);
+                mSaveList.remove(position);
             }
         });
     }
