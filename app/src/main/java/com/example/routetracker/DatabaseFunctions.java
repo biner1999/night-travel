@@ -168,7 +168,6 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     //Deletes a users data, will delete the entire row(Requires an ID as reference)
     public Integer deleteUserData(String id){
         SQLiteDatabase db = this.getWritableDatabase();
-
         return db.delete(User_Table_Name, "ID = ?",new String[] { id } );
     }
 
@@ -176,11 +175,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public boolean insertRouteData(String UserID, String EndDestination){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Route_Table_Name_COL_0,UserID);
+        contentValues.put(Route_Table_Name_COL_1,UserID);
         contentValues.put(Route_Table_Name_COL_2,EndDestination);
-
-
-
         long result = db.insert(Route_Table_Name, null, contentValues);
 
         if (result == -1 ){
@@ -188,6 +184,12 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         }else{
             return true;
         }
+    }
+
+    //Deletes a users data, will delete the entire row(Requires an ID as reference)
+    public Integer deleteRouteData(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(Route_Table_Name, "ID = ?",new String[] { id } );
     }
 
     //Returns all values in the route table
