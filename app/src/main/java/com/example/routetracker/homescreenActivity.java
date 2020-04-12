@@ -1,6 +1,8 @@
 package com.example.routetracker;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -26,6 +28,7 @@ import com.google.maps.PendingResult;
 import com.google.maps.model.DirectionsResult;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -56,6 +59,7 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -97,19 +101,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private Marker destMarker;
     private String mCurrentLocality;
     private ProgressBar progressBar;
+    private RelativeLayout parent_layout;
 
     private boolean activeRoute = false;
-    public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
-    private SensorManager sensorManager;
-    private Sensor gyroscopeSensor;
-    private SensorEventListener gyroscopeEventListener;
-
 
     //ciprian
     private MarkerOptions destination;
     private Polyline currentPolyline;
     Button getDirection;
     public static List<List<HashMap<String, String>>> routeDetails;
+    private Object PolylineOptions;
     //ciprian
 
 
@@ -137,6 +138,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+
 
     private void getDeviceLocation() {
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -200,17 +202,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         getDirectionButtonClick();
         dropMarkerButton();
 
+
+
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-
-
         
         //ciprian
-
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -229,41 +230,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     LatLng locationCoords = new  LatLng(location.getLatitude(),
                             location.getLongitude());
                     locMarker.position(locationCoords);
-
                 }
-
-                sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-                gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-                if (gyroscopeSensor == null){
-                    Toast.makeText(homescreenActivity.this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-
-                gyroscopeEventListener = new SensorEventListener() {
-                    @Override
-                    public void onSensorChanged(SensorEvent sensorEvent) {
-                        if (sensorEvent.values[2] > 0.5f){
-                            resetDisconnectTimer();
-                            Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                            System.out.println("DETECTED ");
-
-                        } else if (sensorEvent.values[2] < -0.5f){
-                            resetDisconnectTimer();
-                            Toast.makeText(homescreenActivity.this, "Detected", Toast.LENGTH_SHORT).show();
-                            System.out.println("DETECTED ");
-
-                        }
-                    }
-
-                    @Override
-                    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-                    }
-                };
-
             }
         };
+
+
+
+
+
+
+
 
         if(savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -322,19 +298,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
             getDirection = findViewById(R.id.btnGetDirection);
-
-
-
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
-
-
-            activeRoute = true;
-            startDisconnectTimer();
-
-
-
 
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -343,14 +309,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     progressThread.start();
 
                     //startForegroundService(view);
-                    startTriggers(view);
+                    //startTimeTriggers(view);
+
+                    //TODO Once a confirm route option is in then adapt and move this to it
+                    activeRoute = true;
 
 
                     //      //      //      //
 
                     if (destination != null) {
                         new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-                        Log.d("TEST4:", String.valueOf(duration_time));
+                        Log.d("TEST4:", valueOf(duration_time));
                     }
 
                     else {
@@ -524,17 +493,45 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
-        Log.d("DDDDDDDDDDD", String.valueOf(polyLineList));
+        //Log.d("hey", "test!!!!", polyLineList);
+        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
 
     }
+
+    //ciprian
+    public void confirmRoute(){
+
+        View inflatedView = getLayoutInflater().inflate(R.layout.route_card, null);
+        parent_layout = (RelativeLayout) inflatedView.findViewById(R.id.parentLayout);
+    }
+
+
+    public void highlightRoute(Integer r){
+
+        PolylineOptions polylineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);;
+        polylineOptions.addAll(polyLineList.get(r).getPoints());
+        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
+        for(int i = 0 ; i < polyLineList.size(); i++) {
+            if(i != r) {
+                currentPolyline = polyLineList.get(i);
+                currentPolyline.remove();
+            }
+            else{
+                continue;
+            }
+        }
+
+    }
+
+    //ciprian
+
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
 
         for(ArrayList<LatLng> step : stepPoints) {
-
+            Log.d("hey", "TEST2!!!!!" + String.valueOf(polyLineList));
 
             String distance = null;
             String duration = null;
@@ -546,7 +543,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            Log.d("Route crimes " + counter, String.valueOf(crimeCount));
+            Log.d("Route crimes " + counter, valueOf(crimeCount));
 
 
             routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0));
@@ -556,7 +553,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
 
         if (routeDataList.size() == 3) {
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
             routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
@@ -567,64 +564,44 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         else if (routeDataList.size() == 2) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
-            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(0).getID()-1));
+            Log.d("ROUTECOLOR", valueOf(routeDataList.get(0).getID()-1));
             polyLineList.get(routeDataList.get(1).getID()).setColor(Color.RED);
-            Log.d("ROUTECOLOR", String.valueOf(routeDataList.get(1).getID()-1));
+            Log.d("ROUTECOLOR", valueOf(routeDataList.get(1).getID()-1));
         }
         else if (routeDataList.size() == 1) {
-            Log.d("linelistsize", String.valueOf(polyLineList.size()));
+            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             polyLineList.get(routeDataList.get(0).getID()+1).setColor(Color.GREEN);
         }
 
-        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList)).commit();
+        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
         FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
         mFrameLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }
 
     private static Handler disconnectHandler = new Handler(msg -> {
-        // todo
         return true;
     });
 
-    private static Runnable disconnectCallback = () -> {
-        // Perform any required operation on disconnect
-        System.out.println("Disconnect");
 
-    };
 
-    public void resetDisconnectTimer(){
-        System.out.println("Reset Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-
-    public void stopDisconnectTimer(){
-        System.out.println("Stop Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-    }
-
-    public void startDisconnectTimer(){
-        System.out.println("Start Disconnect Timer");
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
-    public void startTriggers(View v) {
-        int time = 5;
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void startTimeTriggers(View v) {
+        long time = 0;
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
-    public void stopTriggers(View v) {
-        Intent triggersIntent = new Intent(this, TriggerService.class);
+    public void stopTimeTriggers(View v) {
+        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         stopService(triggersIntent);
     }
 
     public void startForegroundService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         }
@@ -632,15 +609,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void stopNotificationService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+        Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
     }
-
-
-
-
-
-
 
     @Override
     public void onStart() {
@@ -654,7 +625,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        //sensorManager.unregisterListener(gyroscopeEventListener);
 
     }
 
@@ -664,8 +634,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onResume();
 
         startLocationUpdates();
-        //sensorManager.registerListener(gyroscopeEventListener,gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
-
     }
 
     @Override
@@ -678,12 +646,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
-    }
-
-    @Override
-    public void onUserInteraction(){
-        System.out.println("User Interaction");
-        resetDisconnectTimer();
     }
 
 

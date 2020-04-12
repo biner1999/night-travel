@@ -1,12 +1,17 @@
 package com.example.routetracker;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +23,8 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
     private ArrayList<RouteDataItem> mRouteList;
     private RoutesAdapter.onItemClickListener mListener;
     private Context context;
+    private homescreenActivity activity;
+
 
     public interface onItemClickListener{
         void onItemClick(int position);
@@ -25,9 +32,10 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
 
     public void setOnItemClickListener(RoutesAdapter.onItemClickListener listener) {mListener = listener;}
 
-    RoutesAdapter(Context inContext, ArrayList<RouteDataItem> inRouteList) {
+    RoutesAdapter(Context inContext, ArrayList<RouteDataItem> inRouteList, homescreenActivity inActivity) {
         mRouteList = inRouteList;
         context = inContext;
+        activity = inActivity;
     }
 
     @NonNull
@@ -57,6 +65,23 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
         holder.mTextView2.setText("Crimes: " + currentItem.getCrimeCount()
                                   + "  Time: " + currentItem.getRouteTime()
                                   + "  Distance: " + currentItem.getRouteDistance());
+
+
+        holder.parent_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Integer choosenRoute = currentItem.getID();
+                String time = currentItem.getRouteTime();
+                String distance = currentItem.getRouteDistance();
+
+                Log.d("heelo!!!!!!!!!!!!", String.valueOf(currentItem.getID()));
+
+                activity.highlightRoute(currentItem.getID()-1);
+
+
+            }
+        });
     }
 
     @Override
@@ -66,12 +91,14 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
 
         ImageView mImageView;
         TextView mTextView1, mTextView2;
+        RelativeLayout parent_layout;
 
-        RouteVH(@NonNull View itemView, final RoutesAdapter.onItemClickListener listener) {
+        RouteVH(@NonNull View itemView, final onItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
             mTextView1 = itemView.findViewById(R.id.textView1);
             mTextView2 = itemView.findViewById(R.id.textView2);
+            parent_layout = itemView.findViewById(R.id.parentLayout);
 
             itemView.setOnClickListener(v -> {
                 if (listener != null){

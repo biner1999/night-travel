@@ -14,30 +14,30 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public static final String User_Table_Name = "User_Table";
     public static final String Route_Table_Name = "Route_Table";
 
-    public static final String User_Table_Name_COL_1 = "ID";
-    public static final String User_Table_Name_COL_2 = "FirstName";
-    public static final String User_Table_Name_COL_3 = "Surname";
-    public static final String User_Table_Name_COL_4 = "Gender";
-    public static final String User_Table_Name_COL_5 = "Age";
+    public static final String User_Table_Name_COL_0 = "ID";
+    public static final String User_Table_Name_COL_1 = "FirstName";
+    public static final String User_Table_Name_COL_2 = "Surname";
+    public static final String User_Table_Name_COL_3 = "Gender";
+    public static final String User_Table_Name_COL_4 = "Age";
 
-    public static final String User_Table_Name_COL_6 = "Height";
-    public static final String User_Table_Name_COL_7 = "HairColour";
-    public static final String User_Table_Name_COL_8 = "Weight";
-    public static final String User_Table_Name_COL_9 = "Ethnicity";
-    public static final String User_Table_Name_COL_10 = "Password";
-    public static final String User_Table_Name_COL_11 = "Question";
-    public static final String User_Table_Name_COL_12 = "Answer";
+    public static final String User_Table_Name_COL_5 = "Height";
+    public static final String User_Table_Name_COL_6 = "HairColour";
+    public static final String User_Table_Name_COL_7 = "Weight";
+    public static final String User_Table_Name_COL_8 = "Ethnicity";
+    public static final String User_Table_Name_COL_9 = "Password";
+    public static final String User_Table_Name_COL_10 = "Question";
+    public static final String User_Table_Name_COL_11 = "Answer";
 
-    public static final String User_Table_Name_COL_13 = "Distance";
-    public static final String User_Table_Name_COL_14 = "Time";
-    public static final String User_Table_Name_COL_15 = "EmergencyContact";
-    public static final String User_Table_Name_COL_16 = "AlertLevel";
-    public static final String User_Table_Name_COL_17 = "AccelerometersAndGryo";
+    public static final String User_Table_Name_COL_12 = "Distance";
+    public static final String User_Table_Name_COL_13 = "Time";
+    public static final String User_Table_Name_COL_14 = "EmergencyContact";
+    public static final String User_Table_Name_COL_15 = "AlertLevel";
+    public static final String User_Table_Name_COL_16 = "AccelerometersAndGryo";
 
 
-    public static final String Route_Table_Name_COL_1 = "ID";
-    public static final String Route_Table_Name_COL_2 = "UserID";
-    public static final String Route_Table_Name_COL_3 = "EndDestination";
+    public static final String Route_Table_Name_COL_0 = "ID";
+    public static final String Route_Table_Name_COL_1 = "UserID";
+    public static final String Route_Table_Name_COL_2 = "EndDestination";
 
 
 
@@ -69,22 +69,22 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public boolean insertDataUser(String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(User_Table_Name_COL_2,First_Name);
-        contentValues.put(User_Table_Name_COL_3,Surname);
-        contentValues.put(User_Table_Name_COL_4,Gender);
-        contentValues.put(User_Table_Name_COL_5,Age);
-        contentValues.put(User_Table_Name_COL_6,Height);
-        contentValues.put(User_Table_Name_COL_7,HairColour);
-        contentValues.put(User_Table_Name_COL_8,Weight);
-        contentValues.put(User_Table_Name_COL_9,Ethnicity);
-        contentValues.put(User_Table_Name_COL_10, Password);
-        contentValues.put(User_Table_Name_COL_11, Question);
-        contentValues.put(User_Table_Name_COL_12, Answer);
-        contentValues.put(User_Table_Name_COL_13, Distance);
-        contentValues.put(User_Table_Name_COL_14, Time);
-        contentValues.put(User_Table_Name_COL_15, EmergencyContact);
-        contentValues.put(User_Table_Name_COL_16, Alert_Level);
-        contentValues.put(User_Table_Name_COL_17, AccelerometersAndGryo);
+        contentValues.put(User_Table_Name_COL_1,First_Name);
+        contentValues.put(User_Table_Name_COL_2,Surname);
+        contentValues.put(User_Table_Name_COL_3,Gender);
+        contentValues.put(User_Table_Name_COL_4,Age);
+        contentValues.put(User_Table_Name_COL_5,Height);
+        contentValues.put(User_Table_Name_COL_6,HairColour);
+        contentValues.put(User_Table_Name_COL_7,Weight);
+        contentValues.put(User_Table_Name_COL_8,Ethnicity);
+        contentValues.put(User_Table_Name_COL_9, Password);
+        contentValues.put(User_Table_Name_COL_10, Question);
+        contentValues.put(User_Table_Name_COL_11, Answer);
+        contentValues.put(User_Table_Name_COL_12, Distance);
+        contentValues.put(User_Table_Name_COL_13, Time);
+        contentValues.put(User_Table_Name_COL_14, EmergencyContact);
+        contentValues.put(User_Table_Name_COL_15, Alert_Level);
+        contentValues.put(User_Table_Name_COL_16, AccelerometersAndGryo);
 
 
 
@@ -123,8 +123,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public boolean updateAlertLevel(String id, String AlertLevel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(User_Table_Name_COL_1,id);
-        contentValues.put(User_Table_Name_COL_16,AlertLevel);
+        contentValues.put(User_Table_Name_COL_0,id);
+        contentValues.put(User_Table_Name_COL_15,AlertLevel);
 
         db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
         return true;
@@ -135,23 +135,23 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(User_Table_Name_COL_1,id);
-        contentValues.put(User_Table_Name_COL_2,First_Name);
-        contentValues.put(User_Table_Name_COL_3,Surname);
-        contentValues.put(User_Table_Name_COL_4,Gender);
-        contentValues.put(User_Table_Name_COL_5,Age);
-        contentValues.put(User_Table_Name_COL_6,Height);
-        contentValues.put(User_Table_Name_COL_7,HairColour);
-        contentValues.put(User_Table_Name_COL_8,Weight);
-        contentValues.put(User_Table_Name_COL_9,Ethnicity);
-        contentValues.put(User_Table_Name_COL_10, Password);
-        contentValues.put(User_Table_Name_COL_11, Question);
-        contentValues.put(User_Table_Name_COL_12, Answer);
-        contentValues.put(User_Table_Name_COL_13, Distance);
-        contentValues.put(User_Table_Name_COL_14, Time);
-        contentValues.put(User_Table_Name_COL_15, EmergencyContact);
-        contentValues.put(User_Table_Name_COL_16, Alert_Level);
-        contentValues.put(User_Table_Name_COL_17, AccelerometersAndGryo);
+        contentValues.put(User_Table_Name_COL_0,id);
+        contentValues.put(User_Table_Name_COL_1,First_Name);
+        contentValues.put(User_Table_Name_COL_2,Surname);
+        contentValues.put(User_Table_Name_COL_3,Gender);
+        contentValues.put(User_Table_Name_COL_4,Age);
+        contentValues.put(User_Table_Name_COL_5,Height);
+        contentValues.put(User_Table_Name_COL_6,HairColour);
+        contentValues.put(User_Table_Name_COL_7,Weight);
+        contentValues.put(User_Table_Name_COL_8,Ethnicity);
+        contentValues.put(User_Table_Name_COL_9, Password);
+        contentValues.put(User_Table_Name_COL_10, Question);
+        contentValues.put(User_Table_Name_COL_11, Answer);
+        contentValues.put(User_Table_Name_COL_12, Distance);
+        contentValues.put(User_Table_Name_COL_13, Time);
+        contentValues.put(User_Table_Name_COL_14, EmergencyContact);
+        contentValues.put(User_Table_Name_COL_15, Alert_Level);
+        contentValues.put(User_Table_Name_COL_16, AccelerometersAndGryo);
 
 
         db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
@@ -176,8 +176,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public boolean insertRouteData(String UserID, String EndDestination){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Route_Table_Name_COL_2,UserID);
-        contentValues.put(Route_Table_Name_COL_3,EndDestination);
+        contentValues.put(Route_Table_Name_COL_0,UserID);
+        contentValues.put(Route_Table_Name_COL_2,EndDestination);
 
 
 
@@ -193,7 +193,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     //Returns all values in the route table
     public Cursor getAllRouteData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+ Route_Table_Name, null);
+        Cursor res = db.rawQuery("select * from Route_Table", null);
         return res;
     }
 

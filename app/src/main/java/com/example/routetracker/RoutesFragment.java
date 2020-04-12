@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -28,6 +29,7 @@ public class RoutesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private ArrayList<RouteDataItem> mParam1;
     private Context context;
+    private homescreenActivity activity;
 
     public RoutesFragment() {
         // Required empty public constructor
@@ -41,10 +43,12 @@ public class RoutesFragment extends Fragment {
      * @return A new instance of fragment RoutesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RoutesFragment newInstance(Context c, ArrayList<RouteDataItem> routeData) {
+    public static RoutesFragment newInstance(Context c, ArrayList<RouteDataItem> routeData, homescreenActivity inActivity) {
         RoutesFragment fragment = new RoutesFragment();
         fragment.mParam1 = routeData;
         fragment.context = c;
+        fragment.activity = inActivity;
+
         return fragment;
     }
 
@@ -69,7 +73,7 @@ public class RoutesFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         routesRecycler.setLayoutManager(layoutManager);
 
-        RoutesAdapter mAdapter = new RoutesAdapter(getActivity(), mParam1);
+        RoutesAdapter mAdapter = new RoutesAdapter(context, mParam1, activity);
         routesRecycler.setAdapter(mAdapter);
 
         return rootView;

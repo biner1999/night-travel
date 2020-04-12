@@ -3,22 +3,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import java.util.Timer;
-import java.util.TimerTask;
+//TODO 1. change phone numbers 2. combine sensor and foreground notificaiton 3. get values for foreground notification 4. run the correct timers and stuff
 
-
-
-public class TriggerService extends Service {
+public class TimeLeftTriggerService extends Service {
     private static boolean isRunning;
 
 
     // First Time Trigger //
     public void FirstTriggerStart(long time) {
-        long firstNotificationDelay = 5000; //Math.round(time*1.25) + 300000; //25% + 5 mins
+        long firstNotificationDelay = 5000; //TODO HERE
         long secondNotificationDelay = 5000; //60000; //3 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);

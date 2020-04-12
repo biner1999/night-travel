@@ -107,16 +107,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void startForegroundService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+    public void startSensorService(View v) {
+        Intent serviceIntent = new Intent(this, SensorService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         }
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
-    public void stopNotificationService(View v) {
-        Intent serviceIntent = new Intent(this, NotificationsService.class);
+    public void stopSensorService(View v) {
+        Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
     }
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startL3Service(View v) {
-        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        Intent L3ServiceIntent = new Intent(this, L4NotificationsService.class);
         startService(L3ServiceIntent);
     }
 
