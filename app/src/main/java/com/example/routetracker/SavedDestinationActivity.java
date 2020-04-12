@@ -71,9 +71,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
                     pos = position;
                 }
                 else{
-                    for(int i =0; i<mSaveList.size()-1;i++){
-                        changeItem(i+1, R.drawable.ic_map);
-                    }
+                    changeItem(pos, R.drawable.ic_map);
+
                     changeItem(position, R.drawable.ic_check);
                     pos = position;
                 }
