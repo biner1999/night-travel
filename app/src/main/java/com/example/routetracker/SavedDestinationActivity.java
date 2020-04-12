@@ -81,6 +81,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             public void onDeleteClick(int position) {
                 removeItem(position);
                 mSaveList.remove(position);
+                myDb.deleteRouteData(Integer.toString(position));
             }
         });
     }
