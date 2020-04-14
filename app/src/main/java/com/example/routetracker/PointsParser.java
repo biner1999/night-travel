@@ -95,7 +95,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             if (totalRoutes == 1) {
                 fastestRoute = lineOptions;
                 fastestRoute.width(10);
-                fastestRoute.color(Color.MAGENTA);
+                fastestRoute.color(Color.GREEN);
                 //taskCallback.onTaskDone(fastestRoute);
 
             } else if (totalRoutes == 2) {

@@ -1,8 +1,6 @@
 package com.example.routetracker;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -21,26 +19,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
-import com.google.maps.model.DirectionsResult;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,119 +41,86 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static java.lang.String.valueOf;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
 
+    // Map
     private GoogleMap mMap;
     private MapView mMapView;
+    private static final int DEFAULT_ZOOM = 15;
+    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    // User Location
     private FusedLocationProviderClient fusedLocationClient;
     private Location mCurrentLocation;
     private LocationRequest mLocationRequest;
     private boolean mLocationPermissionGranted = false;
     private LocationCallback mLocationCallback;
-    private static final int DEFAULT_ZOOM = 15;
     private MarkerOptions locMarker;
     private GeoApiContext mGeoApiContext = null;
-    private static final String TAG = "UserListFragment";
+    // Destination
     private List<Address> addresses;
-    private Marker destMarker;
     private String mCurrentLocality;
-    private ProgressBar progressBar;
-    private RelativeLayout parent_layout;
-
-    private boolean activeRoute = false;
-
-    //ciprian
     private MarkerOptions destination;
-    private Polyline currentPolyline;
-    Button getDirection;
+    // Route
+    private Polyline currentRouteLine;
     public static List<List<HashMap<String, String>>> routeDetails;
-    private Object PolylineOptions;
-    //ciprian
-
-
-
+    private RouteDataItem currentRouteData;
     private ArrayList<Polyline> polyLineList = new ArrayList<>();
-
-    private List<List<HashMap<String, String>>> duration_time;
-
     public static volatile ArrayList<ArrayList<LatLng>> stepPoints;
-
-    private ArrayList<RouteDataItem> routeDataList = new ArrayList<>();
-
-    //widgets
+    private ArrayList<RouteDataItem> routeDataList;
+    // UI
+    private ProgressBar progressBar;
+    private FrameLayout mFrameLayout;
     private EditText mSearchText;
     private ListView addressList;
 
-    //other
-    AdapterView.OnItemClickListener addressListClick = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            markLocation(position);
-            EditText editText = findViewById(R.id.input_search);
-            editText.getText().clear();
-        }
+
+
+    AdapterView.OnItemClickListener addressListClick = (parent, view, position, id) -> {
+        markLocation(position);
+        EditText editText = findViewById(R.id.input_search);
+        editText.getText().clear();
     };
 
-    private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-
-
     private void getDeviceLocation() {
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    mCurrentLocation = location;
-                    LatLng locationCoords = new  LatLng(mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationCoords, DEFAULT_ZOOM));
-                    locMarker.position(locationCoords);
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                mCurrentLocation = location;
+                LatLng locationCoords = new  LatLng(mCurrentLocation.getLatitude(),
+                        mCurrentLocation.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationCoords, DEFAULT_ZOOM));
+                locMarker.position(locationCoords);
 
-                    Geocoder geocoder = new Geocoder(homescreenActivity.this, Locale.ENGLISH);
-                    try {
-                        List<Address> currentAddress = geocoder.getFromLocation(mCurrentLocation.getLatitude(),
-                                mCurrentLocation.getLongitude(), 20);
-                        if (currentAddress.size() > 0) {
-                            for (Address adr : currentAddress) {
-                                if (adr.getLocality() != null && adr.getLocality().length() > 0) {
-                                    Log.d(TAG, "getDeviceLocation SUBLOCALITY : " + adr.getLocality());
-                                    mCurrentLocality = adr.getLocality();
-                                }
+                Geocoder geocoder = new Geocoder(homescreenActivity.this, Locale.ENGLISH);
+                try {
+                    List<Address> currentAddress = geocoder.getFromLocation(mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude(), 20);
+                    if (currentAddress.size() > 0) {
+                        for (Address adr : currentAddress) {
+                            if (adr.getLocality() != null && adr.getLocality().length() > 0) {
+                                mCurrentLocality = adr.getLocality();
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -198,11 +153,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         settingsView();
         savedDestinationsView();
 
-        //ciprian
         getDirectionButtonClick();
         dropMarkerButton();
-
-
 
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
@@ -210,8 +162,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
-        
-        //ciprian
+
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -234,13 +185,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
 
-
-
-
-
-
-
-
         if(savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
@@ -258,14 +202,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
-    //ciprian
-    private String getUrl(Location origin, LatLng dest, String directionMode) {
+    private String getUrl(Location origin, LatLng dest) {
         // Origin of route
-        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude(); //String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude();
         // Destination of route
         String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
         // Mode
-        String mode = "mode=" + directionMode;
+        String mode = "mode=" + "walking";
         // Alternative routes
         String alte = "&alternatives=true";
         // Building the parameters to the web service
@@ -273,12 +216,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         // Output format
         String output = "json";
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
 
-        return url;
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
     }
-
-    //ciprian
 
     private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
 
@@ -297,7 +237,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
         private void getDirectionButtonClick(){
-            getDirection = findViewById(R.id.btnGetDirection);
+            Button getDirection = findViewById(R.id.btnGetDirection);
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
@@ -305,6 +245,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    routeDataList = new ArrayList<>();
                     Thread progressThread = new Thread();
                     progressThread.start();
 
@@ -312,14 +253,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     //startTimeTriggers(view);
 
                     //TODO Once a confirm route option is in then adapt and move this to it
-                    activeRoute = true;
+                    //activeRoute = true;
 
 
                     //      //      //      //
 
                     if (destination != null) {
-                        new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition(), "walking"), "walking");
-                        Log.d("TEST4:", valueOf(duration_time));
+                        new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
                     }
 
                     else {
@@ -367,20 +307,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    private void init() {
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                    || actionId == EditorInfo.IME_ACTION_DONE
-                    || event.getAction() == KeyEvent.ACTION_DOWN
-                    || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+    private void initSearchBar() {
+        mSearchText.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_SEARCH
+                || actionId == EditorInfo.IME_ACTION_DONE
+                || event.getAction() == KeyEvent.ACTION_DOWN
+                || event.getAction() == KeyEvent.KEYCODE_ENTER) {
 
-                    searchLocate();
+                searchLocate();
 
-                }
-                return false;
             }
+            return false;
         });
     }
 
@@ -390,7 +327,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Geocoder geocoder = new Geocoder(homescreenActivity.this);
         addresses = new ArrayList<>();
         try {
-            Log.e(TAG, "mCurrentLocality : " + mCurrentLocality);
             addresses = geocoder.getFromLocationName(searchInput + mCurrentLocality, 5);
             if(addresses.size() > 0) {
                 String[] addressStrings = new String[addresses.size()];
@@ -411,6 +347,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 if (view != null) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(
                             Context.INPUT_METHOD_SERVICE);
+                    assert imm != null;
                     imm.hideSoftInputFromWindow(view.getWindowToken(),0);
                 }
             }
@@ -422,17 +359,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         catch (IOException e) {
-            Log.e(TAG, "searchLocate: IOException: " + e.getMessage());
         }
     }
 
-    public MarkerOptions markLocation(int listIndex) {
+    public void markLocation(int listIndex) {
         Address address = addresses.get(listIndex);
-        Log.d(TAG, "markLocation: found a location: " + address.toString());
-
-        if (destMarker != null) {
-            destMarker.remove();
-        }
 
         addressList = findViewById(R.id.addressList);
         addressList.setVisibility(View.GONE);
@@ -440,16 +371,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         LatLng addressLtLn = new LatLng(address.getLatitude(), address.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLng(addressLtLn));
         mMap.clear();
-        destMarker = mMap.addMarker( new MarkerOptions()
+        destination = new MarkerOptions();
+        mMap.addMarker(destination
                 .position(addressLtLn).title(address.getAddressLine(0))
                 .draggable(true));
 
         addresses.clear();
-        //ciprian
         destination = new MarkerOptions().position(new LatLng(address.getLatitude(), address.getLongitude())).title("Location 2");
-        return destination;
-        //ciprian
-
     }
 
 
@@ -465,8 +393,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         mMapView.onSaveInstanceState(mapViewBundle);
     }
-
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -484,7 +410,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             mMap.setMyLocationEnabled(true);
             createLocationRequest();
             getDeviceLocation();
-            init();
+            initSearchBar();
         }
 
         // Remove Navigation & GPS pointer Google buttons
@@ -494,45 +420,26 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     public void onTaskDone(Object... values) {
         polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
-        //Log.d("hey", "test!!!!", polyLineList);
-        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
-
-    }
-
-    //ciprian
-    public void confirmRoute(){
-
-        View inflatedView = getLayoutInflater().inflate(R.layout.route_card, null);
-        parent_layout = (RelativeLayout) inflatedView.findViewById(R.id.parentLayout);
     }
 
 
-    public void highlightRoute(Integer r){
+    public void highlightRoute(Integer selectedRouteIndex, RouteDataItem selectedRouteData){
 
-        PolylineOptions polylineOptions = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true);;
-        polylineOptions.addAll(polyLineList.get(r).getPoints());
-        Log.d("hey", "TEST!!!!!" + String.valueOf(polyLineList));
+        currentRouteData = selectedRouteData;
+        currentRouteLine = polyLineList.get(selectedRouteIndex);
         for(int i = 0 ; i < polyLineList.size(); i++) {
-            if(i != r) {
-                currentPolyline = polyLineList.get(i);
-                currentPolyline.remove();
-            }
-            else{
-                continue;
-            }
+            if(i != selectedRouteIndex)
+                polyLineList.get(i).remove();
         }
-
+        mFrameLayout.setVisibility(View.GONE);
     }
 
-    //ciprian
 
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
 
         for(ArrayList<LatLng> step : stepPoints) {
-            Log.d("hey", "TEST2!!!!!" + String.valueOf(polyLineList));
-
             String distance = null;
             String duration = null;
             List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
@@ -543,17 +450,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            Log.d("Route crimes " + counter, valueOf(crimeCount));
-
-
             routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0));
             counter++;
         }
 
         Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
+        Log.d("NUMBER OF ROUTES", String.valueOf(routeDataList.size()));
 
         if (routeDataList.size() == 3) {
-            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
             routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
@@ -564,20 +468,22 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         else if (routeDataList.size() == 2) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
-            Log.d("linelistsize", valueOf(polyLineList.size()));
             polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
             Log.d("ROUTECOLOR", valueOf(routeDataList.get(0).getID()-1));
             polyLineList.get(routeDataList.get(1).getID()).setColor(Color.RED);
             Log.d("ROUTECOLOR", valueOf(routeDataList.get(1).getID()-1));
         }
         else if (routeDataList.size() == 1) {
-            Log.d("linelistsize", valueOf(polyLineList.size()));
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
-            polyLineList.get(routeDataList.get(0).getID()+1).setColor(Color.GREEN);
+            Log.d("route", polyLineList.get(routeDataList.get(0).getID()-1).toString());
+            Log.d("route", polyLineList.get(0).toString());
+            Log.d("routeID", String.valueOf(routeDataList.get(0).getID()-1));
+
+            polyLineList.get(0).setColor(Color.GREEN);
         }
 
         homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
-        FrameLayout mFrameLayout = findViewById(R.id.frameLayout);
+        mFrameLayout = findViewById(R.id.frameLayout);
         mFrameLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }

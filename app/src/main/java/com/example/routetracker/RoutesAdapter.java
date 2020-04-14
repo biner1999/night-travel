@@ -71,13 +71,9 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
             @Override
             public void onClick(View v) {
 
-                Integer choosenRoute = currentItem.getID();
-                String time = currentItem.getRouteTime();
-                String distance = currentItem.getRouteDistance();
-
                 Log.d("heelo!!!!!!!!!!!!", String.valueOf(currentItem.getID()));
 
-                activity.highlightRoute(currentItem.getID()-1);
+                activity.highlightRoute(currentItem.getID()-1, currentItem);
 
 
             }
