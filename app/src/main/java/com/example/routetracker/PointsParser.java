@@ -17,13 +17,11 @@ import java.util.concurrent.ExecutionException;
 
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-    TaskLoadedCallback taskCallback;
-    String directionMode = "walking";
-    public FetchResponse delegate = null;
+    private TaskLoadedCallback taskCallback;
+    public FetchResponse delegate;
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
-        this.directionMode = directionMode;
         delegate = (FetchResponse) mContext;
     }
 
@@ -66,7 +64,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         PolylineOptions fastestRoute = new PolylineOptions();
         PolylineOptions secondRoute = new PolylineOptions();
-
+        Log.d("RESULT SIZE", String.valueOf(result.size()));
         // Traversing through all the routes
         for (int i = 0; i < result.size(); i++) {
             totalRoutes = totalRoutes + 1;
@@ -104,7 +102,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
                 secondRoute.color(Color.BLUE);
                 //taskCallback.onTaskDone(secondRoute);
             }
-            else{
+            else if (totalRoutes == 3) {
                 lineOptions.width(10);
                 lineOptions.color(Color.GRAY);
                 //taskCallback.onTaskDone(lineOptions);
@@ -117,8 +115,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
         taskCallback.onTaskDone(secondRoute);
 
-        if (lineOptions != null)
-            taskCallback.onTaskDone(lineOptions);
+        taskCallback.onTaskDone(lineOptions);
 
 
 

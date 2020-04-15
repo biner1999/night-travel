@@ -79,10 +79,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private String mCurrentLocality;
     private MarkerOptions destination;
     // Route
-    private Polyline currentRouteLine;
+    private PolylineOptions currentRouteLine;
     public static List<List<HashMap<String, String>>> routeDetails;
     private RouteDataItem currentRouteData;
-    private ArrayList<Polyline> polyLineList = new ArrayList<>();
+    private ArrayList<PolylineOptions> polyLineList;
+    private ArrayList<Polyline> polyLineVisibleList;
     public static volatile ArrayList<ArrayList<LatLng>> stepPoints;
     private ArrayList<RouteDataItem> routeDataList;
     // UI
@@ -245,6 +246,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             getDirection.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    polyLineList = new ArrayList<>();
+                    polyLineVisibleList = new ArrayList<>();
                     routeDataList = new ArrayList<>();
                     Thread progressThread = new Thread();
                     progressThread.start();
@@ -419,26 +422,26 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
-        polyLineList.add(mMap.addPolyline((PolylineOptions) values[0]));
+        polyLineList.add((PolylineOptions) values[0]);
     }
 
 
-    public void highlightRoute(Integer selectedRouteIndex, RouteDataItem selectedRouteData){
+    public void highlightRoute(RouteDataItem selectedRouteData){
 
         currentRouteData = selectedRouteData;
-        currentRouteLine = polyLineList.get(selectedRouteIndex);
-        for(int i = 0 ; i < polyLineList.size(); i++) {
-            if(i != selectedRouteIndex)
-                polyLineList.get(i).remove();
+        currentRouteLine = selectedRouteData.getPolyline();
+        for(int i = 0 ; i < polyLineVisibleList.size(); i++) {
+            if(selectedRouteData.getPolyline().getColor() != polyLineVisibleList.get(i).getColor())
+                polyLineVisibleList.get(i).remove();
         }
         mFrameLayout.setVisibility(View.GONE);
+
     }
 
 
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;
-
         for(ArrayList<LatLng> step : stepPoints) {
             String distance = null;
             String duration = null;
@@ -450,36 +453,35 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0));
+            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0, polyLineList.get(counter-1)));
             counter++;
         }
 
         Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
-        Log.d("NUMBER OF ROUTES", String.valueOf(routeDataList.size()));
 
         if (routeDataList.size() == 3) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
             routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
-            polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
-            polyLineList.get(routeDataList.get(1).getID()-1).setColor(Color.YELLOW);
-            polyLineList.get(routeDataList.get(2).getID()-1).setColor(Color.RED);
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            routeDataList.get(1).getPolyline().color(Color.YELLOW);
+            routeDataList.get(2).getPolyline().color(Color.RED);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(2).getPolyline()));
         }
         else if (routeDataList.size() == 2) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
-            polyLineList.get(routeDataList.get(0).getID()-1).setColor(Color.GREEN);
-            Log.d("ROUTECOLOR", valueOf(routeDataList.get(0).getID()-1));
-            polyLineList.get(routeDataList.get(1).getID()).setColor(Color.RED);
-            Log.d("ROUTECOLOR", valueOf(routeDataList.get(1).getID()-1));
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            routeDataList.get(1).getPolyline().color(Color.RED);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
         }
         else if (routeDataList.size() == 1) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
-            Log.d("route", polyLineList.get(routeDataList.get(0).getID()-1).toString());
-            Log.d("route", polyLineList.get(0).toString());
-            Log.d("routeID", String.valueOf(routeDataList.get(0).getID()-1));
-
-            polyLineList.get(0).setColor(Color.GREEN);
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
         }
 
         homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();

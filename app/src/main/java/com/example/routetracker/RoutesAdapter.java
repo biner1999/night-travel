@@ -67,16 +67,9 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
                                   + "  Distance: " + currentItem.getRouteDistance());
 
 
-        holder.parent_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.parent_layout.setOnClickListener(v -> {
 
-                Log.d("heelo!!!!!!!!!!!!", String.valueOf(currentItem.getID()));
-
-                activity.highlightRoute(currentItem.getID()-1, currentItem);
-
-
-            }
+            activity.highlightRoute(currentItem);
         });
     }
 
