@@ -48,7 +48,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
         }
 
         while (res.moveToNext()) {
-            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(2), res.getString(0)));
+            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getString(0)));
         }
 
         buildRecyclerView();
