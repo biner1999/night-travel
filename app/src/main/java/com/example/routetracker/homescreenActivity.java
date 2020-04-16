@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -23,6 +24,7 @@ import com.google.maps.GeoApiContext;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -156,6 +158,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         getDirectionButtonClick();
         dropMarkerButton();
+        addSavedDestinations();
 
         mSearchText = findViewById(R.id.input_search);
         MapsInitializer.initialize(getApplicationContext());
@@ -287,6 +290,37 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private void addSavedDestinations(){
         Button btnAddDestination = findViewById(R.id.addDestinationBtn);
         btnAddDestination.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
+
+        btnAddDestination.setOnClickListener(v -> {
+            if (destination != null) {
+
+                AlertDialog.Builder addDestDlg = new AlertDialog.Builder(this);
+                addDestDlg.setTitle("Save Destination");
+                addDestDlg.setMessage("Insert a name for the destination");
+
+
+                final EditText inName = new EditText(this);
+                addDestDlg.setView(inName);
+
+                addDestDlg.setPositiveButton("Add", (dialog, which) -> {
+                    DatabaseFunctions myDb = new DatabaseFunctions(this);
+                    myDb.insertRouteData("1", destination.toString(), inName.getText().toString());
+
+                });
+
+                addDestDlg.setNegativeButton("Cancel", (dialog, which) -> {
+                    AlertDialog destAlert = addDestDlg.create();
+                    destAlert.dismiss();
+                });
+
+                addDestDlg.show();
+            }
+            else
+            {
+                Toast.makeText(this, "No Destination Selected", Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     private void dropMarkerButton(){
