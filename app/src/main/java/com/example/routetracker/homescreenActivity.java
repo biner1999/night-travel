@@ -284,6 +284,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
     }
 
+    private void addSavedDestinations(){
+        Button btnAddDestination = findViewById(R.id.addDestinationBtn);
+        btnAddDestination.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
+    }
+
     private void dropMarkerButton(){
         ToggleButton mDropMarkerBtn = findViewById(R.id.dropMarker);
         mDropMarkerBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
