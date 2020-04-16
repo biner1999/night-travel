@@ -96,7 +96,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void changeItem(int position, int image){
-        mSaveList.add(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2()));
+        mSaveList.set(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2()));
         mAdapter.notifyItemChanged(position);
     }
 
