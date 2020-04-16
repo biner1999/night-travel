@@ -24,6 +24,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private RecyclerView.LayoutManager mLayoutManger;
     private SaveAdapter mAdapter;
     Context mContext;
+    public static homescreenActivity homescreen;
 
     private Button buttonBack;
     private Button buttonSelect;
@@ -48,7 +49,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
         }
 
         while (res.moveToNext()) {
-            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getString(0)));
+            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getString(0), res.getString(2)));
         }
 
         buildRecyclerView();
@@ -96,7 +97,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void changeItem(int position, int image){
-        mSaveList.set(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2()));
+        mSaveList.set(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2(), mSaveList.get(position).getmDestination()));
         mAdapter.notifyItemChanged(position);
     }
 
@@ -108,9 +109,10 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
         buttonSelect.setOnClickListener(v -> {
             startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class));
-            if(mContext instanceof MainActivity){
-                ((homescreenActivity) mContext).markLocation(Integer.parseInt(mSaveList.get(pos).getmText2()));
-            }
+            Log.d("LOCATIONMARKER:", mSaveList.get(pos).getmDestination());
+            homescreen.loadDestination(mSaveList.get(pos).getmText1(), mSaveList.get(pos).getmDestination());
+
+
         });
     }
 

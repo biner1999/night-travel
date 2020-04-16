@@ -284,6 +284,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private void savedDestinationsView(){
         Button btnSavedDestinations = findViewById(R.id.buttonSavedDestinations);
+        SavedDestinationActivity.homescreen = homescreenActivity.this;
         btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
     }
 
@@ -304,7 +305,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                 addDestDlg.setPositiveButton("Add", (dialog, which) -> {
                     DatabaseFunctions myDb = new DatabaseFunctions(this);
-                    myDb.insertRouteData("1", destination.toString(), inName.getText().toString());
+                    myDb.insertRouteData("1", destination.getPosition().latitude + "," +
+                            destination.getPosition().longitude, inName.getText().toString());
 
                 });
 
@@ -321,6 +323,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
 
         });
+    }
+
+    public void loadDestination(String title, String inlatlng) {
+        String[] latlng = inlatlng.split(",");
+        LatLng destLocation = new LatLng(Double.parseDouble(latlng[0]), Double.parseDouble(latlng[1]));
+        destination = new MarkerOptions().position(destLocation);
+        destination.title(title);
+        mMap.clear();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(destLocation));
+        mMap.addMarker(destination);
     }
 
     private void dropMarkerButton(){
