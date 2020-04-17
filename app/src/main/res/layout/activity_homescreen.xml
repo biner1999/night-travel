@@ -110,7 +110,7 @@
         android:layout_alignParentBottom="true"
         android:gravity="center|bottom"
         android:padding="20dp"
-        android:weightSum="4">
+        android:weightSum="3">
 
         <Button
             android:id="@+id/btnEndRoute"
@@ -121,7 +121,6 @@
             android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:background="@drawable/left_btn_rounded_corners"
-            android:enabled="false"
             android:text="@string/endRoute"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
@@ -136,7 +135,6 @@
             android:layout_marginRight="1dp"
             android:layout_weight="1"
             android:background="@drawable/left_btn_rounded_corners"
-            android:enabled="true"
             android:text="@string/getdirectionsbtn"
             android:textColor="#FFFFFF"
             android:textSize="12sp" />

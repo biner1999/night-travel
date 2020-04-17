@@ -292,6 +292,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.clear();
                 endRoute.setVisibility(View.GONE);
                 getDirection.setVisibility(View.VISIBLE);
+                destination = null;
             }
         });
 
