@@ -157,6 +157,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         savedDestinationsView();
 
         getDirectionButtonClick();
+        endRoute();
         dropMarkerButton();
         addSavedDestinations();
 
@@ -242,6 +243,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
             Button getDirection = findViewById(R.id.btnGetDirection);
+
+            Button endRoute = findViewById(R.id.btnEndRoute);
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
@@ -266,6 +269,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                     if (destination != null) {
                         new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
+                        endRoute.setVisibility(View.VISIBLE);
+                        getDirection.setVisibility(View.GONE);
                     }
 
                     else {
@@ -276,6 +281,23 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
         }
+
+    private void endRoute() {
+        Button endRoute = findViewById(R.id.btnEndRoute);
+        Button getDirection = findViewById(R.id.btnGetDirection);
+        endRoute.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                endRoute.setVisibility(View.GONE);
+                getDirection.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+    }
+
 
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
