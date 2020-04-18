@@ -81,8 +81,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             @Override
             public void onDeleteClick(int position) {
                 removeItem(position);
-                mSaveList.remove(position);
-                myDb.deleteRouteData(Integer.toString(position));
+
             }
         });
     }
@@ -92,8 +91,9 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void removeItem(int position){
-        mSaveList.remove(position);
         mAdapter.notifyItemRemoved(position);
+        mSaveList.remove(position);
+        myDb.deleteRouteData(Integer.toString(position));
     }
 
     public void changeItem(int position, int image){
