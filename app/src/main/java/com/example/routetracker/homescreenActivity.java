@@ -93,6 +93,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private FrameLayout mFrameLayout;
     private EditText mSearchText;
     private ListView addressList;
+    private long backPressedTime = 0;
 
 
 
@@ -157,6 +158,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         savedDestinationsView();
 
         getDirectionButtonClick();
+        endRoute();
         dropMarkerButton();
         addSavedDestinations();
 
@@ -242,6 +244,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         private void getDirectionButtonClick(){
             Button getDirection = findViewById(R.id.btnGetDirection);
+
+            Button endRoute = findViewById(R.id.btnEndRoute);
             //TODO Add confirm route
             //TODO Add save route
             //TODO Start Route
@@ -266,6 +270,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                     if (destination != null) {
                         new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
+                        endRoute.setVisibility(View.VISIBLE);
+                        getDirection.setVisibility(View.GONE);
                     }
 
                     else {
@@ -276,6 +282,24 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
         }
+
+    private void endRoute() {
+        Button endRoute = findViewById(R.id.btnEndRoute);
+        Button getDirection = findViewById(R.id.btnGetDirection);
+        endRoute.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                endRoute.setVisibility(View.GONE);
+                getDirection.setVisibility(View.VISIBLE);
+                destination = null;
+            }
+        });
+
+
+    }
+
 
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
@@ -319,7 +343,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
             else
             {
-                Toast.makeText(this, "No Destination Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -406,7 +430,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
             else {
-                Toast noResultsToast = Toast.makeText(homescreenActivity.this,
+                Toast noResultsToast = Toast.makeText(getApplicationContext(),
                         "No results found.", Toast.LENGTH_SHORT);
                 noResultsToast.show();
             }
@@ -605,6 +629,20 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
+    }
+
+    @Override
+    public void onBackPressed() {
+        long t = System.currentTimeMillis();
+        if (t - backPressedTime > 2000) {
+            backPressedTime = t;
+            Toast.makeText(getApplicationContext(), "Press Back again to Logout", Toast.LENGTH_SHORT).show();
+        } else {
+            startActivity(new Intent(homescreenActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+            finish();
+
+        }
     }
 
 

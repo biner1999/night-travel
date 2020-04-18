@@ -3,6 +3,7 @@ package com.example.routetracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -27,7 +28,6 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        configureBackButtonSettings();
 
         myDb = new DatabaseFunctions(this);
 
@@ -82,11 +82,6 @@ public class SettingsActivity extends AppCompatActivity {
         text_view_distance.setText("Distance : " + editDistance.getProgress());
     }
 
-    private void configureBackButtonSettings(){
-        Button backButton = findViewById(R.id.buttonCreateUserBack);
-        backButton.setOnClickListener(v -> finish());
-    }
-
     public void showMessage (String title, String Message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -137,10 +132,10 @@ public class SettingsActivity extends AppCompatActivity {
                             );
 
                     if(isUpdated){
-                        Toast.makeText(SettingsActivity.this,"Changes Made", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Changes Made", Toast.LENGTH_LONG).show();
                         finish();
                     }else{
-                        Toast.makeText(SettingsActivity.this,"Changes Not Made", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Changes Not Made", Toast.LENGTH_LONG).show();
 
                     }
                 }
@@ -164,6 +159,12 @@ public class SettingsActivity extends AppCompatActivity {
         }else {
             return 0;
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(SettingsActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
     }
 
 
