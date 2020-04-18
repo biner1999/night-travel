@@ -93,6 +93,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private FrameLayout mFrameLayout;
     private EditText mSearchText;
     private ListView addressList;
+    private long backPressedTime = 0;
 
 
 
@@ -342,7 +343,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
             else
             {
-                Toast.makeText(this, "No Destination Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -429,7 +430,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
             else {
-                Toast noResultsToast = Toast.makeText(homescreenActivity.this,
+                Toast noResultsToast = Toast.makeText(getApplicationContext(),
                         "No results found.", Toast.LENGTH_SHORT);
                 noResultsToast.show();
             }
@@ -628,6 +629,20 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onLowMemory() {
         mMapView.onLowMemory();
         super.onLowMemory();
+    }
+
+    @Override
+    public void onBackPressed() {
+        long t = System.currentTimeMillis();
+        if (t - backPressedTime > 2000) {
+            backPressedTime = t;
+            Toast.makeText(getApplicationContext(), "Press Back again to Logout", Toast.LENGTH_SHORT).show();
+        } else {
+            startActivity(new Intent(homescreenActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+            finish();
+
+        }
     }
 
 

@@ -10,6 +10,7 @@ android:fillViewport="true">
         android:id="@+id/constraintlayoutSettings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         tools:context=".SettingsActivity">
 
         <Button
@@ -26,30 +27,15 @@ android:fillViewport="true">
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonCreateUserBack"
-            android:layout_width="109dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="14dp"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="660dp"
-            android:background="@drawable/left_btn_rounded_corners"
-            android:text="@string/back"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
             android:id="@+id/buttonSaveChanges"
             android:layout_width="109dp"
             android:layout_height="52dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
             android:layout_marginTop="660dp"
             android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/savechanges"
             android:textColor="#FFFFFF"
-            app:layout_constraintStart_toEndOf="@id/buttonCreateUserBack"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="129dp" />
 
         <Button
             android:id="@+id/buttonChangePin"
@@ -85,6 +71,7 @@ android:fillViewport="true">
             android:ems="10"
             android:hint="@string/emergencycontact"
             android:inputType="phone"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,6 +83,7 @@ android:fillViewport="true">
             android:layout_marginLeft="44dp"
             android:layout_marginTop="300dp"
             android:text="@string/contactpolice"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,6 +97,7 @@ android:fillViewport="true">
             android:ems="10"
             android:hint="@string/weight"
             android:inputType="number"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -122,6 +111,7 @@ android:fillViewport="true">
             android:ems="10"
             android:hint="@string/height"
             android:inputType="number"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -135,6 +125,7 @@ android:fillViewport="true">
             android:ems="10"
             android:hint="@string/hair"
             android:inputType="textPersonName"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -148,6 +139,7 @@ android:fillViewport="true">
             android:ems="10"
             android:hint="@string/age"
             android:inputType="textPersonName"
+            android:imeOptions="actionDone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

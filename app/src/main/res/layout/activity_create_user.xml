@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
         tools:context=".CreateUserActivity">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -276,6 +277,7 @@
                 android:inputType="text"
                 android:maxLength="10"
                 android:maxLines="1"
+                android:imeOptions="actionDone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

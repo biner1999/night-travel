@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "UserListFragment";
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
+                        finish();
                     }
                     // login if user has an active route and less than 3 minutes on the first timer
                     else if (TimeTriggerService.isRunning() && true) {
@@ -72,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "TS", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
+                        finish();
                     }
                     //login if sensor triggered the notifications
                     else if (SensorTriggerService.isRunning()) {
@@ -80,12 +83,14 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "TS", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
+                        finish();
                     }
                     //login if user has no active route or has an active route and more than 3 minutes left on the first timer
                     else {
                         Toast.makeText(getApplicationContext(), "Successfully logged in" + "none", Toast.LENGTH_SHORT).show();
                         Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
                         startActivity(homeScreen);
+                        finish();
                     }
 
                 }

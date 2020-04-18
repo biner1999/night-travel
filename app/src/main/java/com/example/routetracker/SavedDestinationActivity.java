@@ -16,6 +16,9 @@ import java.util.ArrayList;
 
 public class SavedDestinationActivity extends AppCompatActivity{
 
+    //TODO: Bug when pressing "Select" button without making selection first, causes crash
+    //TODO: Bug when pressing Delete button on any destination item, causes crash
+
     private ArrayList<SaveDestinationItem> mSaveList;
 
     DatabaseFunctions myDb;
@@ -102,17 +105,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void setButtons(){
-        buttonBack = findViewById(R.id.buttonBack);
         buttonSelect = findViewById(R.id.buttonSelect);
 
-        buttonBack.setOnClickListener(v -> startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class)));
-
         buttonSelect.setOnClickListener(v -> {
-            startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class));
-            Log.d("LOCATIONMARKER:", mSaveList.get(pos).getmDestination());
+            startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             homescreen.loadDestination(mSaveList.get(pos).getmText1(), mSaveList.get(pos).getmDestination());
-
-
+            finish();
         });
     }
 
@@ -122,6 +120,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
         builder.setTitle(title);
         builder.setMessage(Message);
         builder.show();
+    }
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        finish();
     }
 
 }
