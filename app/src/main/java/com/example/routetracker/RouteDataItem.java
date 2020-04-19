@@ -11,13 +11,17 @@ public class RouteDataItem {
     private String time;
     private int image;
     private PolylineOptions polyline;
+    private long numTime;
+    private long startTime;
 
-    public RouteDataItem(int inRouteID, int inCrimeCount, String inDistance, String inTime, int inImage, PolylineOptions inPolyline) {
+    public RouteDataItem(int inRouteID, int inCrimeCount, String inDistance, String inTime, String inNumTime, long inStartTime, int inImage, PolylineOptions inPolyline) {
 
         routeID = inRouteID;
         crimeCount = inCrimeCount;
         distance = inDistance;
         time = inTime;
+        numTime = Long.parseLong(inNumTime);
+        startTime = inStartTime;
         image = inImage;
         polyline = inPolyline;
 
@@ -30,4 +34,6 @@ public class RouteDataItem {
     public int getImage() {return image;}
     public PolylineOptions getPolyline() {return polyline;}
     public void setImage(int inImage) {image = inImage;}
+    public long getNumTime() {return numTime;}
+    public long getStartTime() {return startTime;}
 }

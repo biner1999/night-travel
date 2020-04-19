@@ -35,6 +35,7 @@ public class DataParser {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 String jDuration;
                 String jDistance;
+                String jNumDuration;
                 ArrayList<LatLng> stepPoints = new ArrayList<>();
                 List durationDistance = new ArrayList<>();
                 List path = new ArrayList<>();
@@ -44,9 +45,11 @@ public class DataParser {
 
                     jDuration = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("text");
                     jDistance = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("distance")).get("text");
+                    jNumDuration = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("distance")).get("value");
 
                     hashMap.put("duration",jDuration);
                     hashMap.put("distance", jDistance);
+                    hashMap.put("numduration", jNumDuration);
                     durationDistance.add(hashMap);
 
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");

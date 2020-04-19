@@ -566,15 +566,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         for(ArrayList<LatLng> step : stepPoints) {
             String distance = null;
             String duration = null;
+            String numDuration = null;
             List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
             HashMap<String, String> point = details.get(0);
             duration = point.get("duration");
             distance = point.get("distance");
+            numDuration = point.get("numduration");
 
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0, polyLineList.get(counter-1)));
+            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
             counter++;
         }
 
