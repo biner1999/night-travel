@@ -16,15 +16,14 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -35,7 +34,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -95,6 +93,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private ListView addressList;
     private long backPressedTime = 0;
 
+    Handler handler = new Handler();
 
 
     AdapterView.OnItemClickListener addressListClick = (parent, view, position, id) -> {
@@ -272,6 +271,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                         new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
                         endRoute.setVisibility(View.VISIBLE);
                         getDirection.setVisibility(View.GONE);
+
+
                     }
 
                     else {
@@ -505,6 +506,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         currentRouteData = selectedRouteData;
         currentRouteLine = selectedRouteData.getPolyline();
+
+        // KYLES STUFFFFFFFFFFFFFFFFFFF //
+        start_deviation_checks();
+        // KYLES STUFFFFFFFFFFFFFFFFFFF //
+
         for(int i = 0 ; i < polyLineVisibleList.size(); i++) {
             if(selectedRouteData.getPolyline().getColor() != polyLineVisibleList.get(i).getColor())
                 polyLineVisibleList.get(i).remove();
@@ -513,7 +519,36 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     }
 
+    // check user deviation functions //
+    public void start_deviation_checks(){
+        handler.postDelayed(r, 1);
+    }
 
+    final Runnable r = new Runnable() {
+        public void run() {
+            check_deviation();
+            handler.postDelayed(this, 30000);
+        }
+    };
+    public void check_deviation(){
+
+        double tolerance = 15; // meters
+        List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
+        LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        boolean exceededTolerance = false;
+
+        if (PolyUtil.isLocationOnPath(point, route, true, tolerance)) {
+            exceededTolerance = true;
+        }
+        if (exceededTolerance) {
+            System.out.println("User deviated from path");
+        }
+        else {
+            System.out.println("User HAS NOT deviated from path");
+        }
+    }
+
+    // END OF check user deviation functions //
 
     public void listRoutes() throws ExecutionException, InterruptedException {
         int counter = 1;

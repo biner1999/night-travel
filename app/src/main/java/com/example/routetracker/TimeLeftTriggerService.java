@@ -80,4 +80,5 @@ public class TimeLeftTriggerService extends Service {
         isRunning = false;
         super.onDestroy();
     }
+
 }
