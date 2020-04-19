@@ -20,6 +20,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.GeoApiContext;
+
+
 import com.google.maps.android.PolyUtil;
 
 import android.Manifest;
@@ -179,7 +181,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null)
                     return;
-
+                mCurrentLocation = locationResult.getLastLocation();
                 for (Location location : locationResult.getLocations()) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
                             location.getLongitude())));
@@ -530,17 +532,24 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     final Runnable r = new Runnable() {
         public void run() {
             check_deviation();
-            handler.postDelayed(this, 30000);
+            handler.postDelayed(this, 5000);
         }
     };
     public void check_deviation(){
+        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+                mCurrentLocation = location;
+            }
+        }
+        );
 
-        double tolerance = 15; // meters
+        double tolerance = 1000; // meters
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         boolean exceededTolerance = false;
-
-        if (PolyUtil.isLocationOnPath(point, route, true, tolerance)) {
+        System.out.println(route);
+        System.out.println(point);
+        if (!PolyUtil.isLocationOnPath(point, route,true, tolerance)) {
             exceededTolerance = true;
         }
         if (exceededTolerance) {
@@ -558,15 +567,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         for(ArrayList<LatLng> step : stepPoints) {
             String distance = null;
             String duration = null;
+            String numDuration = null;
             List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
             HashMap<String, String> point = details.get(0);
             duration = point.get("duration");
             distance = point.get("distance");
+            numDuration = point.get("numduration");
 
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, 0, polyLineList.get(counter-1)));
+            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
             counter++;
         }
 
