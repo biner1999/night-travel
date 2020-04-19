@@ -45,7 +45,7 @@ public class DataParser {
 
                     jDuration = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("text");
                     jDistance = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("distance")).get("text");
-                    jNumDuration = (String) ((JSONObject) ((JSONObject) jLegs.get(j)).get("distance")).get("value");
+                    jNumDuration = String.valueOf((int) ((JSONObject) ((JSONObject) jLegs.get(j)).get("duration")).get("value"));
 
                     hashMap.put("duration",jDuration);
                     hashMap.put("distance", jDistance);
