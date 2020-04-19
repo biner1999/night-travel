@@ -517,7 +517,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 polyLineVisibleList.get(i).remove();
         }
         mFrameLayout.setVisibility(View.GONE);
-        startForegroundService();
+        //TODO comment these out for the alarms to work again
+        //startForegroundService();
         startTimeTriggers();
     }
 
@@ -609,6 +610,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     public void startTimeTriggers() {
+        String a = currentRouteData.getRouteTime();
+
+
+        Toast.makeText(getApplicationContext(), a, Toast.LENGTH_SHORT).show();
         long time = 0;
         Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
@@ -617,9 +622,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     public void startForegroundService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        }
+        startForegroundService(serviceIntent);
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 

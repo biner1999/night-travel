@@ -130,7 +130,6 @@ public class SensorService extends Service {
 
     @Override
     public void onDestroy() {
-        disconnectHandler.removeCallbacks(disconnectCallback);
         super.onDestroy();
         //TODO unregister listeners when the stop command is given
 //        sensorManagerAccel.unregisterListener(accelerometerEventListener);
@@ -160,7 +159,6 @@ public class SensorService extends Service {
         System.out.println("Start Disconnect Timer");
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
-    // TODO add functionality to bart's notification's, this is the gyroscopes
     //When timer has elapsed this function is called
     private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
