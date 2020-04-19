@@ -42,6 +42,7 @@ public class L3NotificationsService extends Service {
         String LastName = res.getString(2);
 
         String x = "31";
+
         int EmergencyContact = res.getInt(14);
         String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from " + x + " to " + x + ". He phone is currently at " + x + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
 

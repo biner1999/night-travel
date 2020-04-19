@@ -621,10 +621,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     public void startTimeTriggers() {
-        String a = currentRouteData.getRouteTime();
+        long a = currentRouteData.getNumTime();
+        long b = currentRouteData.getStartTime();
+        String c = Long.toString(a);
+        String d = Long.toString(b);
 
 
-        Toast.makeText(getApplicationContext(), a, Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(getApplicationContext(), c + " " + d, Toast.LENGTH_SHORT).show();
         long time = 0;
         Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
