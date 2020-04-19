@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 public class SensorTriggerService extends Service {
     private static boolean isRunning;
+    final Handler handler = new Handler();
 
     // First Time Trigger //
     public void FirstTriggerStart(long time) {
@@ -16,7 +17,6 @@ public class SensorTriggerService extends Service {
         long secondNotificationDelay = 5000; //60000; //1 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
-        final Handler handler = new Handler();
 /* proper code, commented out for testing
         stopTimeTriggerService();
         startL1Service();
@@ -79,6 +79,7 @@ public class SensorTriggerService extends Service {
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
         isRunning = false;
         super.onDestroy();
     }

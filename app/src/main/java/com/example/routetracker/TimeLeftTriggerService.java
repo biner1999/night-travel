@@ -6,11 +6,9 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-//TODO 1. change phone numbers 2. combine sensor and foreground notificaiton 3. get values for foreground notification 4. run the correct timers and stuff
-
 public class TimeLeftTriggerService extends Service {
     private static boolean isRunning;
-
+    final Handler handler = new Handler();
 
     // First Time Trigger //
     public void FirstTriggerStart(long time) {
@@ -18,7 +16,6 @@ public class TimeLeftTriggerService extends Service {
         long secondNotificationDelay = 5000; //60000; //3 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
-        final Handler handler = new Handler();
 /* proper code, commented out for testing        handler.postDelayed(() -> {
             startL1Service();
             handler.postDelayed(() -> {
@@ -77,6 +74,7 @@ public class TimeLeftTriggerService extends Service {
 
     @Override
     public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
         isRunning = false;
         super.onDestroy();
     }

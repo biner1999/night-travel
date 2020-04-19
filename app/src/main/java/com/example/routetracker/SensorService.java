@@ -130,6 +130,7 @@ public class SensorService extends Service {
 
     @Override
     public void onDestroy() {
+        disconnectHandler.removeCallbacks(disconnectCallback);
         super.onDestroy();
         //TODO unregister listeners when the stop command is given
 //        sensorManagerAccel.unregisterListener(accelerometerEventListener);

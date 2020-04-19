@@ -258,8 +258,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     Thread progressThread = new Thread();
                     progressThread.start();
 
-                    //startForegroundService(view);
-                    //startTimeTriggers(view);
 
                     //TODO Once a confirm route option is in then adapt and move this to it
                     //activeRoute = true;
@@ -291,6 +289,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
             @Override
             public void onClick(View v) {
+                //put those below in the code where the user gets to the destination and the route finishes
+                stopForegroundService();
+                stopNotificationsRestartService();
+                stopTimeTriggersService();
+                stopTimeLeftTriggersService();
+                stopSensorTriggerService();
                 mMap.clear();
                 endRoute.setVisibility(View.GONE);
                 getDirection.setVisibility(View.VISIBLE);
@@ -298,10 +302,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-
     }
-
-
     private void settingsView(){
         Button btnSettings = findViewById(R.id.button_settings);
         btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
@@ -516,7 +517,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 polyLineVisibleList.get(i).remove();
         }
         mFrameLayout.setVisibility(View.GONE);
-
+        startForegroundService();
+        startTimeTriggers();
     }
 
     // check user deviation functions //
@@ -606,19 +608,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
 
-    public void startTimeTriggers(View v) {
+    public void startTimeTriggers() {
         long time = 0;
         Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
     }
 
-    public void stopTimeTriggers(View v) {
-        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
-        stopService(triggersIntent);
-    }
-
-    public void startForegroundService(View v) {
+    public void startForegroundService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
@@ -626,8 +623,27 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         ContextCompat.startForegroundService(this, serviceIntent);
     }
 
-    public void stopNotificationService(View v) {
+    public void stopForegroundService() {
         Intent serviceIntent = new Intent(this, SensorService.class);
+        stopService(serviceIntent);
+    }
+    public void stopNotificationsRestartService() {
+        Intent serviceIntent = new Intent(this, NotificationRestartService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopTimeTriggersService() {
+        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopTimeLeftTriggersService() {
+        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopSensorTriggerService() {
+        Intent serviceIntent = new Intent(this, SensorTriggerService.class);
         stopService(serviceIntent);
     }
 
