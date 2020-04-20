@@ -101,10 +101,6 @@ public class SensorService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_1)
                 .setSmallIcon(R.drawable.ic_my_location)
                 .setContentTitle("You're on route")
-                .setStyle(new NotificationCompat.InboxStyle()
-                        .setSummaryText("ETA: X - Distance: X")
-                        .addLine("ETA: X")
-                        .addLine("Distance: X"))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .build();

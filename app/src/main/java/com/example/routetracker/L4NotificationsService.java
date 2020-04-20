@@ -42,7 +42,7 @@ public class L4NotificationsService extends Service {
 
         String x = "3123123";
 
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from " + x + " to " + x + ". He phone is currently at " + x + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from to " + x + ". His phone is currently at " + x + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),

@@ -25,6 +25,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,6 +37,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -561,7 +563,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
-            //startSensorTriggerService();
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+            for (StatusBarNotification notification : notifications) {
+                if (notification.getId() == 2) {
+                    //do nothing if notification is on the screen
+                }
+                else {
+                    startSensorTriggerService();
+                }
+            }
+
             System.out.println("User deviated from path");
         }
         else {

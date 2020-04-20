@@ -20,6 +20,8 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -40,11 +42,13 @@ public class L3NotificationsService extends Service {
         res.moveToNext();
         String FirstName = res.getString(1);
         String LastName = res.getString(2);
+        long time = homescreenActivity.numTimeRoute/60;
+        long timeUntilPolice = Math.round(time*0.60);
 
         String x = "31";
 
         int EmergencyContact = res.getInt(14);
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from " + x + " to " + x + ". He phone is currently at " + x + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + x + ". His phone is currently at " + timeUntilPolice + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),

@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO 1. change phone numbers 3. get values for foreground notification 4. run the correct timers and stuff
+//TODO 1. change phone numbers and set correct timers 2. set the correct locations in the text
 
 public class TimeTriggerService extends Service {
     private static boolean isRunning;
@@ -23,8 +23,6 @@ public class TimeTriggerService extends Service {
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
 
-        System.out.println("abba");
-        System.out.println(time);
 /*        handler.postDelayed(() -> {
             startL1Service();
             handler.postDelayed(() -> {
@@ -41,7 +39,7 @@ public class TimeTriggerService extends Service {
         handler.postDelayed(() -> {
             startL1Service();
             handler.postDelayed(() -> {
-                startL2Service();
+                startL3Service();
                 stopSelf();
             }, secondNotificationDelay);
         }, firstNotificationDelay);
