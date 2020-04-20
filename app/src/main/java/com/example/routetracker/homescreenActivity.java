@@ -84,7 +84,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     // Route
     private PolylineOptions currentRouteLine;
     public static List<List<HashMap<String, String>>> routeDetails;
-    private RouteDataItem currentRouteData;
+    public RouteDataItem currentRouteData;
     private ArrayList<PolylineOptions> polyLineList;
     private ArrayList<Polyline> polyLineVisibleList;
     public static volatile ArrayList<ArrayList<LatLng>> stepPoints;
@@ -95,6 +95,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private EditText mSearchText;
     private ListView addressList;
     private long backPressedTime = 0;
+
+    public static long numTimeRoute = 0;
+    public static long startTimeRoute = 0;
 
     Handler handler = new Handler();
 
@@ -520,6 +523,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 polyLineVisibleList.get(i).remove();
         }
         mFrameLayout.setVisibility(View.GONE);
+
+        startTimeRoute = currentRouteData.getStartTime();
+        numTimeRoute = currentRouteData.getNumTime();
+
         //TODO comment these out for the alarms to work again
         //startForegroundService();
         startTimeTriggers();
@@ -554,6 +561,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
+            //startSensorTriggerService();
             System.out.println("User deviated from path");
         }
         else {
@@ -622,15 +630,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     public void startTimeTriggers() {
-        long a = currentRouteData.getNumTime();
+        long journeyTimeSeconds = currentRouteData.getNumTime();
         long b = currentRouteData.getStartTime();
-        String c = Long.toString(a);
-        String d = Long.toString(b);
 
-
-
-        Toast.makeText(getApplicationContext(), c + " " + d, Toast.LENGTH_SHORT).show();
-        long time = 0;
+        long time = journeyTimeSeconds * 10000;
         Intent triggersIntent = new Intent(this, TimeTriggerService.class);
         triggersIntent.putExtra("timeID", time);
         startService(triggersIntent);
@@ -659,6 +662,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void stopTimeLeftTriggersService() {
         Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
         stopService(serviceIntent);
+    }
+
+    public void startSensorTriggerService() {
+        Intent serviceIntent = new Intent(this, SensorTriggerService.class);
+        startService(serviceIntent);
     }
 
     public void stopSensorTriggerService() {

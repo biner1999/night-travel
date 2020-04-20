@@ -12,7 +12,7 @@ public class SensorTriggerService extends Service {
     final Handler handler = new Handler();
 
     // First Time Trigger //
-    public void FirstTriggerStart(long time) {
+    public void FirstTriggerStart() {
         long firstNotificationDelay = 5000; //180000; //3 mins
         long secondNotificationDelay = 5000; //60000; //1 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
@@ -66,8 +66,7 @@ public class SensorTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
-        int timeID = intent.getIntExtra("timeID", 0);
-        FirstTriggerStart(timeID);
+        FirstTriggerStart();
         return START_REDELIVER_INTENT;
     }
 

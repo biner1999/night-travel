@@ -12,7 +12,7 @@ public class TimeLeftTriggerService extends Service {
 
     // First Time Trigger //
     public void FirstTriggerStart(long time) {
-        long firstNotificationDelay = 5000; //TODO HERE
+        long firstNotificationDelay = 5000; //time
         long secondNotificationDelay = 5000; //60000; //3 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
