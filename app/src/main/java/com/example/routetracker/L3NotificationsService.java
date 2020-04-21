@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 //import static com.example.routetracker.App.CHANNEL_ID;
 
@@ -34,6 +35,9 @@ public class L3NotificationsService extends Service {
     public static final String GROUP_ID_1 = "Group 1";
     private String phoneNumber = "07706473014";
     DatabaseFunctions myDb;
+    String dest;
+    String curr;
+    long time;
 
 
     public void sendSMS() {
@@ -42,13 +46,13 @@ public class L3NotificationsService extends Service {
         res.moveToNext();
         String FirstName = res.getString(1);
         String LastName = res.getString(2);
-        long time = homescreenActivity.numTimeRoute/60;
-        long timeUntilPolice = Math.round(time*0.60);
 
         String x = "31";
+        double timeAfter = time*0.60;
+        long timeUntilPolice = TimeUnit.MILLISECONDS.toMinutes((long) timeAfter);
 
         int EmergencyContact = res.getInt(14);
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + x + ". His phone is currently at " + timeUntilPolice + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in " + x + " time.";
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in about " + timeUntilPolice + " minutes.";
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
@@ -68,6 +72,9 @@ public class L3NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
+        time = intent.getLongExtra("time", 0);
         sendSMS();
         Intent activityIntent = new Intent(this, LoginActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);

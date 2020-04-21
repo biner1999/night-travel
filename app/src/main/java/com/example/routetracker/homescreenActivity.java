@@ -98,9 +98,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private ListView addressList;
     private long backPressedTime = 0;
 
-    public static long numTimeRoute = 0;
-    public static long startTimeRoute = 0;
-
     Handler handler = new Handler();
 
 
@@ -211,8 +208,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     .apiKey(getString(R.string.google_maps_key))
                     .build();
         }
-
-
     }
 
     private String getUrl(Location origin, LatLng dest) {
@@ -301,7 +296,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 stopForegroundService();
                 stopNotificationsRestartService();
                 stopTimeTriggersService();
-                stopTimeLeftTriggersService();
+                stopTimeLeftTriggerService();
                 stopSensorTriggerService();
                 mMap.clear();
                 endRoute.setVisibility(View.GONE);
@@ -526,9 +521,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
         mFrameLayout.setVisibility(View.GONE);
 
-        startTimeRoute = currentRouteData.getStartTime();
-        numTimeRoute = currentRouteData.getNumTime();
-
         //TODO comment these out for the alarms to work again
         //startForegroundService();
         startTimeTriggers();
@@ -639,20 +631,19 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     });
 
-
-
-    public void startTimeTriggers() {
-        long journeyTimeSeconds = currentRouteData.getNumTime();
-        long b = currentRouteData.getStartTime();
-
-        long time = journeyTimeSeconds * 10000;
-        Intent triggersIntent = new Intent(this, TimeTriggerService.class);
-        triggersIntent.putExtra("timeID", time);
-        startService(triggersIntent);
-    }
-
     public void startForegroundService() {
+        long journeyTimeSeconds = currentRouteData.getNumTime();
+        long time = journeyTimeSeconds * 1000;
+        LatLng des = destination.getPosition();
+        String dest = des.toString();
+        String a = Double.toString(mCurrentLocation.getLatitude());
+        String b = Double.toString(mCurrentLocation.getLongitude());
+        String curr = "lat/lng: (" + a + "," + b + ")";
+
         Intent serviceIntent = new Intent(this, SensorService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
         startForegroundService(serviceIntent);
         ContextCompat.startForegroundService(this, serviceIntent);
     }
@@ -661,9 +652,21 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Intent serviceIntent = new Intent(this, SensorService.class);
         stopService(serviceIntent);
     }
-    public void stopNotificationsRestartService() {
-        Intent serviceIntent = new Intent(this, NotificationRestartService.class);
-        stopService(serviceIntent);
+
+    public void startTimeTriggers() {
+        long journeyTimeSeconds = currentRouteData.getNumTime();
+        long time = journeyTimeSeconds * 1000;
+        LatLng des = destination.getPosition();
+        String dest = des.toString();
+        String a = Double.toString(mCurrentLocation.getLatitude());
+        String b = Double.toString(mCurrentLocation.getLongitude());
+        String curr = "lat/lng: (" + a + "," + b + ")";
+
+        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
+        startService(serviceIntent);
     }
 
     public void stopTimeTriggersService() {
@@ -671,13 +674,65 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         stopService(serviceIntent);
     }
 
-    public void stopTimeLeftTriggersService() {
+    public void startTimeLeftTriggerService() {
+        long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
+        long journeyTime = Math.round((currentRouteData.getNumTime() * 1000)*1.25) + 300000;
+        long timeLeft = journeyTime - timeSinceStart;
+        long journeyTimeSeconds = currentRouteData.getNumTime();
+        long time = journeyTimeSeconds * 1000;
+        LatLng des = destination.getPosition();
+        String dest = des.toString();
+        String a = Double.toString(mCurrentLocation.getLatitude());
+        String b = Double.toString(mCurrentLocation.getLongitude());
+        String curr = "lat/lng: (" + a + "," + b + ")";
+
+        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
+        serviceIntent.putExtra("timeLeft", timeLeft);
+        startService(serviceIntent);
+    }
+
+    public void stopTimeLeftTriggerService() {
         Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
         stopService(serviceIntent);
     }
 
+    public void startNotificationsRestartService() {
+        long journeyTimeSeconds = currentRouteData.getNumTime();
+        long time = journeyTimeSeconds * 1000;
+        LatLng des = destination.getPosition();
+        String dest = des.toString();
+        String a = Double.toString(mCurrentLocation.getLatitude());
+        String b = Double.toString(mCurrentLocation.getLongitude());
+        String curr = "lat/lng: (" + a + "," + b + ")";
+
+        Intent serviceIntent = new Intent(this, NotificationRestartService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
+        startService(serviceIntent);
+    }
+
+    public void stopNotificationsRestartService() {
+        Intent serviceIntent = new Intent(this, NotificationRestartService.class);
+        stopService(serviceIntent);
+    }
+
     public void startSensorTriggerService() {
+        long journeyTimeSeconds = currentRouteData.getNumTime();
+        long time = journeyTimeSeconds * 1000;
+        LatLng des = destination.getPosition();
+        String dest = des.toString();
+        String a = Double.toString(mCurrentLocation.getLatitude());
+        String b = Double.toString(mCurrentLocation.getLongitude());
+        String curr = "lat/lng: (" + a + "," + b + ")";
+
         Intent serviceIntent = new Intent(this, SensorTriggerService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
         startService(serviceIntent);
     }
 
@@ -692,6 +747,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         mMapView.onStart();
 
         startLocationUpdates();
+
+
     }
 
     @Override
@@ -707,6 +764,43 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onResume();
 
         startLocationUpdates();
+
+        System.out.println(currentRouteData);
+        if (currentRouteData != null) {
+            long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
+            long journeyTime = Math.round((currentRouteData.getNumTime() * 1000)*1.25) + 300000;
+            long time = journeyTime - timeSinceStart;
+            //Toast.makeText(getApplicationContext(), time + " " + journeyTime + " " + timeSinceStart, Toast.LENGTH_SHORT).show();
+            // login if user has an active route and NotificationRestarService is running instead of TimeTriggerService
+            if (NotificationRestartService.isRunning()) {
+                stopNotificationsRestartService();
+                startNotificationsRestartService();
+                Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
+            }
+            // login if user has an active route and less than 3 minutes on the first timer
+            else if (TimeTriggerService.isRunning() && time<180000) {
+                stopTimeTriggersService();
+                stopTimeLeftTriggerService();
+                startNotificationsRestartService();
+                Toast.makeText(getApplicationContext(), "Successfully logged in" + "TTS", Toast.LENGTH_SHORT).show();
+            }
+            //login if sensor triggered the notifications
+            else if (SensorTriggerService.isRunning()) {
+                stopSensorTriggerService();
+                startTimeLeftTriggerService();
+                Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
+            }
+            //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
+            else if (TimeLeftTriggerService.isRunning()) {
+                Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
+            }
+            //login if user has no active route or has an active route and more than 3 minutes left on the first timer
+            else {
+                Toast.makeText(getApplicationContext(), "Successfully logged in" + "inside", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Successfully logged in" + "outside", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -730,8 +824,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         } else {
             startActivity(new Intent(homescreenActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
-            finish();
-
         }
     }
 

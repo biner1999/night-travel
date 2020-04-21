@@ -9,10 +9,13 @@ import androidx.annotation.Nullable;
 public class TimeLeftTriggerService extends Service {
     private static boolean isRunning;
     final Handler handler = new Handler();
-
+    String dest;
+    String curr;
+    long time;
+    long timeLeft;
     // First Time Trigger //
-    public void FirstTriggerStart(long time) {
-        long firstNotificationDelay = 5000; //time
+    public void FirstTriggerStart() {
+        long firstNotificationDelay = 5000; //timeLeft;
         long secondNotificationDelay = 5000; //60000; //3 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
@@ -61,8 +64,11 @@ public class TimeLeftTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
-        int timeID = intent.getIntExtra("timeID", 0);
-        FirstTriggerStart(timeID);
+        time = intent.getLongExtra("timeID", 0);
+        timeLeft = intent.getLongExtra("timeLeft", 0);
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
+        FirstTriggerStart();
         return START_REDELIVER_INTENT;
     }
 

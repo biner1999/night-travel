@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 public class NotificationRestartService extends Service {
     private static boolean isRunning;
     final Handler handler = new Handler();
+    String dest;
+    String curr;
+    long time;
 
     // First Time Trigger //
     public void FirstTriggerStart() {
@@ -49,10 +52,15 @@ public class NotificationRestartService extends Service {
     }
     public void startL3Service() {
         Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        L3ServiceIntent.putExtra("dest", dest);
+        L3ServiceIntent.putExtra("curr", curr);
+        L3ServiceIntent.putExtra("time", time);
         startService(L3ServiceIntent);
     }
     public void startL4Service() {
         Intent L4ServiceIntent = new Intent(this, L4NotificationsService.class);
+        L4ServiceIntent.putExtra("dest", dest);
+        L4ServiceIntent.putExtra("curr", curr);
         startService(L4ServiceIntent);
     }
 
@@ -63,6 +71,9 @@ public class NotificationRestartService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
+        time = intent.getLongExtra("timeID", 0);
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
         FirstTriggerStart();
         return START_REDELIVER_INTENT;
     }

@@ -27,6 +27,8 @@ public class L4NotificationsService extends Service {
     public static final String GROUP_ID_1 = "Group 1";
     private String phoneNumber = "07706473014";
     DatabaseFunctions myDb;
+    String dest;
+    String curr;
 
     public void sendSMS() {
         myDb = new DatabaseFunctions(this);
@@ -42,7 +44,7 @@ public class L4NotificationsService extends Service {
 
         String x = "3123123";
 
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey from to " + x + ". His phone is currently at " + x + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
@@ -62,6 +64,8 @@ public class L4NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
         sendSMS();
         Intent activityIntent = new Intent(this, LoginActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);

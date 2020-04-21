@@ -10,14 +10,17 @@ import androidx.annotation.Nullable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO 1. change phone numbers and set correct timers 2. set the correct locations in the text
+//TODO 1. change phone numbers and set correct timers
 
 public class TimeTriggerService extends Service {
     private static boolean isRunning;
     final Handler handler = new Handler();
+    String dest;
+    String curr;
+    long time;
 
     // First Time Trigger //
-    public void FirstTriggerStart(long time) {
+    public void FirstTriggerStart() {
         long firstNotificationDelay = 5000; //Math.round(time*1.25) + 300000; //25% + 5 mins
         long secondNotificationDelay = 5000; //60000; //3 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
@@ -39,7 +42,7 @@ public class TimeTriggerService extends Service {
         handler.postDelayed(() -> {
             startL1Service();
             handler.postDelayed(() -> {
-                startL3Service();
+                startL2Service();
                 stopSelf();
             }, secondNotificationDelay);
         }, firstNotificationDelay);
@@ -54,10 +57,15 @@ public class TimeTriggerService extends Service {
     }
     public void startL3Service() {
         Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        L3ServiceIntent.putExtra("dest", dest);
+        L3ServiceIntent.putExtra("curr", curr);
+        L3ServiceIntent.putExtra("time", time);
         startService(L3ServiceIntent);
     }
     public void startL4Service() {
         Intent L4ServiceIntent = new Intent(this, L4NotificationsService.class);
+        L4ServiceIntent.putExtra("dest", dest);
+        L4ServiceIntent.putExtra("curr", curr);
         startService(L4ServiceIntent);
     }
 
@@ -68,8 +76,10 @@ public class TimeTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
-        int timeID = intent.getIntExtra("timeID", 0);
-        FirstTriggerStart(timeID);
+        time = intent.getLongExtra("timeID", 0);
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
+        FirstTriggerStart();
         return START_REDELIVER_INTENT;
     }
 

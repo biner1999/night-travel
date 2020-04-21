@@ -58,53 +58,10 @@ public class LoginActivity extends AppCompatActivity {
                 String password = e2.getText().toString();
                 Boolean Chkpass = db.checkpassword(password);
                 if(Chkpass) {
-                    long timeSinceStart = System.currentTimeMillis() - homescreenActivity.startTimeRoute;
-                    long journeyTime = Math.round((homescreenActivity.numTimeRoute * 1000)*1.25) + 300000;
-                    long time = journeyTime - timeSinceStart;
-                    Toast.makeText(getApplicationContext(), time + " " + journeyTime + " " + timeSinceStart, Toast.LENGTH_SHORT).show();
-                    // login if user has an active route and NotificationRestarService is running instead of TimeTriggerService
-                    if (NotificationRestartService.isRunning()) {
-                        stopNotificationsRestartService(v);
-                        startNotificationsRestartService(v);
-                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
-                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                        startActivity(homeScreen);
-                        finish();
-                    }
-                    // login if user has an active route and less than 3 minutes on the first timer
-                    else if (TimeTriggerService.isRunning() && time<180000) {
-                        stopTimeTriggersService(v);
-                        stopTimeLeftTriggerService(v);
-                        startNotificationsRestartService(v);
-                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "TTS", Toast.LENGTH_SHORT).show();
-                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                        startActivity(homeScreen);
-                        finish();
-                    }
-                    //login if sensor triggered the notifications
-                    else if (SensorTriggerService.isRunning()) {
-                        stopSensorTriggerService(v);
-                        startTimeLeftTriggerService(v);
-                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
-                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                        startActivity(homeScreen);
-                        finish();
-                    }
-                    //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
-                    else if (TimeLeftTriggerService.isRunning()) {
-                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
-                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                        startActivity(homeScreen);
-                        finish();
-                    }
-                    //login if user has no active route or has an active route and more than 3 minutes left on the first timer
-                    else {
-                        Toast.makeText(getApplicationContext(), "Successfully logged in" + "none", Toast.LENGTH_SHORT).show();
-                        Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                        startActivity(homeScreen);
-                        finish();
-                    }
-
+                    //Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+                    Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                    startActivity(homeScreen);
+                    finish();
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Failed to log in",Toast.LENGTH_SHORT).show();
@@ -159,42 +116,6 @@ public class LoginActivity extends AppCompatActivity {
             alertMessageNoGPS();
         }
     }
-
-    public void startNotificationsRestartService(View v) {
-        Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
-        startService(serviceIntent);
-    }
-
-    public void stopNotificationsRestartService(View v) {
-        Intent serviceIntent = new Intent(LoginActivity.this, NotificationRestartService.class);
-        stopService(serviceIntent);
-    }
-
-    public void stopTimeTriggersService(View v) {
-        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
-        stopService(serviceIntent);
-    }
-
-    public void stopSensorTriggerService(View v) {
-        Intent serviceIntent = new Intent(this, SensorTriggerService.class);
-        stopService(serviceIntent);
-    }
-
-    public void startTimeLeftTriggerService(View v) {
-        long timeSinceStart = System.currentTimeMillis() - homescreenActivity.startTimeRoute;
-        long journeyTime = Math.round((homescreenActivity.numTimeRoute * 1000)*1.25) + 300000;
-        long time = journeyTime - timeSinceStart;
-        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
-        serviceIntent.putExtra("timeID", time);
-        startService(serviceIntent);
-    }
-
-    public void stopTimeLeftTriggerService(View v) {
-        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
-        stopService(serviceIntent);
-    }
-
-
 }
 
 

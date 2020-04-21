@@ -10,10 +10,12 @@ import androidx.annotation.Nullable;
 public class SensorTriggerService extends Service {
     private static boolean isRunning;
     final Handler handler = new Handler();
+    String dest;
+    String curr;
+    long time;
 
     // First Time Trigger //
     public void FirstTriggerStart() {
-        long firstNotificationDelay = 5000; //180000; //3 mins
         long secondNotificationDelay = 5000; //60000; //1 mins
         long thirdNotificationDelay = 5000; //Math.round(time*0.15);
         long fourthNotificationDelay = 5000; //Math.round(time*0.60);
@@ -47,15 +49,16 @@ public class SensorTriggerService extends Service {
     }
     public void startL3Service() {
         Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        L3ServiceIntent.putExtra("dest", dest);
+        L3ServiceIntent.putExtra("curr", curr);
+        L3ServiceIntent.putExtra("time", time);
         startService(L3ServiceIntent);
     }
     public void startL4Service() {
         Intent L4ServiceIntent = new Intent(this, L4NotificationsService.class);
+        L4ServiceIntent.putExtra("dest", dest);
+        L4ServiceIntent.putExtra("curr", curr);
         startService(L4ServiceIntent);
-    }
-    public void stopTimeTriggerService() {
-        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
-        stopService(serviceIntent);
     }
 
 
@@ -66,6 +69,9 @@ public class SensorTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
+        time = intent.getLongExtra("timeID", 0);
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
         FirstTriggerStart();
         return START_REDELIVER_INTENT;
     }

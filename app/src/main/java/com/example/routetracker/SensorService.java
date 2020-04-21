@@ -26,6 +26,10 @@ public class SensorService extends Service {
     float accelValuesY;
     float accelValuesZ;
 
+    String dest;
+    String curr;
+    long time;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -35,6 +39,10 @@ public class SensorService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+
+        time = intent.getLongExtra("timeID", 0);
+        dest = intent.getStringExtra("dest");
+        curr = intent.getStringExtra("curr");
 
         //Declarations
         String input = intent.getStringExtra("inputExtra");
@@ -164,6 +172,9 @@ public class SensorService extends Service {
 
     public void startSensorTriggerService() {
         Intent serviceIntent = new Intent(this, SensorTriggerService.class);
+        serviceIntent.putExtra("dest", dest);
+        serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeID", time);
         startService(serviceIntent);
     }
 }
