@@ -11,12 +11,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class SavedDestinationActivity extends AppCompatActivity{
 
-    //TODO: Bug when pressing "Select" button without making selection first, causes crash
     //TODO: Bug when pressing Delete button on any destination item, causes crash
 
     private ArrayList<SaveDestinationItem> mSaveList;
@@ -26,13 +26,12 @@ public class SavedDestinationActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManger;
     private SaveAdapter mAdapter;
-    Context mContext;
     public static homescreenActivity homescreen;
 
-    private Button buttonBack;
     private Button buttonSelect;
 
     private int pos = -1;
+    private boolean selected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +78,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
                     changeItem(position, R.drawable.ic_check);
                     pos = position;
                 }
+                selected = true;
+                setButtons();
 
             }
             @Override
@@ -94,9 +95,9 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void removeItem(int position){
-        mAdapter.notifyItemRemoved(position);
+        myDb.deleteRouteData(mSaveList.get(position).getmDestination());
         mSaveList.remove(position);
-        myDb.deleteRouteData(Integer.toString(position));
+        mAdapter.notifyItemRemoved(position);
     }
 
     public void changeItem(int position, int image){
@@ -106,12 +107,18 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
     public void setButtons(){
         buttonSelect = findViewById(R.id.buttonSelect);
-
-        buttonSelect.setOnClickListener(v -> {
-            startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            homescreen.loadDestination(mSaveList.get(pos).getmText1(), mSaveList.get(pos).getmDestination());
-            finish();
-        });
+        if (selected) {
+            buttonSelect.setOnClickListener(v -> {
+                startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                homescreen.loadDestination(mSaveList.get(pos).getmText1(), mSaveList.get(pos).getmDestination());
+                finish();
+            });
+        }
+        else{
+            buttonSelect.setOnClickListener(v -> {
+                Toast.makeText(getApplicationContext(), "No Route Selected", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     public void showMessage (String title, String Message){

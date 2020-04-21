@@ -188,9 +188,9 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Deletes a users data, will delete the entire row(Requires an ID as reference)
-    public Integer deleteRouteData(String id){
+    public Integer deleteRouteData(String dest){
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(Route_Table_Name, "ID = ?",new String[] { id } );
+        return db.delete(Route_Table_Name, "EndDestination = ?",new String[] { dest } );
     }
 
     //Returns all values in the route table
