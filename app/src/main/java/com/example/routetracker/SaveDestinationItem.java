@@ -17,10 +17,6 @@ public class SaveDestinationItem {
 
     }
 
-    public void changeImage(int image){
-        mImageResource = image;
-    }
-
     public int getmImageResource(){
         return mImageResource;
     }
