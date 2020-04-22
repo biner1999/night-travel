@@ -88,7 +88,7 @@ public class CreateUserActivity extends AppCompatActivity {
                                 editQuestion.getSelectedItem().toString(),
                                 editAnswer.getText().toString(),
                                 100,
-                                15,
+                                100,
                                 editNumber.getText().toString(),
                                 0,
                                 1

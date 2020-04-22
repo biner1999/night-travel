@@ -1,6 +1,7 @@
 package com.example.routetracker;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.service.notification.StatusBarNotification;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -72,7 +74,16 @@ public class SensorService extends Service {
                     if (rootSquare < 2.0) {
                         //TODO add funcionality with bart's notification system, this is the accelerometer
                         System.out.println("Fall Rootsquare = " + rootSquare);
-                        startSensorTriggerService();
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+                        for (StatusBarNotification notification : notifications) {
+                            if (notification.getId() == 2) {
+                                //do nothing if notification is on the screen
+                            }
+                            else {
+                                startSensorTriggerService();
+                            }
+                        }
                     }
                 }
             }
@@ -167,7 +178,16 @@ public class SensorService extends Service {
     private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
         System.out.println("Disconnect test");
-        startSensorTriggerService();
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+        for (StatusBarNotification notification : notifications) {
+            if (notification.getId() == 2) {
+                //do nothing if notification is on the screen
+            }
+            else {
+                startSensorTriggerService();
+            }
+        }
     };
 
     public void startSensorTriggerService() {
