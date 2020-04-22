@@ -29,6 +29,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -511,9 +512,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         currentRouteData = selectedRouteData;
         currentRouteLine = selectedRouteData.getPolyline();
 
-        // KYLES STUFFFFFFFFFFFFFFFFFFF //
         start_deviation_checks();
-        // KYLES STUFFFFFFFFFFFFFFFFFFF //
 
         for(int i = 0 ; i < polyLineVisibleList.size(); i++) {
             if(selectedRouteData.getPolyline().getColor() != polyLineVisibleList.get(i).getColor())
@@ -545,7 +544,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
         );
 
-        double tolerance = 1000; // meters
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getUserIDOne();
+        res.moveToNext();
+        double tolerance = res.getInt(12); // 0.1 meters
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         boolean exceededTolerance = false;
@@ -824,6 +826,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         } else {
             startActivity(new Intent(homescreenActivity.this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 

@@ -24,7 +24,7 @@ import java.net.PasswordAuthentication;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText e2;
-    private Button login, DEBUG;
+    private Button login, forgotPin, DEBUG;
     private DatabaseFunctions db;
     private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
@@ -50,34 +50,32 @@ public class LoginActivity extends AppCompatActivity {
 
         e2 = findViewById(R.id.login_pin);
         login = findViewById(R.id.login_btn);
+        forgotPin = findViewById(R.id.forgotpin_btn);
+        // TODO: Remove DEBUG when finished
         DEBUG = findViewById(R.id.DEBUG);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        login.setOnClickListener(v -> {
 
-                String password = e2.getText().toString();
-                Boolean Chkpass = db.checkpassword(password);
-                if(Chkpass) {
-                    //Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
-                    Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
-                    startActivity(homeScreen);
-                    finish();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Failed to log in",Toast.LENGTH_SHORT).show();
-                }
+            String password = e2.getText().toString();
+            Boolean Chkpass = db.checkpassword(password);
+            if(Chkpass) {
+                //Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
+                Intent homeScreen = new Intent(LoginActivity.this, homescreenActivity.class);
+                startActivity(homeScreen);
+                finish();
+            }
+            else {
+                Toast.makeText(getApplicationContext(),"Failed to log in",Toast.LENGTH_SHORT).show();
             }
         });
 
 
-        DEBUG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        DEBUG.setOnClickListener(v -> {
 
-                Intent DebugScreen = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(DebugScreen);
-            }
+            Intent DebugScreen = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(DebugScreen);
         });
+
+        forgotPin.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgotPinActivity.class)));
     }
 
     private boolean checkUserExists(){

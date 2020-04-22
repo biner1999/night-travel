@@ -17,6 +17,8 @@
             android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -37,9 +39,9 @@
             android:id="@+id/layoutSurname"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="60dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutFirstName">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputSurname"
@@ -49,8 +51,8 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:inputType="textCapWords"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/layoutFirstName" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,10 +60,10 @@
             android:id="@+id/layoutPin"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="180dp"
+            android:layout_marginTop="60dp"
             app:endIconMode="password_toggle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutSurname">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputPin"
@@ -71,8 +73,8 @@
                 android:inputType="numberPassword"
                 android:maxLength="4"
                 android:maxLines="1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/layoutSurname" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,50 +84,89 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="260dp"
+            android:layout_marginTop="80dp"
             android:text="@string/securityquestion"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutPin" />
 
         <Spinner
             android:id="@+id/securQSpinner"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="300dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/textSecurQ" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutSecAns"
             android:layout_width="290dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="340dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/securQSpinner">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputSecAns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/answer"
+                android:inputType="textCapWords"
                 android:maxLength="20"
                 android:maxLines="1"
-                android:inputType="textCapWords"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/securQSpinner" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutNumber"
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutSecAns">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/emergencycontact"
+                android:inputType="number"
+                android:maxLength="13"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/layoutSecAns" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="@string/sex"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutNumber" />
+
+        <Spinner
+            android:id="@+id/genderSpinner"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/textGender" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutAge"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="500dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/genderSpinner">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputAge"
@@ -135,8 +176,8 @@
                 android:inputType="number"
                 android:maxLength="3"
                 android:maxLines="1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/genderSpinner" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,9 +185,9 @@
             android:id="@+id/layoutHeight"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="560dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="60dp"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+            app:layout_constraintTop_toTopOf="@id/layoutAge">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/inputHeight"
@@ -156,39 +197,19 @@
                 android:inputType="number"
                 android:maxLength="3"
                 android:maxLines="1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
+                app:layout_constraintTop_toTopOf="@id/layoutAge" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/textGender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="420dp"
-            android:text="@string/sex"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Spinner
-            android:id="@+id/genderSpinner"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="460dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
         <Button
             android:id="@+id/btnSubmit"
             style="@style/Widget.AppCompat.Button"
-            android:layout_width="125dp"
+            android:layout_width="290dp"
             android:layout_height="45dp"
             android:layout_marginTop="880dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="23dp"
             android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/submit"
             android:textColor="#FFFFFF"
@@ -203,7 +224,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/newuser"
-            android:textSize="22sp"
+            android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -212,11 +233,9 @@
             android:id="@+id/textOptional"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginLeft="4dp"
             android:layout_marginTop="20dp"
             android:text="@string/optionalinfo"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
             app:layout_constraintTop_toBottomOf="@+id/layoutHeight" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -224,7 +243,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
             app:layout_constraintTop_toBottomOf="@id/textOptional">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -235,7 +254,7 @@
                 android:inputType="number"
                 android:maxLength="3"
                 android:maxLines="1"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -245,7 +264,7 @@
             android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5.5dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
             app:layout_constraintTop_toBottomOf="@id/layoutWeight">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -256,7 +275,7 @@
                 android:inputType="text"
                 android:maxLength="20"
                 android:maxLines="1"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -266,7 +285,7 @@
             android:layout_width="290dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5.5dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutFirstName"
             app:layout_constraintTop_toBottomOf="@id/layoutEthnicity">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -274,11 +293,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/hair"
+                android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLength="10"
                 android:maxLines="1"
-                android:imeOptions="actionDone"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/layoutFirstName"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </com.google.android.material.textfield.TextInputLayout>

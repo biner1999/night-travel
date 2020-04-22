@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -109,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void saveChanges(){
         Cursor res = myDb.getUserIDOne();
-
+        res.moveToNext();
         btnSaveChanges.setOnClickListener(
                 v -> {
                     boolean isUpdated = myDb.updateUserData("1",
@@ -133,6 +134,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     if(isUpdated){
                         Toast.makeText(getApplicationContext(),"Changes Made", Toast.LENGTH_LONG).show();
+                        Log.d("DISTANCE: ", String.valueOf(editDistance.getProgress()));
                         finish();
                     }else{
                         Toast.makeText(getApplicationContext(),"Changes Not Made", Toast.LENGTH_LONG).show();

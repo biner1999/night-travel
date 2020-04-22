@@ -33,7 +33,7 @@ public class L3NotificationsService extends Service {
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
     public static final String GROUP_ID_1 = "Group 1";
-    private String phoneNumber = "07706473014";
+    private String phoneNumber;
     DatabaseFunctions myDb;
     String dest;
     String curr;
@@ -46,6 +46,7 @@ public class L3NotificationsService extends Service {
         res.moveToNext();
         String FirstName = res.getString(1);
         String LastName = res.getString(2);
+        phoneNumber = res.getString(14);
 
         String x = "31";
         double timeAfter = time*0.60;

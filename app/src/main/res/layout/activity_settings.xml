@@ -13,40 +13,84 @@ android:fillViewport="true">
         android:focusableInTouchMode="true"
         tools:context=".SettingsActivity">
 
-        <Button
-            android:id="@+id/buttonDeleteAccount"
-            android:layout_width="109dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="660dp"
-            android:background="@drawable/left_btn_rounded_corners"
-            android:text="@string/DeleteAcc"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toEndOf="@id/buttonSaveChanges"
+        <TextView
+            android:id="@+id/textViewAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="582dp"
+            android:text="@string/age"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewHair"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="528dp"
+            android:text="@string/hair"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewHeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="468dp"
+            android:text="@string/height"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="413dp"
+            android:text="@string/weight"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="358dp"
+            android:text="@string/emergencycontact"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/buttonSaveChanges"
-            android:layout_width="109dp"
-            android:layout_height="52dp"
+            android:layout_width="332dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="660dp"
+            android:layout_marginBottom="23dp"
             android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/savechanges"
             android:textColor="#FFFFFF"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="129dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/buttonChangePin"
-            android:layout_width="109dp"
+            android:layout_width="290dp"
             android:layout_height="52dp"
-            android:layout_marginStart="44dp"
-            android:layout_marginLeft="44dp"
-            android:layout_marginTop="160dp"
+            android:layout_marginTop="180dp"
             android:background="@drawable/left_btn_rounded_corners"
             android:text="@string/changepin"
             android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,7 +100,7 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="244dp"
+            android:layout_marginTop="264dp"
             android:text="@string/accel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,11 +111,11 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="352dp"
+            android:layout_marginTop="372dp"
             android:ems="10"
             android:hint="@string/emergencycontact"
-            android:inputType="phone"
             android:imeOptions="actionDone"
+            android:inputType="phone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,9 +125,9 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="300dp"
-            android:text="@string/contactpolice"
+            android:layout_marginTop="320dp"
             android:imeOptions="actionDone"
+            android:text="@string/contactpolice"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -93,11 +137,11 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="408dp"
+            android:layout_marginTop="428dp"
             android:ems="10"
             android:hint="@string/weight"
-            android:inputType="number"
             android:imeOptions="actionDone"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,11 +151,11 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="464dp"
+            android:layout_marginTop="484dp"
             android:ems="10"
             android:hint="@string/height"
-            android:inputType="number"
             android:imeOptions="actionDone"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -121,11 +165,11 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="524dp"
+            android:layout_marginTop="544dp"
             android:ems="10"
             android:hint="@string/hair"
-            android:inputType="textPersonName"
             android:imeOptions="actionDone"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -135,11 +179,11 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="44dp"
             android:layout_marginLeft="44dp"
-            android:layout_marginTop="576dp"
+            android:layout_marginTop="596dp"
             android:ems="10"
             android:hint="@string/age"
-            android:inputType="textPersonName"
             android:imeOptions="actionDone"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -149,7 +193,7 @@ android:fillViewport="true">
             android:layout_height="19dp"
             android:layout_marginStart="46dp"
             android:layout_marginLeft="46dp"
-            android:layout_marginTop="124dp"
+            android:layout_marginTop="144dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -159,7 +203,7 @@ android:fillViewport="true">
             android:layout_height="19dp"
             android:layout_marginStart="46dp"
             android:layout_marginLeft="46dp"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="85dp"
             app:layout_constraintEnd_toEndOf="@+id/seekBarTime"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -170,7 +214,7 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
-            android:layout_marginTop="34dp"
+            android:layout_marginTop="54dp"
             android:text="@string/distance"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -181,8 +225,19 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginLeft="46dp"
-            android:layout_marginTop="94dp"
+            android:layout_marginTop="114dp"
             android:text="@string/time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/settingsbtn"
+            android:textSize="28dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
-    EditText editFirst_Name,editSurname, editPin, editAnswer, editAge, editHeight, editWeight, editEthnicity, editHair;
+    EditText editFirst_Name,editSurname, editPin, editAnswer, editNumber, editAge, editHeight, editWeight, editEthnicity, editHair;
     Button btnAddData, btnviewAll;
     Spinner editQuestion, editGender;
 
@@ -38,6 +38,7 @@ public class CreateUserActivity extends AppCompatActivity {
         editPin = findViewById(R.id.inputPin);
         editQuestion = findViewById(R.id.securQSpinner);
         editAnswer = findViewById(R.id.inputSecAns);
+        editNumber = findViewById(R.id.inputNumber);
         editAge = findViewById(R.id.inputAge);
         editHeight = findViewById(R.id.inputHeight);
         editQuestion = findViewById(R.id.securQSpinner);
@@ -88,7 +89,7 @@ public class CreateUserActivity extends AppCompatActivity {
                                 editAnswer.getText().toString(),
                                 100,
                                 15,
-                                "",
+                                editNumber.getText().toString(),
                                 0,
                                 1
                         );
@@ -160,6 +161,14 @@ public class CreateUserActivity extends AppCompatActivity {
             valid = false;
         }else{
             editAnswer.setError(null);
+        }
+
+        // Emergency Contact
+        if (editNumber.getText().toString().length() < 9) {
+            editNumber.setError("Please input a valid phone number");
+            valid = false;
+        }else{
+            editNumber.setError(null);
         }
 
         // Age

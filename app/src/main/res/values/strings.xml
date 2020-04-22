@@ -27,16 +27,19 @@
     <string name="changepin">Change PIN</string>
     <string name="weight">Weight (kg)</string>
     <string name="distance">Distance : </string>
-    <string name="emergencycontact">Emergency Contact</string>
+    <string name="emergencycontact">Emergency Contact No#</string>
     <string name="time">Time : </string>
     <string name="routetracker">Route Tracker</string>
     <string name="optionalinfo">The following information is optional, it will be used to help police
-        better identify you</string>
+        better identify you in a case of emergency</string>
     <string name="ethnicity">Ethnicity</string>
     <string name="existingpin">Existing PIN</string>
     <string name="newpin">New PIN</string>
     <string name="confirm">Confirm</string>
     <string name="endRoute">End Journey</string>
+    <string name="forgotPin">Forgot PIN?</string>
+    <string name="forgotPinTitle">Forgot PIN</string>
+    <string name="forgotPinText">Answer your recovery question below then input a new PIN to reset</string>
 
     <string-array name="security_array">
         <item>Mother\'s maiden name</item>
