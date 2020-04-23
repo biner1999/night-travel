@@ -59,7 +59,7 @@ public class ChangePinFragment extends Fragment {
 
         String firsName, surname, gender, age, height, hair, weight, ethnicity, question, answer,
                 emergencyctc;
-        int dist, time , police, gyro;
+        int dist, time , police, gyro, firstlog;
 
         View rootView = inflater.inflate(R.layout.fragment_change_pin, null);
         myDb = new DatabaseFunctions(context);
@@ -80,6 +80,7 @@ public class ChangePinFragment extends Fragment {
         emergencyctc = res.getString(14);
         police = res.getInt(15);
         gyro = res.getInt(16);
+        firstlog = res.getInt(17);
 
 
 
@@ -122,7 +123,8 @@ public class ChangePinFragment extends Fragment {
                             time,
                             emergencyctc,
                             police,
-                            gyro);
+                            gyro,
+                            firstlog);
 
                     if(updated) {
                         Toast.makeText(context, "PIN Changed", Toast.LENGTH_LONG).show();

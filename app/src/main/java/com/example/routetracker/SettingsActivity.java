@@ -151,8 +151,8 @@ public class SettingsActivity extends AppCompatActivity {
                             current,
                             editEmergancyContact.getText().toString(),
                             state(editPoliceContact.isChecked()),
-                            state(editAccelAndGyro.isChecked())
-                            );
+                            state(editAccelAndGyro.isChecked()),
+                            res.getInt(17));
 
                     if(isUpdated){
                         Toast.makeText(getApplicationContext(),"Changes Made", Toast.LENGTH_LONG).show();

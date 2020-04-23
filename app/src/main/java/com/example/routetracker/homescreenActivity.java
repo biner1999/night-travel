@@ -38,6 +38,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.service.notification.StatusBarNotification;
 import android.view.KeyEvent;
 import android.view.View;
@@ -215,7 +216,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void displayTutorial() {
-        boolean firstLogin = true; //TESTING
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getUserIDOne();
+        res.moveToNext();
+        int firstLogin = res.getInt(17);
         ArrayList<AlertDialog> popups = new ArrayList<>();
         AtomicBoolean running = new AtomicBoolean(true);
         AtomicInteger popupIndex = new AtomicInteger(0);
@@ -224,7 +228,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         arrow1_2 = findViewById(R.id.tutArrow1_2);
         arrow3_1 = findViewById(R.id.tutArrow3_1);
 
-        if (!firstLogin) {
+        if (firstLogin == 0) {
             return;
         }
 
@@ -304,6 +308,24 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         popups.add(pop8);
 
         popups.get(0).show();
+        myDb.updateUserData("1",
+                res.getString(1),
+                res.getString(2),
+                res.getString(3),
+                res.getString(4),
+                res.getString(5),
+                res.getString(6),
+                res.getString(7),
+                res.getString(8),
+                res.getString(9),
+                res.getString(10),
+                res.getString(11),
+                res.getInt(12),
+                res.getInt(13),
+                res.getString(14),
+                res.getInt(15),
+                res.getInt(16),
+                0);
     }
 
     private String getUrl(Location origin, LatLng dest) {
@@ -432,6 +454,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     DatabaseFunctions myDb = new DatabaseFunctions(this);
                     myDb.insertRouteData("1", destination.getPosition().latitude + "," +
                             destination.getPosition().longitude, inName.getText().toString());
+                    Toast.makeText(getApplicationContext(), "Destination Saved", Toast.LENGTH_SHORT).show();
 
                 });
 

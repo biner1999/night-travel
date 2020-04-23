@@ -33,6 +33,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public static final String User_Table_Name_COL_14 = "EmergencyContact";
     public static final String User_Table_Name_COL_15 = "AlertLevel";
     public static final String User_Table_Name_COL_16 = "AccelerometersAndGryo";
+    public static final String User_Table_Name_COL_17 = "FirstLogin";
 
 
     public static final String Route_Table_Name_COL_0 = "ID";
@@ -49,7 +50,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     //Creates Tables in the Database
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + User_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT,SURNAME TEXT,GENDER TEXT,AGE TEXT, HEIGHT TEXT, HAIRCOLOUR TEXT,WEIGHT TEXT,ETHNICITY TEXT,PASSWORD TEXT, QUESTION TEXT, ANSWER TEXT, DISTANCE INTEGER, TIME INTEGER, EMERGENCYCONTACT TEXT, ALERTLEVEL BOOLEAN, ACCELEROMETERSANDGRYO BOOLEAN)");
+        db.execSQL("create table " + User_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT,SURNAME TEXT,GENDER TEXT,AGE TEXT, HEIGHT TEXT, HAIRCOLOUR TEXT,WEIGHT TEXT,ETHNICITY TEXT,PASSWORD TEXT, QUESTION TEXT, ANSWER TEXT, DISTANCE INTEGER, TIME INTEGER, EMERGENCYCONTACT TEXT, ALERTLEVEL BOOLEAN, ACCELEROMETERSANDGRYO BOOLEAN, FIRSTLOGIN BOOLEAN)");
         db.execSQL("create table " + Route_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERID INTEGER REFERENCES User_Table_Name(ID), ENDDESTINATION INTEGER, NAME TEXT)");
 
     }
@@ -66,7 +67,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
 
     //Inserts User Data
-    public boolean insertDataUser(String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo){
+    public boolean insertDataUser(String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(User_Table_Name_COL_1,First_Name);
@@ -85,6 +86,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_14, EmergencyContact);
         contentValues.put(User_Table_Name_COL_15, Alert_Level);
         contentValues.put(User_Table_Name_COL_16, AccelerometersAndGryo);
+        contentValues.put(User_Table_Name_COL_17, FirstLogin);
 
 
 
@@ -131,7 +133,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Updates User Data (Requires a ID as a reference)
-    public boolean updateUserData(String id,  String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo){
+    public boolean updateUserData(String id,  String First_Name,String Surname,String Gender,String Age, String Height, String HairColour,String Weight, String Ethnicity,String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -152,6 +154,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_14, EmergencyContact);
         contentValues.put(User_Table_Name_COL_15, Alert_Level);
         contentValues.put(User_Table_Name_COL_16, AccelerometersAndGryo);
+        contentValues.put(User_Table_Name_COL_17, FirstLogin);
 
 
         db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });

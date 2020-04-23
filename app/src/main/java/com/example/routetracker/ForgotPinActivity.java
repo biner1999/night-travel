@@ -60,7 +60,8 @@ public class ForgotPinActivity extends AppCompatActivity {
                         res.getInt(13),
                         res.getString(14),
                         res.getInt(15),
-                        res.getInt(16));
+                        res.getInt(16),
+                        res.getInt(17));
 
                 if (isUpdated) {
                     Toast.makeText(getApplicationContext(), "PIN Changed Successfully", Toast.LENGTH_SHORT).show();

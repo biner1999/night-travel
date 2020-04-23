@@ -91,8 +91,8 @@ public class CreateUserActivity extends AppCompatActivity {
                                 100,
                                 editNumber.getText().toString(),
                                 0,
-                                1
-                        );
+                                1,
+                                1);
 
                         if (isInserted) {
                             Toast.makeText(getApplicationContext(), "User Created", Toast.LENGTH_LONG).show();
