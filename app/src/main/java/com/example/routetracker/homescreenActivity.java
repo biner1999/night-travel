@@ -69,6 +69,14 @@ import static java.lang.String.valueOf;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
+    /*
+    Map screen activity; Main functionality of the app is brought together in this activity including:
+    - Displaying Map
+    - Tracking user location
+    - Searching for & selecting destinations
+    - Displaying & selecting routes
+     */
+
 
     // Map
     private GoogleMap mMap;
@@ -87,6 +95,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private List<Address> addresses;
     private String mCurrentLocality;
     private MarkerOptions destination;
+    private AdapterView.OnItemClickListener addressListClick = (parent, view, position, id) -> {
+        markLocation(position);
+        EditText editText = findViewById(R.id.input_search);
+        editText.getText().clear();
+    };
     // Route
     private PolylineOptions currentRouteLine;
     public static List<List<HashMap<String, String>>> routeDetails;
@@ -101,17 +114,130 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private EditText mSearchText;
     private ListView addressList;
     private long backPressedTime = 0;
-
-    Handler handler = new Handler();
-
-
-    AdapterView.OnItemClickListener addressListClick = (parent, view, position, id) -> {
-        markLocation(position);
-        EditText editText = findViewById(R.id.input_search);
-        editText.getText().clear();
+    // Tracking
+    private Handler handler = new Handler();
+    final Runnable r = new Runnable() {
+        public void run() {
+            check_deviation();
+            handler.postDelayed(this, 5000);
+        }
     };
 
+
+    // Button & UI Initialiser Functions -----------------------------------------------------------
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_homescreen);
+
+        //Initialise Activity
+        settingsView();
+        savedDestinationsView();
+        getDirectionButtonClick();
+        endRoute();
+        dropMarkerButton();
+        addSavedDestinations();
+        mSearchText = findViewById(R.id.input_search);
+        MapsInitializer.initialize(getApplicationContext());
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Init. loading spinner
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        // Init. user location marker
+        locMarker = new MarkerOptions();
+        locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+        // Obtain the Map View
+        Bundle mapViewBundle = null;
+
+        // User location found callback function
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null)
+                    return;
+                mCurrentLocation = locationResult.getLastLocation();
+                // Move camera to found user location
+                for (Location location : locationResult.getLocations()) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
+                            location.getLongitude())));
+                    LatLng locationCoords = new  LatLng(location.getLatitude(),
+                            location.getLongitude());
+                    locMarker.position(locationCoords);
+                }
+            }
+        };
+
+        // Reload saved instance if available
+        if(savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+        mMapView = findViewById(R.id.mapView);
+        mMapView.onCreate(mapViewBundle);
+
+        mMapView.getMapAsync(this);
+
+        // Build geocoder
+        if(mGeoApiContext == null) {
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey(getString(R.string.google_maps_key))
+                    .build();
+        }
+
+        // Display tutorial if first user login
+        displayTutorial();
+    }
+
+    private void settingsView(){
+        // Initialise the Settings button
+        Button btnSettings = findViewById(R.id.button_settings);
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
+    }
+
+    private void savedDestinationsView(){
+        // Initialise the Saved Destinations button
+        Button btnSavedDestinations = findViewById(R.id.buttonSavedDestinations);
+        SavedDestinationActivity.homescreen = homescreenActivity.this;
+        btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
+    }
+
+    private void dropMarkerButton(){
+        // Initialise the Marker Drop button
+        ToggleButton mDropMarkerBtn = findViewById(R.id.dropMarker);
+        mDropMarkerBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mDropMarkerBtn.setBackgroundColor(0xD5B1B1B1);
+                mMap.setOnMapClickListener(latLng -> {
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
+                    mMap.clear();
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                    mMap.addMarker(markerOptions);
+                    destination = markerOptions;
+                    mDropMarkerBtn.setChecked(false);
+                });
+            } else {
+                mDropMarkerBtn.setBackgroundColor(0xD5FFFFFF);
+                mMap.setOnMapClickListener(latLng -> {
+                    // Other map click listener code here
+                });
+            }
+        });
+    }
+
+    // /Button & UI Initialiser Functions ----------------------------------------------------------
+
+
+    // User Location Functions ---------------------------------------------------------------------
+
     private void getDeviceLocation() {
+        // Get last user location from FusedLocationClient
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
             if (location != null) {
                 mCurrentLocation = location;
@@ -120,6 +246,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationCoords, DEFAULT_ZOOM));
                 locMarker.position(locationCoords);
 
+                // Reverse geocode current coordinates to get current locality for relevant searches
                 Geocoder geocoder = new Geocoder(homescreenActivity.this, Locale.ENGLISH);
                 try {
                     List<Address> currentAddress = geocoder.getFromLocation(mCurrentLocation.getLatitude(),
@@ -149,372 +276,21 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void startLocationUpdates() {
+        // Initialise regular location updates. When enabled, user location will be updated at interval set in createLocationRequest()
         fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
     }
 
+    // /User Location Functions --------------------------------------------------------------------
 
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_homescreen);
-
-        //Initialise Buttons
-        settingsView();
-        savedDestinationsView();
-
-        getDirectionButtonClick();
-        endRoute();
-        dropMarkerButton();
-        addSavedDestinations();
-
-        mSearchText = findViewById(R.id.input_search);
-        MapsInitializer.initialize(getApplicationContext());
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        locMarker = new MarkerOptions();
-        locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-        // Obtain the Map View and register the callback
-        Bundle mapViewBundle = null;
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                if (locationResult == null)
-                    return;
-                mCurrentLocation = locationResult.getLastLocation();
-                for (Location location : locationResult.getLocations()) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
-                            location.getLongitude())));
-                    LatLng locationCoords = new  LatLng(location.getLatitude(),
-                            location.getLongitude());
-                    locMarker.position(locationCoords);
-                }
-            }
-        };
-
-        if(savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
-        }
-        mMapView = findViewById(R.id.mapView);
-        mMapView.onCreate(mapViewBundle);
-
-        mMapView.getMapAsync(this);
-
-        if(mGeoApiContext == null) {
-            mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey(getString(R.string.google_maps_key))
-                    .build();
-        }
-        displayTutorial();
-    }
-
-    private void displayTutorial() {
-        DatabaseFunctions myDb = new DatabaseFunctions(this);
-        Cursor res = myDb.getUserIDOne();
-        res.moveToNext();
-        int firstLogin = res.getInt(17);
-        ArrayList<AlertDialog> popups = new ArrayList<>();
-        AtomicBoolean running = new AtomicBoolean(true);
-        AtomicInteger popupIndex = new AtomicInteger(0);
-        ImageView arrow1_1, arrow1_2, arrow2_1, arrow3_1;
-        arrow1_1 = findViewById(R.id.tutArrow1_1);
-        arrow1_2 = findViewById(R.id.tutArrow1_2);
-        arrow3_1 = findViewById(R.id.tutArrow3_1);
-
-        if (firstLogin == 0) {
-            return;
-        }
-
-        // Popup 1
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Thanks for using Route Tracker! Would you like a quick tutorial?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    dialog.dismiss();
-                }).setNegativeButton("No", (dialog, which) -> {
-                    dialog.dismiss();
-                    running.set(false);
-                }).setOnDismissListener(dialog -> {
-                    if (!running.get())
-                        return;
-                    popupIndex.getAndIncrement();
-                    popups.get(popupIndex.get()).show();
-                });
-        AlertDialog pop1 = builder.create();
-        popups.add(pop1);
-        // Popup 2
-        builder = new AlertDialog.Builder(this);
-        builder.setMessage("Route Tracker is an app designed to keep you safe when travelling alone.\nIt does this by tracking you on your journey and " +
-                                "informing your chosen emergency contact and/or the police when anomalies are detected")
-                .setPositiveButton("Continue", (dialog, which) -> {
-                    dialog.dismiss();
-                }).setOnDismissListener(dialog -> {
-                    popupIndex.getAndIncrement();
-                    if (popupIndex.get() < 8) {
-                        popups.get(popupIndex.get()).show();
-                        if (popupIndex.get() == 3) {
-                            arrow1_1.setVisibility(View.VISIBLE);
-                            arrow1_2.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            arrow1_1.setVisibility(View.GONE);
-                            arrow1_2.setVisibility(View.GONE);
-                        }
-                        if (popupIndex.get() == 6) {
-                            arrow3_1.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            arrow3_1.setVisibility(View.GONE);
-                        }
-
-                    }
-        });;
-        AlertDialog pop2 = builder.create();
-        popups.add(pop2);
-        // Popup 3
-        builder.setMessage("Route Tracker will also inform you of the safest routes to your destination based on recent Police crime data");
-        AlertDialog pop3 = builder.create();
-        popups.add(pop3);
-        // Popup 4
-        builder.setMessage("You are represented by the blue dot on the map.\nTo select a destination, use the search bar or the Marker Dropper button marked by the arrows");
-        AlertDialog pop4 = builder.create();
-        popups.add(pop4);
-        // Popup 5
-        builder.setMessage("When you have selected a destination, you can view possible routes to that destination with the 'Get Directions' button.\n" +
-                "Once pressed, Route Tracker will retrieve crime data and display up to three possible routes to choose from. Select your desired route and begin your journey!");
-        AlertDialog pop5 = builder.create();
-        popups.add(pop5);
-        // Popup 6
-        builder.setMessage("If you deviate too far from your desired route, take too long to reach your destination or anomalous movements are detected on your device, " +
-                "alerts will be triggered. This starts with an alarm sound from your device, " +
-                "followed by a text message sent to your emergency contact and eventually the police with your location and description.");
-        AlertDialog pop6 = builder.create();
-        popups.add(pop6);
-        // Popup 7
-        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
-        AlertDialog pop7 = builder.create();
-        popups.add(pop7);
-        // Popup 8
-        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> {
-            dialog.dismiss();
-        }).setOnDismissListener(dialog -> { });
-        AlertDialog pop8 = builder.create();
-        popups.add(pop8);
-
-        popups.get(0).show();
-        myDb.updateUserData("1",
-                res.getString(1),
-                res.getString(2),
-                res.getString(3),
-                res.getString(4),
-                res.getString(5),
-                res.getString(6),
-                res.getString(7),
-                res.getString(8),
-                res.getString(9),
-                res.getString(10),
-                res.getString(11),
-                res.getInt(12),
-                res.getInt(13),
-                res.getString(14),
-                res.getInt(15),
-                res.getInt(16),
-                0);
-    }
-
-    private String getUrl(Location origin, LatLng dest) {
-        // Origin of route
-        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude();
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-        // Mode
-        String mode = "mode=" + "walking";
-        // Alternative routes
-        String alte = "&alternatives=true";
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + mode + alte;
-        // Output format
-        String output = "json";
-        // Building the url to the web service
-
-        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
-    }
-
-    private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
-
-        List<HashMap<String, String>> test = null;
-        for (int i = 0; i < details.size(); i++) {
-            // Fetching i-th route
-            List<HashMap<String, String>> path = details.get(route);
-            test = path;
-            // Fetching all the points in i-th route
-            //HashMap<String, String> point = path.get(route);
-            //String duration = point.get("duration");
-            //String distance = point.get("distance");
-            }
-        return test;
-    }
-
-
-        private void getDirectionButtonClick(){
-            Button getDirection = findViewById(R.id.btnGetDirection);
-
-            Button endRoute = findViewById(R.id.btnEndRoute);
-            //TODO Add confirm route
-            //TODO Add save route
-            //TODO Start Route
-
-            getDirection.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    polyLineList = new ArrayList<>();
-                    polyLineVisibleList = new ArrayList<>();
-                    routeDataList = new ArrayList<>();
-                    Thread progressThread = new Thread();
-                    progressThread.start();
-
-
-                    //TODO Once a confirm route option is in then adapt and move this to it
-                    //activeRoute = true;
-
-
-                    //      //      //      //
-
-                    if (destination != null) {
-                        new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
-                        endRoute.setVisibility(View.VISIBLE);
-                        getDirection.setVisibility(View.GONE);
-
-
-                    }
-
-                    else {
-                        Toast noDestinationToast = Toast.makeText(getApplicationContext(),
-                                "No Destination Selected", Toast.LENGTH_LONG);
-                        noDestinationToast.show();
-                    }
-                }
-            });
-        }
-
-    private void endRoute() {
-        Button endRoute = findViewById(R.id.btnEndRoute);
-        Button getDirection = findViewById(R.id.btnGetDirection);
-        endRoute.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //put those below in the code where the user gets to the destination and the route finishes
-                stopForegroundService();
-                stopNotificationsRestartService();
-                stopTimeTriggersService();
-                stopTimeLeftTriggerService();
-                stopSensorTriggerService();
-                mMap.clear();
-                endRoute.setVisibility(View.GONE);
-                getDirection.setVisibility(View.VISIBLE);
-                destination = null;
-            }
-        });
-
-    }
-    private void settingsView(){
-        Button btnSettings = findViewById(R.id.button_settings);
-        btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
-    }
-
-    private void savedDestinationsView(){
-        Button btnSavedDestinations = findViewById(R.id.buttonSavedDestinations);
-        SavedDestinationActivity.homescreen = homescreenActivity.this;
-        btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
-    }
-
-    private void addSavedDestinations(){
-        Button btnAddDestination = findViewById(R.id.addDestinationBtn);
-        btnAddDestination.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
-
-        btnAddDestination.setOnClickListener(v -> {
-            if (destination != null) {
-
-                AlertDialog.Builder addDestDlg = new AlertDialog.Builder(this);
-                addDestDlg.setTitle("Save Destination");
-                addDestDlg.setMessage("Insert a name for the destination");
-
-
-                final EditText inName = new EditText(this);
-                addDestDlg.setView(inName);
-
-                addDestDlg.setPositiveButton("Add", (dialog, which) -> {
-                    DatabaseFunctions myDb = new DatabaseFunctions(this);
-                    myDb.insertRouteData("1", destination.getPosition().latitude + "," +
-                            destination.getPosition().longitude, inName.getText().toString());
-                    Toast.makeText(getApplicationContext(), "Destination Saved", Toast.LENGTH_SHORT).show();
-
-                });
-
-                addDestDlg.setNegativeButton("Cancel", (dialog, which) -> {
-                    AlertDialog destAlert = addDestDlg.create();
-                    destAlert.dismiss();
-                });
-
-                addDestDlg.show();
-            }
-            else
-            {
-                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
-            }
-
-        });
-    }
-
-    public void loadDestination(String title, String inlatlng) {
-        String[] latlng = inlatlng.split(",");
-        LatLng destLocation = new LatLng(Double.parseDouble(latlng[0]), Double.parseDouble(latlng[1]));
-        destination = new MarkerOptions().position(destLocation);
-        destination.title(title);
-        mMap.clear();
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(destLocation));
-        mMap.addMarker(destination);
-    }
-
-    private void dropMarkerButton(){
-        ToggleButton mDropMarkerBtn = findViewById(R.id.dropMarker);
-        mDropMarkerBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                mDropMarkerBtn.setBackgroundColor(0xD5B1B1B1);
-                mMap.setOnMapClickListener(latLng -> {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.title(latLng.latitude + " : " + latLng.longitude);
-                    mMap.clear();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                    mMap.addMarker(markerOptions);
-                    destination = markerOptions;
-                    mDropMarkerBtn.setChecked(false);
-                });
-            } else {
-                mDropMarkerBtn.setBackgroundColor(0xD5FFFFFF);
-                mMap.setOnMapClickListener(latLng -> {
-                    // Other map click listener code here
-                });
-            }
-        });
-    }
-
+    // Search Destination Functions ----------------------------------------------------------------
 
     private void initSearchBar() {
+        // Init. Search bar for searching destinations
         mSearchText.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_SEARCH
-                || actionId == EditorInfo.IME_ACTION_DONE
-                || event.getAction() == KeyEvent.ACTION_DOWN
-                || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+                    || actionId == EditorInfo.IME_ACTION_DONE
+                    || event.getAction() == KeyEvent.ACTION_DOWN
+                    || event.getAction() == KeyEvent.KEYCODE_ENTER) {
 
                 searchLocate();
 
@@ -524,6 +300,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void searchLocate() {
+        // Parse search bar input to search for specific location given by user with geocoding
         String searchInput = mSearchText.getText().toString();
 
         Geocoder geocoder = new Geocoder(homescreenActivity.this);
@@ -565,6 +342,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void markLocation(int listIndex) {
+        // Mark the selected location from the search bar list as a destination
+
         Address address = addresses.get(listIndex);
 
         addressList = findViewById(R.id.addressList);
@@ -582,51 +361,150 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         destination = new MarkerOptions().position(new LatLng(address.getLatitude(), address.getLongitude())).title("Location 2");
     }
 
+    // /Search Destination Functions ---------------------------------------------------------------
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    // Retrieve Saved Destinations Functions -------------------------------------------------------
 
-        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
-        if (mapViewBundle == null) {
-            mapViewBundle = new Bundle();
-            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
-        }
+    private void addSavedDestinations(){
+        // Initialise Add Destination button to allow user to save a destination for later use
+        Button btnAddDestination = findViewById(R.id.addDestinationBtn);
+        btnAddDestination.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
 
-        mMapView.onSaveInstanceState(mapViewBundle);
+        btnAddDestination.setOnClickListener(v -> {
+            if (destination != null) {
+
+                AlertDialog.Builder addDestDlg = new AlertDialog.Builder(this);
+                addDestDlg.setTitle("Save Destination");
+                addDestDlg.setMessage("Insert a name for the destination");
+
+
+                final EditText inName = new EditText(this);
+                addDestDlg.setView(inName);
+
+                addDestDlg.setPositiveButton("Add", (dialog, which) -> {
+                    DatabaseFunctions myDb = new DatabaseFunctions(this);
+                    myDb.insertRouteData("1", destination.getPosition().latitude + "," +
+                            destination.getPosition().longitude, inName.getText().toString());
+                    Toast.makeText(getApplicationContext(), "Destination Saved", Toast.LENGTH_SHORT).show();
+
+                });
+
+                addDestDlg.setNegativeButton("Cancel", (dialog, which) -> {
+                    AlertDialog destAlert = addDestDlg.create();
+                    destAlert.dismiss();
+                });
+
+                addDestDlg.show();
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        //
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-        } else {
-            finish();
-        }
+    public void loadDestination(String title, String inlatlng) {
+        // Recall a destination from the SavedDestinationActivity
 
-        if (mLocationPermissionGranted) {
-            mMap.setMyLocationEnabled(true);
-            createLocationRequest();
-            getDeviceLocation();
-            initSearchBar();
-        }
+        String[] latlng = inlatlng.split(",");
+        LatLng destLocation = new LatLng(Double.parseDouble(latlng[0]), Double.parseDouble(latlng[1]));
+        destination = new MarkerOptions().position(destLocation);
+        destination.title(title);
+        mMap.clear();
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(destLocation));
+        mMap.addMarker(destination);
+    }
 
-        // Remove Navigation & GPS pointer Google buttons
-        mMap.getUiSettings().setMapToolbarEnabled(false);
+    // /Retrieve Saved Destinations Functions ------------------------------------------------------
+
+    // Retrieve and Display Route to Destination Functions -----------------------------------------
+
+    private String getUrl(Location origin, LatLng dest) {
+        // Create an API call URL for Google Directions API
+        // Origin of route
+        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude();
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + "walking";
+        // Alternative routes
+        String alte = "&alternatives=true";
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode + alte;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+
+        return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+    }
+
+    private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
+        // Parse retrieved Route direction Details
+        List<HashMap<String, String>> path = null;
+        for (int i = 0; i < details.size(); i++) {
+            // Fetching i-th route
+            path = details.get(route);
+        }
+        return path;
+    }
+
+
+    private void getDirectionButtonClick(){
+        // Initialise Get Directions button
+        Button getDirection = findViewById(R.id.btnGetDirection);
+
+        Button endRoute = findViewById(R.id.btnEndRoute);
+        getDirection.setOnClickListener(view -> {
+            polyLineList = new ArrayList<>();
+            polyLineVisibleList = new ArrayList<>();
+            routeDataList = new ArrayList<>();
+            Thread progressThread = new Thread();
+            progressThread.start();
+
+            if (destination != null) {
+                // If destination is selected, create an API request for directions to destination from current location and parse result
+                new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
+                // Replace Get Directions button with End Journey button
+                endRoute.setVisibility(View.VISIBLE);
+                getDirection.setVisibility(View.GONE);
+            }
+            else {
+                Toast noDestinationToast = Toast.makeText(getApplicationContext(),
+                        "No Destination Selected", Toast.LENGTH_LONG);
+                noDestinationToast.show();
+            }
+        });
+    }
+
+    private void endRoute() {
+        // Initialise End Journey button
+        Button endRoute = findViewById(R.id.btnEndRoute);
+        Button getDirection = findViewById(R.id.btnGetDirection);
+        endRoute.setOnClickListener(v -> {
+            // Code for where user finishes journey
+            stopForegroundService();
+            stopNotificationsRestartService();
+            stopTimeTriggersService();
+            stopTimeLeftTriggerService();
+            stopSensorTriggerService();
+            mMap.clear();
+            endRoute.setVisibility(View.GONE);
+            getDirection.setVisibility(View.VISIBLE);
+            destination = null;
+        });
 
     }
 
     public void onTaskDone(Object... values) {
+        // Callback function from PointsParser activity
+        // Add the formatted route polyline to list to draw to map
         polyLineList.add((PolylineOptions) values[0]);
     }
 
 
     public void highlightRoute(RouteDataItem selectedRouteData){
-
+        // Highlight route selected by user by removing alternative routes
         currentRouteData = selectedRouteData;
         currentRouteLine = selectedRouteData.getPolyline();
 
@@ -636,6 +514,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             if(selectedRouteData.getPolyline().getColor() != polyLineVisibleList.get(i).getColor())
                 polyLineVisibleList.get(i).remove();
         }
+        // Remove the list of available routes
         mFrameLayout.setVisibility(View.GONE);
 
         //TODO comment these out for the alarms to work again
@@ -643,23 +522,90 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         //startTimeTriggers();
     }
 
-    // check user deviation functions //
+    public void listRoutes() throws ExecutionException, InterruptedException {
+        // Create list of available routes for user to navigate to destination in RecyclerView
+        int counter = 1;
+        for(ArrayList<LatLng> step : stepPoints) {
+            // This loop runs for each "step" in all available routes
+            String distance = null;
+            String duration = null;
+            String numDuration = null;
+            List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
+            HashMap<String, String> point = details.get(0);
+            // duration = formatted walking time to destination
+            duration = point.get("duration");
+            // distance = formatted walking distance to destination
+            distance = point.get("distance");
+            // numDuration = unformatted walking time to destination in seconds
+            numDuration = point.get("numduration");
+
+
+            // Init. new CrimeCollector object and execute to count total crimes on each route
+            CrimeCollector crimeCollector = new CrimeCollector();
+            int crimeCount = crimeCollector.execute(step).get();
+
+            // Create new RouteDataItem to store information on each route and add to list of routes
+            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
+            counter++;
+        }
+
+        // Sort the list of routes based on number of crimes (least -> most)
+        Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
+
+        // Colour code routes Green = Safest (least crimes), Red = Least Safe (most crimes)
+        if (routeDataList.size() == 3) {
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
+            routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            routeDataList.get(1).getPolyline().color(Color.YELLOW);
+            routeDataList.get(2).getPolyline().color(Color.RED);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(2).getPolyline()));
+        }
+        else if (routeDataList.size() == 2) {
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            routeDataList.get(1).getPolyline().color(Color.RED);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
+        }
+        else if (routeDataList.size() == 1) {
+            routeDataList.get(0).setImage(R.drawable.ic_route_green);
+            routeDataList.get(0).getPolyline().color(Color.GREEN);
+            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
+        }
+
+        // Display available routes as RecyclerView fragment for user selection
+        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
+        mFrameLayout = findViewById(R.id.frameLayout);
+        mFrameLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    // /Retrieve and Display Route to Destination Functions ----------------------------------------
+
+    // Tracking & Anomaly Detection Functions ------------------------------------------------------
+
+    private static Handler disconnectHandler = new Handler(msg -> {
+        return true;
+    });
+
     public void start_deviation_checks(){
+        // Begin checking for user deviation from route
         handler.postDelayed(r, 1);
     }
 
-    final Runnable r = new Runnable() {
-        public void run() {
-            check_deviation();
-            handler.postDelayed(this, 5000);
-        }
-    };
+
     public void check_deviation(){
+        // Method to check user deviation from path and issue alerts when appropriate
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-            if (location != null) {
-                mCurrentLocation = location;
-            }
-        }
+                    if (location != null) {
+                        mCurrentLocation = location;
+                    }
+                }
         );
 
         DatabaseFunctions myDb = new DatabaseFunctions(this);
@@ -693,63 +639,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    // END OF check user deviation functions //
+    // /Tracking & Anomaly Detection Functions -----------------------------------------------------
 
-    public void listRoutes() throws ExecutionException, InterruptedException {
-        int counter = 1;
-        for(ArrayList<LatLng> step : stepPoints) {
-            String distance = null;
-            String duration = null;
-            String numDuration = null;
-            List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
-            HashMap<String, String> point = details.get(0);
-            duration = point.get("duration");
-            distance = point.get("distance");
-            numDuration = point.get("numduration");
-
-            CrimeCollector crimeCollector = new CrimeCollector();
-            int crimeCount = crimeCollector.execute(step).get();
-
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
-            counter++;
-        }
-
-        Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
-
-        if (routeDataList.size() == 3) {
-            routeDataList.get(0).setImage(R.drawable.ic_route_green);
-            routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
-            routeDataList.get(2).setImage(R.drawable.ic_route_crimson);
-            routeDataList.get(0).getPolyline().color(Color.GREEN);
-            routeDataList.get(1).getPolyline().color(Color.YELLOW);
-            routeDataList.get(2).getPolyline().color(Color.RED);
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(2).getPolyline()));
-        }
-        else if (routeDataList.size() == 2) {
-            routeDataList.get(0).setImage(R.drawable.ic_route_green);
-            routeDataList.get(1).setImage(R.drawable.ic_route_crimson);
-            routeDataList.get(0).getPolyline().color(Color.GREEN);
-            routeDataList.get(1).getPolyline().color(Color.RED);
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(1).getPolyline()));
-        }
-        else if (routeDataList.size() == 1) {
-            routeDataList.get(0).setImage(R.drawable.ic_route_green);
-            routeDataList.get(0).getPolyline().color(Color.GREEN);
-            polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
-        }
-
-        homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
-        mFrameLayout = findViewById(R.id.frameLayout);
-        mFrameLayout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-    }
-
-    private static Handler disconnectHandler = new Handler(msg -> {
-        return true;
-    });
+    // Tracking Notifications & Alerts Functions ---------------------------------------------------
 
     public void startForegroundService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
@@ -838,6 +730,10 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         stopService(serviceIntent);
     }
 
+    // /Tracking Notifications & Alerts Functions --------------------------------------------------
+
+    // Sensor Functions ----------------------------------------------------------------------------
+
     public void startSensorTriggerService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
         long time = journeyTimeSeconds * 1000;
@@ -859,14 +755,174 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         stopService(serviceIntent);
     }
 
+    // /Sensor Functions ---------------------------------------------------------------------------
+
+    // Tutorial Function ---------------------------------------------------------------------------
+
+    private void displayTutorial() {
+        // Init. Tutorial to introduce new user to app, works as a series of popups describing user the various elements of the map screen
+        // Runs only once on first login
+
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getUserIDOne();
+        res.moveToNext();
+        int firstLogin = res.getInt(17);
+        ArrayList<AlertDialog> popups = new ArrayList<>();
+        AtomicBoolean running = new AtomicBoolean(true);
+        AtomicInteger popupIndex = new AtomicInteger(0);
+        ImageView arrow1_1, arrow1_2, arrow2_1, arrow3_1;
+        arrow1_1 = findViewById(R.id.tutArrow1_1);
+        arrow1_2 = findViewById(R.id.tutArrow1_2);
+        arrow3_1 = findViewById(R.id.tutArrow3_1);
+
+        if (firstLogin == 0) {
+            return;
+        }
+
+        // Popup 1
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Thanks for using Route Tracker! Would you like a quick tutorial?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    dialog.dismiss();
+                }).setNegativeButton("No", (dialog, which) -> {
+            dialog.dismiss();
+            running.set(false);
+        }).setOnDismissListener(dialog -> {
+            if (!running.get())
+                return;
+            popupIndex.getAndIncrement();
+            popups.get(popupIndex.get()).show();
+        });
+        AlertDialog pop1 = builder.create();
+        popups.add(pop1);
+        // Popup 2
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage("Route Tracker is an app designed to keep you safe when travelling alone.\nIt does this by tracking you on your journey and " +
+                "informing your chosen emergency contact and/or the police when anomalies are detected")
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    dialog.dismiss();
+                }).setOnDismissListener(dialog -> {
+            popupIndex.getAndIncrement();
+            if (popupIndex.get() < 8) {
+                popups.get(popupIndex.get()).show();
+                if (popupIndex.get() == 3) {
+                    arrow1_1.setVisibility(View.VISIBLE);
+                    arrow1_2.setVisibility(View.VISIBLE);
+                }
+                else {
+                    arrow1_1.setVisibility(View.GONE);
+                    arrow1_2.setVisibility(View.GONE);
+                }
+                if (popupIndex.get() == 6) {
+                    arrow3_1.setVisibility(View.VISIBLE);
+                }
+                else {
+                    arrow3_1.setVisibility(View.GONE);
+                }
+
+            }
+        });;
+        AlertDialog pop2 = builder.create();
+        popups.add(pop2);
+        // Popup 3
+        builder.setMessage("Route Tracker will also inform you of the safest routes to your destination based on recent Police crime data");
+        AlertDialog pop3 = builder.create();
+        popups.add(pop3);
+        // Popup 4
+        builder.setMessage("You are represented by the blue dot on the map.\nTo select a destination, use the search bar or the Marker Dropper button marked by the arrows");
+        AlertDialog pop4 = builder.create();
+        popups.add(pop4);
+        // Popup 5
+        builder.setMessage("When you have selected a destination, you can view possible routes to that destination with the 'Get Directions' button.\n" +
+                "Once pressed, Route Tracker will retrieve crime data and display up to three possible routes to choose from. Select your desired route and begin your journey!");
+        AlertDialog pop5 = builder.create();
+        popups.add(pop5);
+        // Popup 6
+        builder.setMessage("If you deviate too far from your desired route, take too long to reach your destination or anomalous movements are detected on your device, " +
+                "alerts will be triggered. This starts with an alarm sound from your device, " +
+                "followed by a text message sent to your emergency contact and eventually the police with your location and description.");
+        AlertDialog pop6 = builder.create();
+        popups.add(pop6);
+        // Popup 7
+        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
+        AlertDialog pop7 = builder.create();
+        popups.add(pop7);
+        // Popup 8
+        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> {
+            dialog.dismiss();
+        }).setOnDismissListener(dialog -> { });
+        AlertDialog pop8 = builder.create();
+        popups.add(pop8);
+
+        popups.get(0).show();
+        myDb.updateUserData("1",
+                res.getString(1),
+                res.getString(2),
+                res.getString(3),
+                res.getString(4),
+                res.getString(5),
+                res.getString(6),
+                res.getString(7),
+                res.getString(8),
+                res.getString(9),
+                res.getString(10),
+                res.getString(11),
+                res.getInt(12),
+                res.getInt(13),
+                res.getString(14),
+                res.getInt(15),
+                res.getInt(16),
+                0);
+    }
+
+    // /Tutorial Function --------------------------------------------------------------------------
+
+    // Required Map Interface Methods --------------------------------------------------------------
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        // Check permissions
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            finish();
+        }
+        // If permission to track user location granted, begin tracking & init searchbar
+        if (mLocationPermissionGranted) {
+            mMap.setMyLocationEnabled(true);
+            createLocationRequest();
+            getDeviceLocation();
+            initSearchBar();
+        }
+
+        // Remove Navigation & GPS pointer Google buttons
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save map instance for reload
+        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         mMapView.onStart();
 
         startLocationUpdates();
-
-
     }
 
     @Override
@@ -946,7 +1002,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-
+    // /Required Map Interface Methods -------------------------------------------------------------
 
 }
 
