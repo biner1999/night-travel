@@ -1,6 +1,7 @@
 package com.example.routetracker;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -8,19 +9,22 @@ import androidx.annotation.Nullable;
 
 
 public class SensorTriggerService extends Service {
+    DatabaseFunctions myDb;
     private static boolean isRunning;
     final Handler handler = new Handler();
     String dest;
     String curr;
     long time;
+    double actualMultiplier;
 
     // First Time Trigger //
     public void FirstTriggerStart() {
-        long secondNotificationDelay = 5000; //60000; //1 mins
-        long thirdNotificationDelay = 5000; //Math.round(time*0.15);
-        long fourthNotificationDelay = 5000; //Math.round(time*0.60);
-/* proper code, commented out for testing
-        stopTimeTriggerService();
+        long secondNotificationDelay = 60000; //1 mins
+        long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier);
+        long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier);
+        stopTimeTriggersService();
+        stopTimeLeftTriggerService();
+        stopNotificationsRestartService();
         startL1Service();
         handler.postDelayed(() -> {
             startL2Service();
@@ -31,13 +35,7 @@ public class SensorTriggerService extends Service {
                     stopSelf();
                 }, fourthNotificationDelay);
             }, thirdNotificationDelay);
-        }, secondNotificationDelay);*/
-        startL1Service();
-        handler.postDelayed(() -> {
-            startL2Service();
-            stopSelf();
         }, secondNotificationDelay);
-
     }
     public void startL1Service() {
         Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
@@ -61,6 +59,21 @@ public class SensorTriggerService extends Service {
         startService(L4ServiceIntent);
     }
 
+    public void stopTimeLeftTriggerService() {
+        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopTimeTriggersService() {
+        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopNotificationsRestartService() {
+        Intent serviceIntent = new Intent(this, NotificationRestartService.class);
+        stopService(serviceIntent);
+    }
+
 
     public static boolean isRunning() {
         return isRunning;
@@ -69,6 +82,15 @@ public class SensorTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
+
+        myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getAllUserData();
+        res.moveToNext();
+
+        double multiplier = res.getInt(13);
+        double hundred = 100;
+        actualMultiplier = multiplier/hundred;
+
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");

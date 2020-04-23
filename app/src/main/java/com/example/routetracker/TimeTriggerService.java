@@ -1,6 +1,7 @@
 package com.example.routetracker;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
@@ -13,20 +14,22 @@ import java.util.TimerTask;
 //TODO 1. change phone numbers and set correct timers
 
 public class TimeTriggerService extends Service {
+    DatabaseFunctions myDb;
     private static boolean isRunning;
     final Handler handler = new Handler();
     String dest;
     String curr;
     long time;
+    double actualMultiplier;
 
     // First Time Trigger //
     public void FirstTriggerStart() {
-        long firstNotificationDelay = 5000; //Math.round(time*1.25) + 300000; //25% + 5 mins
-        long secondNotificationDelay = 5000; //60000; //3 mins
-        long thirdNotificationDelay = 5000; //Math.round(time*0.15);
-        long fourthNotificationDelay = 5000; //Math.round(time*0.60);
+        long firstNotificationDelay = Math.round(time*1.25*actualMultiplier) + 300000; //25% + 5 mins
+        long secondNotificationDelay = 60000;
+        long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier);
+        long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier);
 
-/*        handler.postDelayed(() -> {
+        handler.postDelayed(() -> {
             startL1Service();
             handler.postDelayed(() -> {
                 startL2Service();
@@ -37,13 +40,6 @@ public class TimeTriggerService extends Service {
                         stopSelf();
                     }, fourthNotificationDelay);
                 }, thirdNotificationDelay);
-            }, secondNotificationDelay);
-        }, firstNotificationDelay);*/
-        handler.postDelayed(() -> {
-            startL1Service();
-            handler.postDelayed(() -> {
-                startL2Service();
-                stopSelf();
             }, secondNotificationDelay);
         }, firstNotificationDelay);
     }
@@ -76,6 +72,15 @@ public class TimeTriggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
+
+        myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getAllUserData();
+        res.moveToNext();
+
+        double multiplier = res.getInt(13);
+        double hundred = 100;
+        actualMultiplier = multiplier/hundred;
+
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");

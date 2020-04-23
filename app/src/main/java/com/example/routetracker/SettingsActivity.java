@@ -22,8 +22,9 @@ public class SettingsActivity extends AppCompatActivity {
     EditText editHeight,editHairColour, editAge,editWeight, editEmergancyContact;
     Switch editPoliceContact, editAccelAndGyro;
     SeekBar editDistance, editTime;
-     TextView text_view_distance, getText_view_time;
+     TextView text_view_distance, getText_view_time, textViewTime;
      Button btnSaveChanges, btnChangePin;
+     int min = 50, max = 200, current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnSaveChanges = findViewById(R.id.buttonSaveChanges);
 
         editDistance.setMax(200);
-        editTime.setMax(60);
+        editTime.setMax(max - min);
 
 
         while(res.moveToNext()){
@@ -65,12 +66,33 @@ public class SettingsActivity extends AppCompatActivity {
             editHairColour.setText(res.getString(6));
             editWeight.setText(res.getString(7));
             editDistance.setProgress(res.getInt(12));
-            editTime.setProgress(res.getInt(13));
+            current = res.getInt(13);
+            editTime.setProgress(current - min);
             editEmergancyContact.setText(res.getString(14));
             editPoliceContact.setChecked(alertLevel(res.getInt(15)));
             editAccelAndGyro.setChecked(AccelerometersAndGryo(res.getInt(16)));
 
         }
+
+        textViewTime = (TextView) findViewById(R.id.textViewTimeValue);
+        textViewTime.setText(current + "% of the journey time before the last alert goes off");
+        editTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                current = progress + min;
+                textViewTime.setText(current + "% of the journey time before the last alert goes off");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         saveChanges();
         changePIN();
@@ -126,7 +148,7 @@ public class SettingsActivity extends AppCompatActivity {
                             res.getString(10),
                             res.getString(11),
                             editDistance.getProgress(),
-                            editTime.getProgress(),
+                            current,
                             editEmergancyContact.getText().toString(),
                             state(editPoliceContact.isChecked()),
                             state(editAccelAndGyro.isChecked())
