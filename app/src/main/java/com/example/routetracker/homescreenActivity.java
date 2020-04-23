@@ -27,6 +27,7 @@ import com.google.maps.android.PolyUtil;
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -34,12 +35,10 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.service.notification.StatusBarNotification;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -49,6 +48,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -61,6 +61,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.valueOf;
 
@@ -209,6 +211,99 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     .apiKey(getString(R.string.google_maps_key))
                     .build();
         }
+        displayTutorial();
+    }
+
+    private void displayTutorial() {
+        boolean firstLogin = true; //TESTING
+        ArrayList<AlertDialog> popups = new ArrayList<>();
+        AtomicBoolean running = new AtomicBoolean(true);
+        AtomicInteger popupIndex = new AtomicInteger(0);
+        ImageView arrow1_1, arrow1_2, arrow2_1, arrow3_1;
+        arrow1_1 = findViewById(R.id.tutArrow1_1);
+        arrow1_2 = findViewById(R.id.tutArrow1_2);
+        arrow3_1 = findViewById(R.id.tutArrow3_1);
+
+        if (!firstLogin) {
+            return;
+        }
+
+        // Popup 1
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Thanks for using Route Tracker! Would you like a quick tutorial?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    dialog.dismiss();
+                }).setNegativeButton("No", (dialog, which) -> {
+                    dialog.dismiss();
+                    running.set(false);
+                }).setOnDismissListener(dialog -> {
+                    if (!running.get())
+                        return;
+                    popupIndex.getAndIncrement();
+                    popups.get(popupIndex.get()).show();
+                });
+        AlertDialog pop1 = builder.create();
+        popups.add(pop1);
+        // Popup 2
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage("Route Tracker is an app designed to keep you safe when travelling alone.\nIt does this by tracking you on your journey and " +
+                                "informing your chosen emergency contact and/or the police when anomalies are detected")
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    dialog.dismiss();
+                }).setOnDismissListener(dialog -> {
+                    popupIndex.getAndIncrement();
+                    if (popupIndex.get() < 8) {
+                        popups.get(popupIndex.get()).show();
+                        if (popupIndex.get() == 3) {
+                            arrow1_1.setVisibility(View.VISIBLE);
+                            arrow1_2.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            arrow1_1.setVisibility(View.GONE);
+                            arrow1_2.setVisibility(View.GONE);
+                        }
+                        if (popupIndex.get() == 6) {
+                            arrow3_1.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            arrow3_1.setVisibility(View.GONE);
+                        }
+
+                    }
+        });;
+        AlertDialog pop2 = builder.create();
+        popups.add(pop2);
+        // Popup 3
+        builder.setMessage("Route Tracker will also inform you of the safest routes to your destination based on recent Police crime data");
+        AlertDialog pop3 = builder.create();
+        popups.add(pop3);
+        // Popup 4
+        builder.setMessage("You are represented by the blue dot on the map.\nTo select a destination, use the search bar or the Marker Dropper button marked by the arrows");
+        AlertDialog pop4 = builder.create();
+        popups.add(pop4);
+        // Popup 5
+        builder.setMessage("When you have selected a destination, you can view possible routes to that destination with the 'Get Directions' button.\n" +
+                "Once pressed, Route Tracker will retrieve crime data and display up to three possible routes to choose from. Select your desired route and begin your journey!");
+        AlertDialog pop5 = builder.create();
+        popups.add(pop5);
+        // Popup 6
+        builder.setMessage("If you deviate too far from your desired route, take too long to reach your destination or anomalous movements are detected on your device, " +
+                "alerts will be triggered. This starts with an alarm sound from your device, " +
+                "followed by a text message sent to your emergency contact and eventually the police with your location and description.");
+        AlertDialog pop6 = builder.create();
+        popups.add(pop6);
+        // Popup 7
+        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
+        AlertDialog pop7 = builder.create();
+        popups.add(pop7);
+        // Popup 8
+        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> {
+            dialog.dismiss();
+        }).setOnDismissListener(dialog -> { });
+        AlertDialog pop8 = builder.create();
+        popups.add(pop8);
+
+        popups.get(0).show();
     }
 
     private String getUrl(Location origin, LatLng dest) {
