@@ -700,7 +700,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
             for (StatusBarNotification notification : notifications) {
-                if (notification.getId() == 2) {
+                if (SensorTriggerService.isRunning()) {
                     //do nothing if notification is on the screen
                 }
                 else {
