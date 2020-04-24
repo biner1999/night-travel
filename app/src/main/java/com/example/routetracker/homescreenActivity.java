@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -69,6 +71,14 @@ import static java.lang.String.valueOf;
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
 
+    /*
+    Map screen activity; Main functionality of the app is brought together in this activity including:
+    - Displaying Map
+    - Tracking user location
+    - Searching for & selecting destinations
+    - Displaying & selecting routes
+     */
+
     // Map
     private GoogleMap mMap;
     private MapView mMapView;
@@ -82,6 +92,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private LocationCallback mLocationCallback;
     private MarkerOptions locMarker;
     private GeoApiContext mGeoApiContext = null;
+    Handler handler = new Handler();
     // Destination
     private List<Address> addresses;
     private String mCurrentLocality;
@@ -100,10 +111,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     private EditText mSearchText;
     private ListView addressList;
     private long backPressedTime = 0;
-
-    Handler handler = new Handler();
-
-
     AdapterView.OnItemClickListener addressListClick = (parent, view, position, id) -> {
         markLocation(position);
         EditText editText = findViewById(R.id.input_search);
@@ -111,6 +118,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     };
 
     private void getDeviceLocation() {
+        // Get last user location from FusedLocationClient
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
             if (location != null) {
                 mCurrentLocation = location;
@@ -119,6 +127,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationCoords, DEFAULT_ZOOM));
                 locMarker.position(locationCoords);
 
+                // Reverse geocode current coordinates to get current locality for relevant searches
                 Geocoder geocoder = new Geocoder(homescreenActivity.this, Locale.ENGLISH);
                 try {
                     List<Address> currentAddress = geocoder.getFromLocation(mCurrentLocation.getLatitude(),
@@ -148,6 +157,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void startLocationUpdates() {
+        // Initialise regular location updates. When enabled, user location will be updated at interval set in createLocationRequest()
         fusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
     }
 
@@ -160,7 +170,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         setContentView(R.layout.activity_homescreen);
 
-        //Initialise Buttons
+        //Initialise Activity
         settingsView();
         savedDestinationsView();
 
@@ -173,21 +183,25 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         MapsInitializer.initialize(getApplicationContext());
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Init. loading spinner
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
+        // Init. user location marker
         locMarker = new MarkerOptions();
         locMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-        // Obtain the Map View and register the callback
+        // Obtain the Map View
         Bundle mapViewBundle = null;
 
+        // User location found callback function
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null)
                     return;
                 mCurrentLocation = locationResult.getLastLocation();
+                // Move camera to found user location
                 for (Location location : locationResult.getLocations()) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(),
                             location.getLongitude())));
@@ -198,6 +212,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
 
+        // Reload saved instance if available
         if(savedInstanceState != null) {
             mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
@@ -206,15 +221,20 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         mMapView.getMapAsync(this);
 
+        // Build geocoder
         if(mGeoApiContext == null) {
             mGeoApiContext = new GeoApiContext.Builder()
                     .apiKey(getString(R.string.google_maps_key))
                     .build();
         }
+        // Display tutorial if first user login
         displayTutorial();
     }
 
     private void displayTutorial() {
+        // Init. Tutorial to introduce new user to app, works as a series of popups describing user the various elements of the map screen
+        // Runs only once on first login
+
         boolean firstLogin = true; //TESTING
         ArrayList<AlertDialog> popups = new ArrayList<>();
         AtomicBoolean running = new AtomicBoolean(true);
@@ -307,6 +327,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private String getUrl(Location origin, LatLng dest) {
+        // Create an API call URL for Google Directions API
         // Origin of route
         String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude();
         // Destination of route
@@ -325,7 +346,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
-
+        // Parse retrieved Route direction Details
         List<HashMap<String, String>> test = null;
         for (int i = 0; i < details.size(); i++) {
             // Fetching i-th route
@@ -341,76 +362,69 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void getDirectionButtonClick(){
+        // Initialise Get Directions button
         Button getDirection = findViewById(R.id.btnGetDirection);
 
         Button endRoute = findViewById(R.id.btnEndRoute);
 
+        getDirection.setOnClickListener(view -> {
+            polyLineList = new ArrayList<>();
+            polyLineVisibleList = new ArrayList<>();
+            routeDataList = new ArrayList<>();
+            Thread progressThread = new Thread();
+            progressThread.start();
 
-        getDirection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                polyLineList = new ArrayList<>();
-                polyLineVisibleList = new ArrayList<>();
-                routeDataList = new ArrayList<>();
-                Thread progressThread = new Thread();
-                progressThread.start();
-
-
-
-
-
-                //      //      //      //
-
-                if (destination != null) {
-                    new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
-                    endRoute.setVisibility(View.VISIBLE);
-                    getDirection.setVisibility(View.GONE);
+            if (destination != null) {
+                // If destination is selected, create an API request for directions to destination from current location and parse result
+                new FetchURL(homescreenActivity.this, progressBar).execute(getUrl(mCurrentLocation, destination.getPosition()), "walking");
+                // Replace Get Directions button with End Journey button
+                endRoute.setVisibility(View.VISIBLE);
+                getDirection.setVisibility(View.GONE);
 
 
-                }
+            }
 
-                else {
-                    Toast noDestinationToast = Toast.makeText(getApplicationContext(),
-                            "No Destination Selected", Toast.LENGTH_LONG);
-                    noDestinationToast.show();
-                }
+            else {
+                Toast noDestinationToast = Toast.makeText(getApplicationContext(),
+                        "No Destination Selected", Toast.LENGTH_LONG);
+                noDestinationToast.show();
             }
         });
     }
 
     private void endRoute() {
+        // Initialise End Journey button
         Button endRoute = findViewById(R.id.btnEndRoute);
         Button getDirection = findViewById(R.id.btnGetDirection);
-        endRoute.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //put those below in the code where the user gets to the destination and the route finishes
-                stopForegroundService();
-                stopNotificationsRestartService();
-                stopTimeTriggersService();
-                stopTimeLeftTriggerService();
-                stopSensorTriggerService();
-                mMap.clear();
-                endRoute.setVisibility(View.GONE);
-                getDirection.setVisibility(View.VISIBLE);
-                destination = null;
-            }
+        endRoute.setOnClickListener(v -> {
+            // Code for where user finishes journey
+            stopForegroundService();
+            stopNotificationsRestartService();
+            stopTimeTriggersService();
+            stopTimeLeftTriggerService();
+            stopSensorTriggerService();
+            mMap.clear();
+            endRoute.setVisibility(View.GONE);
+            getDirection.setVisibility(View.VISIBLE);
+            destination = null;
         });
 
     }
     private void settingsView(){
+        // Initialise the Settings button
         Button btnSettings = findViewById(R.id.button_settings);
         btnSettings.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SettingsActivity.class)));
     }
 
     private void savedDestinationsView(){
+        // Initialise the Saved Destinations button
         Button btnSavedDestinations = findViewById(R.id.buttonSavedDestinations);
         SavedDestinationActivity.homescreen = homescreenActivity.this;
         btnSavedDestinations.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
     }
 
     private void addSavedDestinations(){
+        // Initialise Add Destination button to allow user to save a destination for later use
         Button btnAddDestination = findViewById(R.id.addDestinationBtn);
         btnAddDestination.setOnClickListener(v -> startActivity(new Intent(homescreenActivity.this, SavedDestinationActivity.class)));
 
@@ -448,6 +462,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void loadDestination(String title, String inlatlng) {
+        // Recall a destination from the SavedDestinationActivity
         String[] latlng = inlatlng.split(",");
         LatLng destLocation = new LatLng(Double.parseDouble(latlng[0]), Double.parseDouble(latlng[1]));
         destination = new MarkerOptions().position(destLocation);
@@ -458,6 +473,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void dropMarkerButton(){
+        // Initialise the Marker Drop button
         ToggleButton mDropMarkerBtn = findViewById(R.id.dropMarker);
         mDropMarkerBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -484,6 +500,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void initSearchBar() {
+        // Init. Search bar for searching destinations
         mSearchText.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_SEARCH
                     || actionId == EditorInfo.IME_ACTION_DONE
@@ -498,6 +515,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void searchLocate() {
+        // Parse search bar input to search for specific location given by user with geocoding
         String searchInput = mSearchText.getText().toString();
 
         Geocoder geocoder = new Geocoder(homescreenActivity.this);
@@ -539,6 +557,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void markLocation(int listIndex) {
+        // Mark the selected location from the search bar list as a destination
         Address address = addresses.get(listIndex);
 
         addressList = findViewById(R.id.addressList);
@@ -573,7 +592,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //
+        // Check permissions
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -582,6 +601,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             finish();
         }
 
+        // If permission to track user location granted, begin tracking & init searchbar
         if (mLocationPermissionGranted) {
             mMap.setMyLocationEnabled(true);
             createLocationRequest();
@@ -595,12 +615,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void onTaskDone(Object... values) {
+        // Callback function from PointsParser activity
+        // Add the formatted route polyline to list to draw to map
         polyLineList.add((PolylineOptions) values[0]);
     }
 
 
     public void highlightRoute(RouteDataItem selectedRouteData){
-
+        // Highlight route selected by user by removing alternative routes
         currentRouteData = selectedRouteData;
         currentRouteLine = selectedRouteData.getPolyline();
 
@@ -610,25 +632,29 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             if(selectedRouteData.getPolyline().getColor() != polyLineVisibleList.get(i).getColor())
                 polyLineVisibleList.get(i).remove();
         }
+        // Remove the list of available routes
         mFrameLayout.setVisibility(View.GONE);
 
         //TODO comment these out for the alarms to work again
-//        startForegroundService();
-//        startTimeTriggers();
+        //startForegroundService();
+        //startTimeTriggers();
     }
 
-    // check user deviation functions //
     public void start_deviation_checks(){
+        // Begin checking for user deviation from route
         handler.postDelayed(r, 1);
     }
 
     final Runnable r = new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         public void run() {
             check_deviation();
             handler.postDelayed(this, 5000);
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void check_deviation(){
+        // Method to check user deviation from path and issue alerts when appropriate
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                     if (location != null) {
                         mCurrentLocation = location;
@@ -643,8 +669,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         boolean exceededTolerance = false;
-        System.out.println(route);
-        System.out.println(point);
         if (!PolyUtil.isLocationOnPath(point, route,true, tolerance)) {
             exceededTolerance = true;
         }
@@ -667,29 +691,36 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    // END OF check user deviation functions //
-
     public void listRoutes() throws ExecutionException, InterruptedException {
+        // Create list of available routes for user to navigate to destination in RecyclerView
         int counter = 1;
         for(ArrayList<LatLng> step : stepPoints) {
+            // This loop runs for each "step" in all available routes
             String distance = null;
             String duration = null;
             String numDuration = null;
             List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
             HashMap<String, String> point = details.get(0);
+            // duration = formatted walking time to destination
             duration = point.get("duration");
+            // distance = formatted walking distance to destination
             distance = point.get("distance");
+            // numDuration = unformatted walking time to destination in seconds
             numDuration = point.get("numduration");
 
+            // Init. new CrimeCollector object and execute to count total crimes on each route
             CrimeCollector crimeCollector = new CrimeCollector();
             int crimeCount = crimeCollector.execute(step).get();
 
+            // Create new RouteDataItem to store information on each route and add to list of routes
             routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
             counter++;
         }
 
+        // Sort the list of routes based on number of crimes (least -> most)
         Collections.sort(routeDataList, (o1, o2) -> o1.getCrimeCount() - o2.getCrimeCount());
 
+        // Colour code routes Green = Safest (least crimes), Red = Least Safe (most crimes)
         if (routeDataList.size() == 3) {
             routeDataList.get(0).setImage(R.drawable.ic_route_green);
             routeDataList.get(1).setImage(R.drawable.ic_route_yellow);
@@ -715,6 +746,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             polyLineVisibleList.add(mMap.addPolyline(routeDataList.get(0).getPolyline()));
         }
 
+        // Display available routes as RecyclerView fragment for user selection
         homescreenActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.frameLayout, RoutesFragment.newInstance(getApplicationContext(), routeDataList, homescreenActivity.this)).commit();
         mFrameLayout = findViewById(R.id.frameLayout);
         mFrameLayout.setVisibility(View.VISIBLE);
@@ -725,6 +757,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     });
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void startForegroundService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
         long time = journeyTimeSeconds * 1000;
@@ -833,14 +866,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         stopService(serviceIntent);
     }
 
+    // Required Map Interface Methods -------------------------------------------------------------
+
     @Override
     public void onStart() {
         super.onStart();
         mMapView.onStart();
 
         startLocationUpdates();
-
-
     }
 
     @Override
@@ -909,6 +942,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onBackPressed() {
+        // Logout function, press back button twice in quick succession
         long t = System.currentTimeMillis();
         if (t - backPressedTime > 2000) {
             backPressedTime = t;
