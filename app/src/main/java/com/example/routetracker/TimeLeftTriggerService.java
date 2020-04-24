@@ -18,6 +18,8 @@ public class TimeLeftTriggerService extends Service {
     long journeyTime;
     long timeLeft;
     double actualMultiplier;
+    int level4 = 0;
+
     // First Time Trigger //
     public void FirstTriggerStart() {
         long firstNotificationDelay = timeLeft;
@@ -31,10 +33,15 @@ public class TimeLeftTriggerService extends Service {
                 startL2Service();
                 handler.postDelayed(() -> {
                     startL3Service();
-                    handler.postDelayed(() -> {
-                        startL4Service();
+                    if (level4 == 1) {
+                        handler.postDelayed(() -> {
+                            startL4Service();
+                            stopSelf();
+                        }, fourthNotificationDelay);
+                    }
+                    else {
                         stopSelf();
-                    }, fourthNotificationDelay);
+                    }
                 }, thirdNotificationDelay);
             }, secondNotificationDelay);
         }, firstNotificationDelay);
@@ -72,6 +79,7 @@ public class TimeLeftTriggerService extends Service {
         double hundred = 100;
         actualMultiplier = multiplier/hundred;
 
+        level4 = res.getInt(15);
 
         time = intent.getLongExtra("timeID", 0);
         timeSinceStart = intent.getLongExtra("timeSS", 0);

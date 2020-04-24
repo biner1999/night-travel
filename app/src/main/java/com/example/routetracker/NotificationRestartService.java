@@ -16,6 +16,7 @@ public class NotificationRestartService extends Service {
     String curr;
     long time;
     double actualMultiplier;
+    int level4 = 0;
 
     // First Time Trigger //
     public void FirstTriggerStart() {
@@ -29,10 +30,15 @@ public class NotificationRestartService extends Service {
                 startL2Service();
                 handler.postDelayed(() -> {
                     startL3Service();
-                    handler.postDelayed(() -> {
-                        startL4Service();
+                    if (level4 == 1) {
+                        handler.postDelayed(() -> {
+                            startL4Service();
+                            stopSelf();
+                        }, fourthNotificationDelay);
+                    }
+                    else {
                         stopSelf();
-                    }, fourthNotificationDelay);
+                    }
                 }, thirdNotificationDelay);
             }, secondNotificationDelay);
         }, firstNotificationDelay);
@@ -74,6 +80,8 @@ public class NotificationRestartService extends Service {
         double multiplier = res.getInt(13);
         double hundred = 100;
         actualMultiplier = multiplier/hundred;
+
+        level4 = res.getInt(15);
 
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
