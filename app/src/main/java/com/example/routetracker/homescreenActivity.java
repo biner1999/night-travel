@@ -793,12 +793,19 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         String b = Double.toString(mCurrentLocation.getLongitude());
         String curr = "lat/lng: (" + a + "," + b + ")";
 
-        Intent serviceIntent = new Intent(this, SensorService.class);
-        serviceIntent.putExtra("dest", dest);
-        serviceIntent.putExtra("curr", curr);
-        serviceIntent.putExtra("timeID", time);
-        startForegroundService(serviceIntent);
-        ContextCompat.startForegroundService(this, serviceIntent);
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getAllUserData();
+        res.moveToNext();
+        int accelORgyro = res.getInt(16);
+        if(accelORgyro == 1){
+            Intent serviceIntent = new Intent(this, SensorService.class);
+            serviceIntent.putExtra("dest", dest);
+            serviceIntent.putExtra("curr", curr);
+            serviceIntent.putExtra("timeID", time);
+            startForegroundService(serviceIntent);
+            ContextCompat.startForegroundService(this, serviceIntent);
+        }
+
     }
 
     public void stopForegroundService() {
