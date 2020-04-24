@@ -24,7 +24,7 @@ public class TimeTriggerService extends Service {
 
     // First Time Trigger //
     public void FirstTriggerStart() {
-        long firstNotificationDelay = Math.round(time*1.25*actualMultiplier) + 300000; //25% + 5 mins
+        long firstNotificationDelay = Math.round(time+time*0.25*actualMultiplier) + 300000; //25% + 5 mins
         long secondNotificationDelay = 60000;
         long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier);
         long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier);
