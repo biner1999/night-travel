@@ -78,7 +78,7 @@ public class TimeLeftTriggerService extends Service {
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
 
-        journeyTime = Math.round(time*1.25*actualMultiplier) + 300000;
+        journeyTime = Math.round(time+time*0.25*actualMultiplier) + 300000;
         timeLeft = journeyTime - timeSinceStart;
 
         FirstTriggerStart();
