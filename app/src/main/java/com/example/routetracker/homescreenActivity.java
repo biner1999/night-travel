@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -644,11 +646,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     final Runnable r = new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         public void run() {
             check_deviation();
             handler.postDelayed(this, 5000);
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void check_deviation(){
         // Method to check user deviation from path and issue alerts when appropriate
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
@@ -665,8 +669,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         boolean exceededTolerance = false;
-        System.out.println(route);
-        System.out.println(point);
         if (!PolyUtil.isLocationOnPath(point, route,true, tolerance)) {
             exceededTolerance = true;
         }
@@ -755,6 +757,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     });
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void startForegroundService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
         long time = journeyTimeSeconds * 1000;
