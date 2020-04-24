@@ -235,7 +235,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         // Init. Tutorial to introduce new user to app, works as a series of popups describing user the various elements of the map screen
         // Runs only once on first login
 
-        boolean firstLogin = true; //TESTING
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getAllUserData();
+        res.moveToNext();
+
+        int firstLogin = res.getInt(17);
         ArrayList<AlertDialog> popups = new ArrayList<>();
         AtomicBoolean running = new AtomicBoolean(true);
         AtomicInteger popupIndex = new AtomicInteger(0);
@@ -244,7 +248,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         arrow1_2 = findViewById(R.id.tutArrow1_2);
         arrow3_1 = findViewById(R.id.tutArrow3_1);
 
-        if (!firstLogin) {
+        if (firstLogin == 0) {
             return;
         }
 
@@ -324,6 +328,25 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         popups.add(pop8);
 
         popups.get(0).show();
+
+        myDb.updateUserData("1",
+                res.getString(1),
+                res.getString(2),
+                res.getString(3),
+                res.getString(4),
+                res.getString(5),
+                res.getString(6),
+                res.getString(7),
+                res.getString(8),
+                res.getString(9),
+                res.getString(10),
+                res.getString(11),
+                res.getInt(12),
+                res.getInt(13),
+                res.getString(14),
+                res.getInt(15),
+                res.getInt(16),
+                0);
     }
 
     private String getUrl(Location origin, LatLng dest) {
@@ -665,7 +688,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         DatabaseFunctions myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getUserIDOne();
         res.moveToNext();
-        double tolerance = res.getInt(12); // 0.1 meters
+        double tolerance = res.getInt(12); // 0.1 metres
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         boolean exceededTolerance = false;
@@ -685,9 +708,11 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
 
             System.out.println("User deviated from path");
+            Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
         }
         else {
             System.out.println("User HAS NOT deviated from path");
+            Toast.makeText(getApplicationContext(), "On track", Toast.LENGTH_SHORT).show();
         }
     }
 
