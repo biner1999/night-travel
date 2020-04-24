@@ -276,7 +276,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     dialog.dismiss();
                 }).setOnDismissListener(dialog -> {
             popupIndex.getAndIncrement();
-            if (popupIndex.get() < 8) {
+            if (popupIndex.get() < 9) {
                 popups.get(popupIndex.get()).show();
                 if (popupIndex.get() == 3) {
                     arrow1_1.setVisibility(View.VISIBLE);
@@ -286,7 +286,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     arrow1_1.setVisibility(View.GONE);
                     arrow1_2.setVisibility(View.GONE);
                 }
-                if (popupIndex.get() == 6) {
+                if (popupIndex.get() == 7) {
                     arrow3_1.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -317,15 +317,20 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         AlertDialog pop6 = builder.create();
         popups.add(pop6);
         // Popup 7
-        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
+        builder.setMessage("Police contact is disabled by default.\nThis can be enabled by switching it on in settings then sending an SMS with the word" +
+                " 'register' to 999 and following the instructions");
         AlertDialog pop7 = builder.create();
         popups.add(pop7);
         // Popup 8
+        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
+        AlertDialog pop8 = builder.create();
+        popups.add(pop8);
+        // Popup 9
         builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> {
             dialog.dismiss();
         }).setOnDismissListener(dialog -> { });
-        AlertDialog pop8 = builder.create();
-        popups.add(pop8);
+        AlertDialog pop9 = builder.create();
+        popups.add(pop9);
 
         popups.get(0).show();
 
