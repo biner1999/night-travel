@@ -621,6 +621,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void highlightRoute(RouteDataItem selectedRouteData){
         // Highlight route selected by user by removing alternative routes
         currentRouteData = selectedRouteData;
@@ -636,8 +637,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         mFrameLayout.setVisibility(View.GONE);
 
         //TODO comment these out for the alarms to work again
-        //startForegroundService();
-        //startTimeTriggers();
+        startForegroundService();
+        startTimeTriggers();
     }
 
     public void start_deviation_checks(){
