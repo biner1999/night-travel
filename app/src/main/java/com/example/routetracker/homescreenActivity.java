@@ -344,9 +344,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Button getDirection = findViewById(R.id.btnGetDirection);
 
         Button endRoute = findViewById(R.id.btnEndRoute);
-        //TODO Add confirm route
-        //TODO Add save route
-        //TODO Start Route
+
 
         getDirection.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -358,8 +356,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 progressThread.start();
 
 
-                //TODO Once a confirm route option is in then adapt and move this to it
-                //activeRoute = true;
+
 
 
                 //      //      //      //
@@ -616,8 +613,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         mFrameLayout.setVisibility(View.GONE);
 
         //TODO comment these out for the alarms to work again
-        //startForegroundService();
-        //startTimeTriggers();
+//        startForegroundService();
+//        startTimeTriggers();
     }
 
     // check user deviation functions //
