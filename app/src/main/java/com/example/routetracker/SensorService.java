@@ -9,17 +9,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.service.notification.StatusBarNotification;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import java.util.Objects;
 
 
 //stopSelf(); will stop the service, some method to stop the service is required either from within or outside
+@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SensorService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
@@ -27,10 +31,12 @@ public class SensorService extends Service {
     float accelValuesX;
     float accelValuesY;
     float accelValuesZ;
+    static boolean trigger = false;
 
     String dest;
     String curr;
     long time;
+
 
     @Nullable
     @Override
@@ -38,9 +44,15 @@ public class SensorService extends Service {
         return null;
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        trigger=false;
+        SensorManager sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor accelSensor = Objects.requireNonNull(sensorManagerAccel).getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        SensorManager sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor gyroscopeSensor = Objects.requireNonNull(sensorManagerGyro).getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+
 
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
@@ -48,10 +60,7 @@ public class SensorService extends Service {
 
         //Declarations
         String input = intent.getStringExtra("inputExtra");
-        SensorManager sensorManagerAccel = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor accelSensor = sensorManagerAccel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        SensorManager sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor gyroscopeSensor = sensorManagerGyro.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
 
         //Checks if accelerometer is present in device
         if (accelSensor == null){
@@ -61,40 +70,16 @@ public class SensorService extends Service {
             Toast.makeText(this, "The device has no Gyroscope", Toast.LENGTH_SHORT).show();
         }
 
-        //Accelerometer sensor for detecting if user has fallen
-        SensorEventListener accelerometerEventListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent sensorEvent) {
-                Sensor mySensor = sensorEvent.sensor;
-                if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                    accelValuesX = sensorEvent.values[0];
-                    accelValuesY = sensorEvent.values[1];
-                    accelValuesZ = sensorEvent.values[2];
-                    double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
-                    if (rootSquare < 2.0) {
-                        //TODO add funcionality with bart's notification system, this is the accelerometer
-                        System.out.println("Fall Rootsquare = " + rootSquare);
-                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
-                        for (StatusBarNotification notification : notifications) {
-                            if (notification.getId() == 2) {
-                                //do nothing if notification is on the screen
-                            }
-                            else {
-                                startSensorTriggerService();
-                            }
-                        }
-                    }
-                }
-            }
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-        };
+
         //Gyroscopic sensor for detecting if phone hasnt moved for 5mins
         SensorEventListener gyroscopeEventListener = new SensorEventListener() {
             @Override
             public void onSensorChanged(SensorEvent sensorEvent) {
+
+                if(trigger){
+                    sensorManagerGyro.unregisterListener(this);
+                }
+
                 if (sensorEvent.values[2] > 0.5f) {
                     //Resets timer
                     resetDisconnectTimer();
@@ -109,6 +94,46 @@ public class SensorService extends Service {
             @Override
             public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+            }
+        };
+
+        //Accelerometer sensor for detecting if user has fallen
+        SensorEventListener accelerometerEventListener = new SensorEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                Sensor mySensor = sensorEvent.sensor;
+                if (mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+                    accelValuesX = sensorEvent.values[0];
+                    accelValuesY = sensorEvent.values[1];
+                    accelValuesZ = sensorEvent.values[2];
+                    double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
+                    if (rootSquare < 2.0) {
+
+                        //TODO add funcionality with bart's notification system, this is the accelerometer
+                        System.out.println("Fall Rootsquare = " + rootSquare);
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        StatusBarNotification[] notifications = new StatusBarNotification[0];
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            assert mNotificationManager != null;
+                            notifications = mNotificationManager.getActiveNotifications();
+                        }
+                        for (StatusBarNotification notification : notifications) {
+                            if (notification.getId() == 2) {
+                                //do nothing if notification is on the screen
+                            }
+                            else {
+
+                                sensorManagerAccel.unregisterListener(this);
+                                startSensorTriggerService();
+
+                            }
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
             }
         };
 
@@ -131,11 +156,14 @@ public class SensorService extends Service {
         sensorManagerAccel.registerListener(accelerometerEventListener, accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
 
 
+
+
         //TODO implement a stop condition?
         startForeground(1, notification);
 
         return START_REDELIVER_INTENT;
     }
+
 
 
     @Override
@@ -149,10 +177,13 @@ public class SensorService extends Service {
         //TODO unregister listeners when the stop command is given
 //        sensorManagerAccel.unregisterListener(accelerometerEventListener);
 //        sensorManagerGyro.unregisterListener(gyroscopeEventListener);
+        trigger = true;
+        System.out.println("End Route?????");
+
     }
 
     //ToDo change to 5mins
-    public static final long DISCONNECT_TIMEOUT = 5000;//300000; // 5 min = 5 * 60 * 1000 ms
+    public static final long DISCONNECT_TIMEOUT = 300000; // 5 min = 5 * 60 * 1000 ms 5000;//
 
     private static Handler disconnectHandler = new Handler(msg -> {
         return true;
@@ -179,9 +210,12 @@ public class SensorService extends Service {
         // Perform any required operation on disconnect
         System.out.println("Disconnect test");
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
+        StatusBarNotification[] notifications = new StatusBarNotification[0];
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            notifications = mNotificationManager.getActiveNotifications();
+        }
         for (StatusBarNotification notification : notifications) {
-            if (notification.getId() == 2) {
+            if (SensorTriggerService.isRunning()) {
                 //do nothing if notification is on the screen
             }
             else {
@@ -191,6 +225,7 @@ public class SensorService extends Service {
     };
 
     public void startSensorTriggerService() {
+        trigger = true;
         Intent serviceIntent = new Intent(this, SensorTriggerService.class);
         serviceIntent.putExtra("dest", dest);
         serviceIntent.putExtra("curr", curr);

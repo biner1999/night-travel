@@ -21,10 +21,12 @@ public class TimeTriggerService extends Service {
     String curr;
     long time;
     double actualMultiplier;
+    int level4 = 0;
+
 
     // First Time Trigger //
     public void FirstTriggerStart() {
-        long firstNotificationDelay = Math.round(time*1.25*actualMultiplier) + 300000; //25% + 5 mins
+        long firstNotificationDelay = Math.round(time+time*0.25*actualMultiplier) + 300000; //25% + 5 mins
         long secondNotificationDelay = 60000;
         long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier);
         long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier);
@@ -35,10 +37,15 @@ public class TimeTriggerService extends Service {
                 startL2Service();
                 handler.postDelayed(() -> {
                     startL3Service();
-                    handler.postDelayed(() -> {
-                        startL4Service();
+                    if (level4 == 1) {
+                        handler.postDelayed(() -> {
+                            startL4Service();
+                            stopSelf();
+                        }, fourthNotificationDelay);
+                    }
+                    else {
                         stopSelf();
-                    }, fourthNotificationDelay);
+                    }
                 }, thirdNotificationDelay);
             }, secondNotificationDelay);
         }, firstNotificationDelay);
@@ -80,6 +87,8 @@ public class TimeTriggerService extends Service {
         double multiplier = res.getInt(13);
         double hundred = 100;
         actualMultiplier = multiplier/hundred;
+
+        level4 = res.getInt(15);
 
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
