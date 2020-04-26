@@ -4,15 +4,23 @@ public class SaveDestinationItem {
 
     private int mImageResource;
     private String mText1;
-    private String mText2;
     private String mDestination;
+    private String mFavourite;
+    private int mFavValue;
 
 
-    public SaveDestinationItem(int ImageResource, String text1, String text2, String inDest){
+    public SaveDestinationItem(int ImageResource, String text1, int favourite, String inDest){
         mImageResource = ImageResource;
         mText1 = text1;
-        mText2 = text2;
         mDestination = inDest;
+        mFavValue = favourite;
+        if (favourite == 0){
+            mFavourite = "";
+        }
+        else{
+            mFavourite = "Favourite";
+        }
+
 
 
     }
@@ -25,9 +33,15 @@ public class SaveDestinationItem {
         return mText1;
     }
 
-    public String getmText2(){
-        return mText2;
+    public String getmDestination(){
+        return mDestination;
     }
 
-    public String getmDestination(){return mDestination;}
+    public String getmFavourite(){
+        return mFavourite;
+    }
+
+    public int getmFavValue(){
+        return mFavValue;
+    }
 }

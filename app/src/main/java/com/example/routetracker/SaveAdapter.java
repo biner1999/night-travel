@@ -77,7 +77,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder
 
         holder.mImageView.setImageResource(currentItem.getmImageResource());
         holder.mTextView1.setText(currentItem.getmText1());
-        holder.mTextView2.setText(currentItem.getmText2());
+        holder.mTextView2.setText(currentItem.getmFavourite());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -51,6 +53,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -154,6 +157,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -431,7 +435,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 addDestDlg.setPositiveButton("Add", (dialog, which) -> {
                     DatabaseFunctions myDb = new DatabaseFunctions(this);
                     myDb.insertRouteData("1", destination.getPosition().latitude + "," +
-                            destination.getPosition().longitude, inName.getText().toString());
+                            destination.getPosition().longitude, inName.getText().toString(), 0);
 
                 });
 
@@ -626,11 +630,13 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     final Runnable r = new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         public void run() {
             check_deviation();
             handler.postDelayed(this, 5000);
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void check_deviation(){
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                     if (location != null) {
@@ -728,6 +734,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     });
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void startForegroundService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
         long time = journeyTimeSeconds * 1000;

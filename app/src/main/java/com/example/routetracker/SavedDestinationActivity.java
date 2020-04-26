@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,16 +9,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class SavedDestinationActivity extends AppCompatActivity{
-
-    //TODO: Bug when pressing Delete button on any destination item, causes crash
 
     private ArrayList<SaveDestinationItem> mSaveList;
 
@@ -29,10 +30,13 @@ public class SavedDestinationActivity extends AppCompatActivity{
     public static homescreenActivity homescreen;
 
     private Button buttonSelect;
+    private Button buttonFav;
+    private Switch switchFilter;
 
     private int pos = -1;
     private boolean selected = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +54,11 @@ public class SavedDestinationActivity extends AppCompatActivity{
             return;
         }
 
+
         while (res.moveToNext()) {
-            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getString(0), res.getString(2)));
+            mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getInt(4), res.getString(2)));
         }
+
 
         buildRecyclerView();
         setButtons();
@@ -67,6 +73,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener(new SaveAdapter.onItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onItemClick(int position) {
                 if(!(pos==-1)){
@@ -101,10 +108,11 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void changeItem(int position, int image){
-        mSaveList.set(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmText2(), mSaveList.get(position).getmDestination()));
+        mSaveList.set(position, new SaveDestinationItem(image, mSaveList.get(position).getmText1(), mSaveList.get(position).getmFavValue(), mSaveList.get(position).getmDestination()));
         mAdapter.notifyItemChanged(position);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void setButtons(){
         buttonSelect = findViewById(R.id.buttonSelect);
         if (selected) {
@@ -119,6 +127,49 @@ public class SavedDestinationActivity extends AppCompatActivity{
                 Toast.makeText(getApplicationContext(), "No Route Selected", Toast.LENGTH_SHORT).show();
             });
         }
+
+        buttonFav = findViewById(R.id.buttonFav);
+        if (selected) {
+            buttonFav.setOnClickListener(v -> {
+                myDb.favouriteRouteData(mSaveList.get(pos).getmDestination());
+                Cursor res = myDb.getAllRouteData();
+                while(res.moveToNext()){
+                    System.out.println(res.getString(4));
+                }
+            });
+        }
+        else{
+            buttonFav.setOnClickListener(v -> {
+                Toast.makeText(getApplicationContext(), "No Route Selected", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        switchFilter = findViewById(R.id.filter);
+        switchFilter.setOnClickListener(v -> {
+            myDb = new DatabaseFunctions(this);
+            Cursor res = myDb.getAllRouteData();
+
+            mSaveList = new ArrayList<>();
+
+            if (!switchFilter.isChecked()){
+                while (res.moveToNext()) {
+                    mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getInt(4), res.getString(2)));
+                }
+            }
+            else{
+                while (res.moveToNext()) {
+                    System.out.println("BBBBBBBBBBBBBBBBBBBBB");
+                    System.out.println(res.getInt(4));
+                    if (res.getInt(4) == 1){
+                        System.out.println("SSSSSSSSSSSSSSSSS");
+                        mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getInt(4), res.getString(2)));
+                    }
+
+                }
+            }
+            buildRecyclerView();
+
+        });
     }
 
     public void showMessage (String title, String Message){

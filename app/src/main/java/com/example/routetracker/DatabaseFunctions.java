@@ -40,7 +40,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public static final String Route_Table_Name_COL_1 = "UserID";
     public static final String Route_Table_Name_COL_2 = "EndDestination";
     public static final String Route_Table_Name_COL_3 = "Name";
-
+    public static final String Route_Table_Name_COL_4 = "Favourite";
 
     public DatabaseFunctions(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -51,7 +51,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + User_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, FIRSTNAME TEXT,SURNAME TEXT,GENDER TEXT,AGE TEXT, HEIGHT TEXT, HAIRCOLOUR TEXT,WEIGHT TEXT,ETHNICITY TEXT,PASSWORD TEXT, QUESTION TEXT, ANSWER TEXT, DISTANCE INTEGER, TIME INTEGER, EMERGENCYCONTACT TEXT, ALERTLEVEL BOOLEAN, ACCELEROMETERSANDGRYO BOOLEAN, FIRSTLOGIN BOOLEAN)");
-        db.execSQL("create table " + Route_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERID INTEGER REFERENCES User_Table_Name(ID), ENDDESTINATION INTEGER, NAME TEXT)");
+        db.execSQL("create table " + Route_Table_Name + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERID INTEGER REFERENCES User_Table_Name(ID), ENDDESTINATION INTEGER, NAME TEXT, FAVOURITE INTEGER)");
 
     }
 
@@ -175,12 +175,13 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Inserts the EndDestination into the RouteTable
-    public boolean insertRouteData(String UserID, String EndDestination, String Name){
+    public boolean insertRouteData(String UserID, String EndDestination, String Name, int Favourite){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Route_Table_Name_COL_1,UserID);
         contentValues.put(Route_Table_Name_COL_2,EndDestination);
         contentValues.put(Route_Table_Name_COL_3,Name);
+        contentValues.put(Route_Table_Name_COL_4,Favourite);
         long result = db.insert(Route_Table_Name, null, contentValues);
 
         if (result == -1 ){
@@ -194,6 +195,16 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public Integer deleteRouteData(String dest){
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(Route_Table_Name, "EndDestination = ?",new String[] { dest } );
+    }
+
+    public boolean favouriteRouteData(String dest){
+        System.out.println("111111111111111    "+dest);
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Route_Table_Name_COL_4,1);
+        db.update(Route_Table_Name,contentValues, "EndDestination = ?",new String[] { dest } );
+
+        return true;
     }
 
     //Returns all values in the route table
