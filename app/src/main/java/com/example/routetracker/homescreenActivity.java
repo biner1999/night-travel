@@ -437,6 +437,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             endRoute.setVisibility(View.GONE);
             getDirection.setVisibility(View.VISIBLE);
             destination = null;
+
+            stop_deviation_check();
+
         });
 
     }
@@ -674,6 +677,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     public void start_deviation_checks(){
         // Begin checking for user deviation from route
         handler.postDelayed(r, 1);
+    }
+    public void stop_deviation_check(){
+        handler.removeCallbacks(r);
     }
 
     final Runnable r = new Runnable() {
