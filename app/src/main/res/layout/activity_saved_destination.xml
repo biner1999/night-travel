@@ -67,7 +67,7 @@
 
     <Switch
         android:id="@+id/filter"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -75,9 +75,8 @@
         android:layout_marginStart="240dp"
         android:layout_marginLeft="240dp"
         android:layout_marginTop="75dp"
-        android:text="Favourites Only"
-        android:textSize="18dp"
+        android:text="Favourites"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 </RelativeLayout>

@@ -124,7 +124,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
         }
         else{
             buttonSelect.setOnClickListener(v -> {
-                Toast.makeText(getApplicationContext(), "No Route Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
             });
         }
 
@@ -133,6 +133,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             buttonFav.setOnClickListener(v -> {
                 myDb.favouriteRouteData(mSaveList.get(pos).getmDestination());
                 Cursor res = myDb.getAllRouteData();
+                Toast.makeText(getApplicationContext(), "Added to Favourites", Toast.LENGTH_SHORT).show();
                 while(res.moveToNext()){
                     System.out.println(res.getString(4));
                 }
@@ -140,7 +141,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
         }
         else{
             buttonFav.setOnClickListener(v -> {
-                Toast.makeText(getApplicationContext(), "No Route Selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
             });
         }
 
