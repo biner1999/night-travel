@@ -209,13 +209,13 @@ android:fillViewport="true">
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewDistance"
+            android:id="@+id/textViewDistanceValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="46dp"
-            android:layout_marginTop="54dp"
-            android:text="@string/distance"
+            android:layout_marginStart="28dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginTop="60dp"
+            android:text="Distance before the alerts trigger"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -236,7 +236,7 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:layout_marginStart="28dp"
             android:layout_marginLeft="28dp"
-            android:layout_marginTop="112dp"
+            android:layout_marginTop="116dp"
             android:text="Percentage of the journey time before the last alert"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

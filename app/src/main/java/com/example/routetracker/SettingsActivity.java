@@ -22,9 +22,10 @@ public class SettingsActivity extends AppCompatActivity {
     EditText editHeight,editHairColour, editAge,editWeight, editEmergancyContact;
     Switch editPoliceContact, editAccelAndGyro;
     SeekBar editDistance, editTime;
-     TextView text_view_distance, getText_view_time, textViewTime;
+     TextView text_view_distance, getText_view_time, textViewTime, textViewDistance;
      Button btnSaveChanges, btnChangePin;
-     int min = 50, max = 200, current;
+     int timeMin = 50, timeMax = 200, timeCurrent;
+     int distanceMin = 100, distanceMax = 750, distanceCurrent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnSaveChanges = findViewById(R.id.buttonSaveChanges);
 
-        editDistance.setMax(200);
-        editTime.setMax(max - min);
+        editDistance.setMax(distanceMax - distanceMin);
+        editTime.setMax(timeMax - timeMin);
 
 
         while(res.moveToNext()){
@@ -65,9 +66,10 @@ public class SettingsActivity extends AppCompatActivity {
             editHeight.setText(res.getString(5));
             editHairColour.setText(res.getString(6));
             editWeight.setText(res.getString(7));
-            editDistance.setProgress(res.getInt(12));
-            current = res.getInt(13);
-            editTime.setProgress(current - min);
+            distanceCurrent = res.getInt(12);
+            editDistance.setProgress(distanceCurrent - distanceMin);
+            timeCurrent = res.getInt(13);
+            editTime.setProgress(timeCurrent - timeMin);
             editEmergancyContact.setText(res.getString(14));
             editPoliceContact.setChecked(alertLevel(res.getInt(15)));
             editAccelAndGyro.setChecked(AccelerometersAndGryo(res.getInt(16)));
@@ -75,12 +77,32 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         textViewTime = (TextView) findViewById(R.id.textViewTimeValue);
-        textViewTime.setText(current + "% of the journey time before the last alert goes off");
+        textViewTime.setText(timeCurrent + "% of the journey time before the last alert goes off");
         editTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                current = progress + min;
-                textViewTime.setText(current + "% of the journey time before the last alert goes off");
+                timeCurrent = progress + timeMin;
+                textViewTime.setText(timeCurrent + "% of the journey time before the last alert goes off");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        textViewDistance = (TextView) findViewById(R.id.textViewDistanceValue);
+        textViewDistance.setText(distanceCurrent/10 + "m before alert goes off");
+        editDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                distanceCurrent = progress + distanceMin;
+                textViewDistance.setText(distanceCurrent/10 + "m before alert goes off");
             }
 
             @Override
@@ -147,8 +169,8 @@ public class SettingsActivity extends AppCompatActivity {
                             res.getString(9),
                             res.getString(10),
                             res.getString(11),
-                            editDistance.getProgress(),
-                            current,
+                            distanceCurrent,
+                            timeCurrent,
                             editEmergancyContact.getText().toString(),
                             state(editPoliceContact.isChecked()),
                             state(editAccelAndGyro.isChecked()),
