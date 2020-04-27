@@ -58,6 +58,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -696,6 +697,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         DatabaseFunctions myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getUserIDOne();
         res.moveToNext();
+
+        double multiplier = res.getInt(13);
+        double hundred = 100;
+        double actualMultiplier = multiplier/hundred;
+
+
+        long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
+        long journeyTime = Math.round((currentRouteData.getNumTime() * 1000) + (currentRouteData.getNumTime() * 1000) * 0.25 * actualMultiplier) + 300000;
+        long time = journeyTime - timeSinceStart;
+
         double tolerance = res.getInt(12); // 0.1 metres
         List<LatLng>  route = currentRouteLine.getPoints(); // Your given route
         LatLng point = new  LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
@@ -704,17 +715,23 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            StatusBarNotification[] notifications = mNotificationManager.getActiveNotifications();
-            for (StatusBarNotification notification : notifications) {
-                if (SensorTriggerService.isRunning()) {
-                    //do nothing if notification is on the screen
-                }
-                else {
-                    startSensorTriggerService();
-                }
+            if (SensorTriggerService.isRunning()) {
+                //do nothing
             }
-
+            else if (NotificationRestartService.isRunning()) {
+                //do nothing
+            }
+            else if ((TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+                //do nothing
+            }
+            else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+                stopTimeTriggersService();
+                stopTimeLeftTriggerService();
+                startSensorTriggerService();
+            }
+            else {
+                startSensorTriggerService();
+            }
             System.out.println("User deviated from path");
             Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
         }
@@ -821,6 +838,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     public void startTimeTriggers() {
+        long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
         long journeyTimeSeconds = currentRouteData.getNumTime();
         long time = journeyTimeSeconds * 1000;
         LatLng des = destination.getPosition();
@@ -832,6 +850,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         Intent serviceIntent = new Intent(this, TimeTriggerService.class);
         serviceIntent.putExtra("dest", dest);
         serviceIntent.putExtra("curr", curr);
+        serviceIntent.putExtra("timeSS", timeSinceStart);
         serviceIntent.putExtra("timeID", time);
         startService(serviceIntent);
     }
@@ -932,8 +951,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         System.out.println(currentRouteData);
         if (currentRouteData != null) {
+            DatabaseFunctions myDb = new DatabaseFunctions(this);
+            myDb = new DatabaseFunctions(this);
+            Cursor res = myDb.getAllUserData();
+            res.moveToNext();
+
+            double multiplier = res.getInt(13);
+            double hundred = 100;
+            double actualMultiplier = multiplier/hundred;
+
             long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
-            long journeyTime = Math.round((currentRouteData.getNumTime() * 1000)*1.25) + 300000;
+            long journeyTime = Math.round((currentRouteData.getNumTime() * 1000) + (currentRouteData.getNumTime() * 1000) * 0.25 * actualMultiplier) + 300000;
             long time = journeyTime - timeSinceStart;
             //Toast.makeText(getApplicationContext(), time + " " + journeyTime + " " + timeSinceStart, Toast.LENGTH_SHORT).show();
             // login if user has an active route and NotificationRestarService is running instead of TimeTriggerService
@@ -943,7 +971,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 //Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
             }
             // login if user has an active route and less than 3 minutes on the first timer
-            else if (TimeTriggerService.isRunning() && time<180000) {
+            else if ((TimeTriggerService.isRunning() && time<180000) || (TimeLeftTriggerService.isRunning() && time<180000)) {
                 stopTimeTriggersService();
                 stopTimeLeftTriggerService();
                 startNotificationsRestartService();
@@ -953,10 +981,14 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             else if (SensorTriggerService.isRunning()) {
                 stopSensorTriggerService();
                 startTimeLeftTriggerService();
+                if (time<18000) {
+                    stopTimeLeftTriggerService();
+                    startNotificationsRestartService();
+                }
                 //Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
             }
             //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
-            else if (TimeLeftTriggerService.isRunning()) {
+            else if (TimeLeftTriggerService.isRunning() || TimeTriggerService.isRunning()) {
                 //Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
             }
             //login if user has no active route or has an active route and more than 3 minutes left on the first timer

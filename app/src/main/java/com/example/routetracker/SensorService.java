@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -36,6 +37,7 @@ public class SensorService extends Service {
     String dest;
     String curr;
     long time;
+    long timeSS;
 
 
     @Nullable
@@ -55,6 +57,7 @@ public class SensorService extends Service {
 
 
         time = intent.getLongExtra("timeID", 0);
+        timeSS = intent.getLongExtra("timeSS", 0);
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
 
@@ -209,18 +212,37 @@ public class SensorService extends Service {
     private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
         System.out.println("Disconnect test");
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        StatusBarNotification[] notifications = new StatusBarNotification[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            notifications = mNotificationManager.getActiveNotifications();
+
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getUserIDOne();
+        res.moveToNext();
+
+        double multiplier = res.getInt(13);
+        double hundred = 100;
+        double actualMultiplier = multiplier/hundred;
+
+
+        long journeyTime = Math.round(time + time * 0.25 * actualMultiplier) + 300000;
+        long time = journeyTime - timeSS;
+
+
+
+        if (SensorTriggerService.isRunning()) {
+            //do nothing
         }
-        for (StatusBarNotification notification : notifications) {
-            if (SensorTriggerService.isRunning()) {
-                //do nothing if notification is on the screen
-            }
-            else {
-                startSensorTriggerService();
-            }
+        else if (NotificationRestartService.isRunning()) {
+            //do nothing
+        }
+        else if ((TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+            //do nothing
+        }
+        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+            stopTimeTriggersService();
+            stopTimeLeftTriggerService();
+            startSensorTriggerService();
+        }
+        else {
+            startSensorTriggerService();
         }
     };
 
@@ -231,5 +253,14 @@ public class SensorService extends Service {
         serviceIntent.putExtra("curr", curr);
         serviceIntent.putExtra("timeID", time);
         startService(serviceIntent);
+    }
+    public void stopTimeTriggersService() {
+        Intent serviceIntent = new Intent(this, TimeTriggerService.class);
+        stopService(serviceIntent);
+    }
+
+    public void stopTimeLeftTriggerService() {
+        Intent serviceIntent = new Intent(this, TimeLeftTriggerService.class);
+        stopService(serviceIntent);
     }
 }
