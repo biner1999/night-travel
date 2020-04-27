@@ -198,7 +198,6 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     public boolean favouriteRouteData(String dest){
-        System.out.println("111111111111111    "+dest);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Route_Table_Name_COL_4,1);
