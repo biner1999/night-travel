@@ -158,10 +158,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
             }
             else{
                 while (res.moveToNext()) {
-                    System.out.println("BBBBBBBBBBBBBBBBBBBBB");
                     System.out.println(res.getInt(4));
                     if (res.getInt(4) == 1){
-                        System.out.println("SSSSSSSSSSSSSSSSS");
                         mSaveList.add(new SaveDestinationItem(R.drawable.ic_map, res.getString(3), res.getInt(4), res.getString(2)));
                     }
 
