@@ -25,7 +25,6 @@ public class L4NotificationsService extends Service {
     public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
     public static final String GROUP_ID_1 = "Group 1";
-    private String phoneNumber = "07706473014";
     DatabaseFunctions myDb;
     String dest;
     String curr;
@@ -51,13 +50,12 @@ public class L4NotificationsService extends Service {
                 Manifest.permission.SEND_SMS)
                 == PackageManager.PERMISSION_GRANTED) {
             mSMSPermissionGranted = true;
-        } else {
-
         }
 
         if (mSMSPermissionGranted) {
             SmsManager smsManager = SmsManager.getDefault();
             ArrayList<String> newTextMessage = smsManager.divideMessage(textMessage);
+            String phoneNumber = "07706473014";
             smsManager.sendMultipartTextMessage(phoneNumber, null, newTextMessage, null, null);
         }
     }
