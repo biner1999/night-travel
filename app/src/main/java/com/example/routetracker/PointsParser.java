@@ -21,7 +21,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
     private TaskLoadedCallback taskCallback;
     private FetchResponse delegate;
 
-    PointsParser(Context mContext, String directionMode) {
+    PointsParser(Context mContext) {
         this.taskCallback = (TaskLoadedCallback) mContext;
         delegate = (FetchResponse) mContext;
     }
@@ -127,17 +127,6 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        //TODO delete this?
-        //print the fastest route last so the colour shows
-        //taskCallback.onTaskDone(fastestRoute);
 
-        // Drawing polyline in the Google Map for the i-th route
-        /*if (lineOptions != null) {
-            //mMap.addPolyline(lineOptions);
-            taskCallback.onTaskDone(lineOptions);
-
-        } else {
-            Log.d("mylog", "without Polylines drawn");
-        }*/
     }
 }

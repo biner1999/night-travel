@@ -116,7 +116,7 @@ public class SensorService extends Service {
                                 //do nothing if notification is on the screen
                             }
                             else {
-
+                                System.out.println("Dropped Phone");
                                 sensorManagerAccel.unregisterListener(this);
                                 startSensorTriggerService();
 

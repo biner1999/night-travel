@@ -1,31 +1,5 @@
 package com.example.routetracker;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.GeoApiContext;
-
-
-import com.google.maps.android.PolyUtil;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -54,6 +28,30 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,8 +61,6 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.lang.String.valueOf;
 
 
 public class homescreenActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PointsParser.FetchResponse {
@@ -735,9 +731,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         int counter = 1;
         for(ArrayList<LatLng> step : stepPoints) {
             // This loop runs for each "step" in all available routes
-            String distance = null;
-            String duration = null;
-            String numDuration = null;
+            String distance;
+            String duration;
+            String numDuration;
             List<HashMap<String, String>> details = getRouteDetails(routeDetails, counter-1);
             HashMap<String, String> point = details.get(0);
             // duration = formatted walking time to destination
@@ -938,7 +934,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         System.out.println(currentRouteData);
         if (currentRouteData != null) {
             //TODO Potentiall remove
-            DatabaseFunctions myDb = new DatabaseFunctions(this);
+            DatabaseFunctions myDb;
             myDb = new DatabaseFunctions(this);
             Cursor res = myDb.getAllUserData();
             res.moveToNext();
