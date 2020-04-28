@@ -13,14 +13,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     private TaskLoadedCallback taskCallback;
-    public FetchResponse delegate;
+    private FetchResponse delegate;
 
-    public PointsParser(Context mContext, String directionMode) {
+    PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
         delegate = (FetchResponse) mContext;
     }
@@ -79,8 +80,8 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
 
 
                 HashMap<String, String> point = path.get(j);
-                double lat = Double.parseDouble(point.get("lat"));
-                double lng = Double.parseDouble(point.get("lng"));
+                double lat = Double.parseDouble(Objects.requireNonNull(point.get("lat")));
+                double lng = Double.parseDouble(Objects.requireNonNull(point.get("lng")));
                 LatLng position = new LatLng(lat, lng);
                 points.add(position);
 
