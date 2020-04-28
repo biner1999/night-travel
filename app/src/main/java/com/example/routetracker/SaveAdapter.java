@@ -21,18 +21,18 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder
         void onDeleteClick(int position);
     }
 
-    public void setOnItemClickListener(onItemClickListener listener){
+    void setOnItemClickListener(onItemClickListener listener){
         mListener = listener;
     }
 
-    public static class SaveViewHolder extends RecyclerView.ViewHolder{
+    static class SaveViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView mImageView;
-        public TextView mTextView1;
-        public TextView mTextView2;
-        public ImageView mDeleteImage;
+        ImageView mImageView;
+        TextView mTextView1;
+        TextView mTextView2;
+        ImageView mDeleteImage;
 
-        public SaveViewHolder(@NonNull View itemView, final onItemClickListener listener) {
+        SaveViewHolder(@NonNull View itemView, final onItemClickListener listener) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.imageView);
             mTextView1 = itemView.findViewById(R.id.textView1);
@@ -60,10 +60,11 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder
         }
     }
 
-    public SaveAdapter(ArrayList<SaveDestinationItem> saveList){
+    SaveAdapter(ArrayList<SaveDestinationItem> saveList){
         mSaveList = saveList;
     }
 
+    @NonNull
     @Override
     public SaveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.save_destinations_card, parent, false);
