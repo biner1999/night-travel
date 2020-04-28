@@ -45,6 +45,7 @@ public class App extends Application {
             Uri ss = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+ getApplicationContext().getPackageName() + "/" + R.raw.l2sound);
             channel2.setSound(ss, aa);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            assert notificationManager != null;
             notificationManager.createNotificationChannel(channel1);
             notificationManager.createNotificationChannel(channel2);
         }
