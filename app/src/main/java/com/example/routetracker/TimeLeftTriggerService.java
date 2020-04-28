@@ -1,4 +1,5 @@
 package com.example.routetracker;
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,6 +8,7 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
+@SuppressLint("Registered")
 public class TimeLeftTriggerService extends Service {
     DatabaseFunctions myDb;
     private static boolean isRunning;
