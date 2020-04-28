@@ -710,24 +710,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
-            //TODO Delete empty if statements?
-            if (SensorTriggerService.isRunning()) {
-                //do nothing
+            //TODO Might be incorrect
+            if (!SensorTriggerService.isRunning() && !NotificationRestartService.isRunning() && (!TimeTriggerService.isRunning() || time >= 0) && (!TimeLeftTriggerService.isRunning() || time >= 0)) {
+                if ((TimeTriggerService.isRunning() && time > 0) || (TimeLeftTriggerService.isRunning() && time > 0)) {
+                    stopTimeTriggersService();
+                    stopTimeLeftTriggerService();
+                    startSensorTriggerService();
+                } else {
+                    startSensorTriggerService();
+                }
             }
-            else if (NotificationRestartService.isRunning()) {
-                //do nothing
-            }
-            else if ((TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
-                //do nothing
-            }
-            else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
-                stopTimeTriggersService();
-                stopTimeLeftTriggerService();
-                startSensorTriggerService();
-            }
-            else {
-                startSensorTriggerService();
-            }
+
             System.out.println("User deviated from path");
             Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
         }
