@@ -1,6 +1,6 @@
 package com.example.routetracker;
 
-public class SaveDestinationItem {
+class SaveDestinationItem {
 
     private int mImageResource;
     private String mText1;
@@ -9,7 +9,7 @@ public class SaveDestinationItem {
     private int mFavValue;
 
 
-    public SaveDestinationItem(int ImageResource, String text1, int favourite, String inDest){
+    SaveDestinationItem(int ImageResource, String text1, int favourite, String inDest){
         mImageResource = ImageResource;
         mText1 = text1;
         mDestination = inDest;
@@ -25,23 +25,23 @@ public class SaveDestinationItem {
 
     }
 
-    public int getmImageResource(){
+    int getmImageResource(){
         return mImageResource;
     }
 
-    public String getmText1(){
+    String getmText1(){
         return mText1;
     }
 
-    public String getmDestination(){
+    String getmDestination(){
         return mDestination;
     }
 
-    public String getmFavourite(){
+    String getmFavourite(){
         return mFavourite;
     }
 
-    public int getmFavValue(){
+    int getmFavValue(){
         return mFavValue;
     }
 }
