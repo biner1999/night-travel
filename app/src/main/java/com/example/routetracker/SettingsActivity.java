@@ -131,19 +131,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     public boolean alertLevel(Integer AlertLevel){
 
-        if(AlertLevel == 0){
-            return false;
-        }else{
-            return true;
-        }
+        return AlertLevel != 0;
     }
 
     public boolean AccelerometersAndGryo(Integer AccelerometersAndGryo){
-        if(AccelerometersAndGryo == 0){
-            return false;
-        }else{
-            return true;
-        }
+        return AccelerometersAndGryo != 0;
     }
 
     public void saveChanges(){
