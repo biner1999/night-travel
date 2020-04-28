@@ -24,7 +24,6 @@ import java.net.PasswordAuthentication;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText e2;
-    private Button login, forgotPin, DEBUG;
     private DatabaseFunctions db;
     private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
@@ -49,10 +48,10 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         e2 = findViewById(R.id.login_pin);
-        login = findViewById(R.id.login_btn);
-        forgotPin = findViewById(R.id.forgotpin_btn);
+        Button login = findViewById(R.id.login_btn);
+        Button forgotPin = findViewById(R.id.forgotpin_btn);
         // TODO: Remove DEBUG when finished
-        DEBUG = findViewById(R.id.DEBUG);
+        Button DEBUG = findViewById(R.id.DEBUG);
         login.setOnClickListener(v -> {
 
             String password = e2.getText().toString();
@@ -110,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
     private void isMapsEnabled() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        assert manager != null;
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             alertMessageNoGPS();
         }
