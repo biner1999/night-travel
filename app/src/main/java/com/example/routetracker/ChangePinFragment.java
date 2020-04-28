@@ -107,7 +107,7 @@ public class ChangePinFragment extends Fragment {
                     Toast.makeText(context,"Please input new 4-digit PIN", Toast.LENGTH_LONG).show();
                 } else {
                     //New PIN is valid and existing PIN is correct, change PIN
-                    updated = myDb.updateUserData("1",
+                    updated = myDb.updateUserData(
                             firsName,
                             surname,
                             gender,

@@ -2,13 +2,12 @@ package com.example.routetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -22,11 +21,12 @@ public class SettingsActivity extends AppCompatActivity {
     EditText editHeight,editHairColour, editAge,editWeight, editEmergancyContact;
     Switch editPoliceContact, editAccelAndGyro;
     SeekBar editDistance, editTime;
-     TextView text_view_distance, getText_view_time, textViewTime, textViewDistance;
+     TextView textViewTime, textViewDistance;
      Button btnSaveChanges, btnChangePin;
      int timeMin = 50, timeMax = 200, timeCurrent;
      int distanceMin = 100, distanceMax = 750, distanceCurrent;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,12 +121,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
-    public void seebbarr(){
-        editDistance = findViewById(R.id.seekBarDistance);
-        editTime = findViewById(R.id.seekBarTime);
-        text_view_distance.setText("Distance : " + editDistance.getProgress());
-    }
-
     public void showMessage (String title, String Message){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -157,7 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
         res.moveToNext();
         btnSaveChanges.setOnClickListener(
                 v -> {
-                    boolean isUpdated = myDb.updateUserData("1",
+                    boolean isUpdated = myDb.updateUserData(
                             res.getString(1),
                             res.getString(2),
                             res.getString(3),

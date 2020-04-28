@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class DatabaseFunctions extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "StorageAgainAgain.db";
+    private static final String DATABASE_NAME = "NightTravelDatabase.db";
 
     private static final String User_Table_Name = "User_Table";
     private static final String Route_Table_Name = "Route_Table";
@@ -60,7 +60,6 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + User_Table_Name);
         db.execSQL("DROP TABLE IF EXISTS " + Route_Table_Name);
-
         onCreate(db);
     }
 
@@ -91,18 +90,13 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
         long result = db.insert(User_Table_Name, null, contentValues);
 
-        if (result == -1 ){
-            return false;
-        }else{
-            return true;
-        }
+        return result != -1;
     }
 
     //Returns all User Data
     Cursor getAllUserData(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+ User_Table_Name, null);
-        return res;
+        return db.rawQuery("select * from "+ User_Table_Name, null);
     }
 
     Cursor getUserIDOne(){
@@ -123,11 +117,11 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Updates User Data (Requires a ID as a reference)
-    boolean updateUserData(String id, String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){
+    boolean updateUserData(String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(User_Table_Name_COL_0,id);
+        contentValues.put(User_Table_Name_COL_0, "1");
         contentValues.put(User_Table_Name_COL_1,First_Name);
         contentValues.put(User_Table_Name_COL_2,Surname);
         contentValues.put(User_Table_Name_COL_3,Gender);
@@ -147,7 +141,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_17, FirstLogin);
 
 
-        db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
+        db.update(User_Table_Name, contentValues,"ID = ?", new String[] {"1"});
         return true;
     }
 
@@ -165,16 +159,14 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     }
 
     //Inserts the EndDestination into the RouteTable
-    void insertRouteData(String UserID, String EndDestination, String Name, int Favourite){
+    void insertRouteData(String EndDestination, String Name){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Route_Table_Name_COL_1,UserID);
+        contentValues.put(Route_Table_Name_COL_1, "1");
         contentValues.put(Route_Table_Name_COL_2,EndDestination);
         contentValues.put(Route_Table_Name_COL_3,Name);
-        contentValues.put(Route_Table_Name_COL_4,Favourite);
+        contentValues.put(Route_Table_Name_COL_4, 0);
         long result = db.insert(Route_Table_Name, null, contentValues);
-
-
     }
 
     //Deletes a users data, will delete the entire row(Requires an ID as reference)
