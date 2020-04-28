@@ -1,20 +1,18 @@
 package com.example.routetracker;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -119,9 +117,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             });
         }
         else{
-            buttonSelect.setOnClickListener(v -> {
-                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
-            });
+            buttonSelect.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show());
         }
 
         Button buttonFav = findViewById(R.id.buttonFav);
@@ -136,9 +132,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             });
         }
         else{
-            buttonFav.setOnClickListener(v -> {
-                Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show();
-            });
+            buttonFav.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "No Destination Selected", Toast.LENGTH_SHORT).show());
         }
 
         switchFilter = findViewById(R.id.filter);

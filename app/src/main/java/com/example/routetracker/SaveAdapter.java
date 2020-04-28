@@ -68,8 +68,7 @@ public class SaveAdapter extends RecyclerView.Adapter<SaveAdapter.SaveViewHolder
     @Override
     public SaveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.save_destinations_card, parent, false);
-        SaveViewHolder svh = new SaveViewHolder(v, mListener);
-        return svh;
+        return new SaveViewHolder(v, mListener);
     }
 
     @Override

@@ -52,9 +52,6 @@ public class SettingsActivity extends AppCompatActivity {
         editDistance = findViewById(R.id.seekBarDistance);
         editTime = findViewById(R.id.seekBarTime);
         editEmergancyContact = findViewById(R.id.editTextEmergancyContact);
-
-        //editDistance.s(0);
-
         btnSaveChanges = findViewById(R.id.buttonSaveChanges);
 
         editDistance.setMax(distanceMax - distanceMin);
@@ -76,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
-        textViewTime = (TextView) findViewById(R.id.textViewTimeValue);
+        textViewTime = findViewById(R.id.textViewTimeValue);
         textViewTime.setText(timeCurrent + "% of the journey time before the last alert goes off");
         editTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -96,7 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        textViewDistance = (TextView) findViewById(R.id.textViewDistanceValue);
+        textViewDistance = findViewById(R.id.textViewDistanceValue);
         textViewDistance.setText(distanceCurrent/10 + "m before alert goes off");
         editDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

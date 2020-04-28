@@ -1,15 +1,12 @@
 package com.example.routetracker;
+
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.View;
 
 import androidx.annotation.Nullable;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 //TODO 1. change phone numbers and set correct timers
 
