@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -17,12 +18,14 @@ import java.net.URL;
 
 
 public class FetchURL extends AsyncTask<String, Void, String> {
+    @SuppressLint("StaticFieldLeak")
     private Context mContext;
     private String directionMode = "walking";
+    @SuppressLint("StaticFieldLeak")
     private ProgressBar progressBar;
 
 
-    public FetchURL(Context mContext, ProgressBar progressBar) {
+    FetchURL(Context mContext, ProgressBar progressBar) {
         this.mContext = mContext;
         this.progressBar = progressBar;
 
@@ -87,6 +90,7 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         } catch (Exception e) {
             Log.d("mylog", "Exception downloading URL: " + e.toString());
         } finally {
+            assert iStream != null;
             iStream.close();
             urlConnection.disconnect();
         }
