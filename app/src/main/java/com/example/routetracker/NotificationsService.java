@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +16,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 //import static com.example.routetracker.App.CHANNEL_ID;
 
+@SuppressLint("Registered")
 public class NotificationsService extends Service {
 
     public static final String CHANNEL_ID_1 = "Foreground channel";
@@ -61,6 +63,7 @@ public class NotificationsService extends Service {
     }
 }
 
+//TODO remove the following?
 
 /*    private void addNotification(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
