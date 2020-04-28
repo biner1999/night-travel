@@ -22,16 +22,16 @@ import org.json.JSONObject;
 
 public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
 
-    private List<LatLng> crimepoints;
     private Calendar currentDate = Calendar.getInstance();
-    public int totalCrimeCount = 0;
+    private int totalCrimeCount = 0;
     private ArrayList<Integer> crimeIDs = new ArrayList<>();
 
-    public CrimeCollector(){ }
+    CrimeCollector(){ }
 
+    @SafeVarargs
     @Override
-    protected Integer doInBackground(List<LatLng>... lists) {
-        crimepoints = lists[0];
+    protected final Integer doInBackground(List<LatLng>... lists) {
+        List<LatLng> crimepoints = lists[0];
 
         int month = currentDate.get(Calendar.MONTH)-1;
         if (month == 0 || month == 11)
@@ -54,11 +54,13 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
 
             URLConnection request = null;
             try {
+                assert url != null;
                 request = url.openConnection();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             try {
+                assert request != null;
                 request.connect();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,6 +77,7 @@ public class CrimeCollector extends AsyncTask<List<LatLng>,Void, Integer> {
             JsonArray rootArray = null;
 
 
+            assert root != null;
             if (root.isJsonObject())
                 rootObj = root.getAsJsonObject();
 
