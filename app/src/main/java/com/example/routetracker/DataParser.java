@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class DataParser {
-    public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
+class DataParser {
+    List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
         JSONArray jRoutes;
@@ -83,7 +83,7 @@ public class DataParser {
 
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         homescreenActivity.stepPoints = routeSteps;
