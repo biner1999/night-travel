@@ -242,7 +242,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         ArrayList<AlertDialog> popups = new ArrayList<>();
         AtomicBoolean running = new AtomicBoolean(true);
         AtomicInteger popupIndex = new AtomicInteger(0);
-        ImageView arrow1_1, arrow1_2, arrow2_1, arrow3_1;
+        ImageView arrow1_1, arrow1_2, arrow3_1;
         arrow1_1 = findViewById(R.id.tutArrow1_1);
         arrow1_2 = findViewById(R.id.tutArrow1_2);
         arrow3_1 = findViewById(R.id.tutArrow3_1);
@@ -254,9 +254,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         // Popup 1
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Thanks for using Route Tracker! Would you like a quick tutorial?")
-                .setPositiveButton("Yes", (dialog, which) -> {
-                    dialog.dismiss();
-                }).setNegativeButton("No", (dialog, which) -> {
+                .setPositiveButton("Yes", (dialog, which) -> dialog.dismiss()).setNegativeButton("No", (dialog, which) -> {
             dialog.dismiss();
             running.set(false);
         }).setOnDismissListener(dialog -> {
@@ -271,9 +269,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         builder = new AlertDialog.Builder(this);
         builder.setMessage("Route Tracker is an app designed to keep you safe when travelling alone.\nIt does this by tracking you on your journey and " +
                 "informing your chosen emergency contact and/or the police when anomalies are detected")
-                .setPositiveButton("Continue", (dialog, which) -> {
-                    dialog.dismiss();
-                }).setOnDismissListener(dialog -> {
+                .setPositiveButton("Continue", (dialog, which) -> dialog.dismiss()).setOnDismissListener(dialog -> {
             popupIndex.getAndIncrement();
             if (popupIndex.get() < 9) {
                 popups.get(popupIndex.get()).show();
@@ -293,7 +289,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
 
             }
-        });;
+        });
         AlertDialog pop2 = builder.create();
         popups.add(pop2);
         // Popup 3
@@ -325,9 +321,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         AlertDialog pop8 = builder.create();
         popups.add(pop8);
         // Popup 9
-        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> {
-            dialog.dismiss();
-        }).setOnDismissListener(dialog -> { });
+        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> dialog.dismiss()).setOnDismissListener(dialog -> { });
         AlertDialog pop9 = builder.create();
         popups.add(pop9);
 
@@ -560,7 +554,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 }
 
                 addressList = findViewById(R.id.addressList);
-                ArrayAdapter<String> addressAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, addressStrings);
+                ArrayAdapter<String> addressAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, addressStrings);
                 addressList.setAdapter(addressAdapter);
 
                 addressList.setVisibility(View.VISIBLE);
@@ -950,6 +944,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         System.out.println(currentRouteData);
         if (currentRouteData != null) {
+            //TODO Potentiall remove
             DatabaseFunctions myDb = new DatabaseFunctions(this);
             myDb = new DatabaseFunctions(this);
             Cursor res = myDb.getAllUserData();
@@ -988,16 +983,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 //Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
             }
             //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
-            else if (TimeLeftTriggerService.isRunning() || TimeTriggerService.isRunning()) {
-                //Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
-            }
+            //Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
             //login if user has no active route or has an active route and more than 3 minutes left on the first timer
-            else {
-                //Toast.makeText(getApplicationContext(), "Successfully logged in" + "inside", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            //Toast.makeText(getApplicationContext(), "Successfully logged in" + "outside", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Successfully logged in" + "inside", Toast.LENGTH_SHORT).show();
+
         }
+
     }
 
     @Override
