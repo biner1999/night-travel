@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -373,17 +374,16 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private List<HashMap<String, String>> getRouteDetails(List<List<HashMap<String, String>>> details, Integer route){
         // Parse retrieved Route direction Details
-        List<HashMap<String, String>> test = null;
+        List<HashMap<String, String>> routeDetails = null;
         for (int i = 0; i < details.size(); i++) {
             // Fetching i-th route
-            List<HashMap<String, String>> path = details.get(route);
-            test = path;
+            routeDetails = details.get(route);
             // Fetching all the points in i-th route
             //HashMap<String, String> point = path.get(route);
             //String duration = point.get("duration");
             //String distance = point.get("distance");
         }
-        return test;
+        return routeDetails;
     }
 
 
@@ -581,7 +581,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         }
 
-        catch (IOException e) {
+        catch (IOException ignored) {
         }
     }
 
@@ -606,7 +606,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
@@ -716,6 +716,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
+            //TODO Delete empty if statements?
             if (SensorTriggerService.isRunning()) {
                 //do nothing
             }
@@ -804,9 +805,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         progressBar.setVisibility(View.GONE);
     }
 
-    private static Handler disconnectHandler = new Handler(msg -> {
-        return true;
-    });
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void startForegroundService() {
@@ -986,6 +984,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     stopTimeLeftTriggerService();
                     startNotificationsRestartService();
                 }
+                //TODO Delete this bit?
                 //Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
             }
             //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
