@@ -111,15 +111,10 @@ public class SensorService extends Service {
                             notifications = mNotificationManager.getActiveNotifications();
                         }
                         for (StatusBarNotification notification : notifications) {
-                            //TODO change this
-                            if (notification.getId() == 2) {
-                                //do nothing if notification is on the screen
-                            }
-                            else {
-                                System.out.println("Dropped Phone");
+                            //do nothing if notification is on the screen
+                            if (notification.getId() != 2) {
                                 sensorManagerAccel.unregisterListener(this);
                                 startSensorTriggerService();
-
                             }
                         }
                     }
