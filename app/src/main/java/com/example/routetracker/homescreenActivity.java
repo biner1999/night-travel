@@ -26,9 +26,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -40,7 +38,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.service.notification.StatusBarNotification;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -53,12 +50,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -337,7 +332,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         popups.get(0).show();
 
-        myDb.updateUserData("1",
+        myDb.updateUserData(
                 res.getString(1),
                 res.getString(2),
                 res.getString(3),
@@ -475,8 +470,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
                 addDestDlg.setPositiveButton("Add", (dialog, which) -> {
                     DatabaseFunctions myDb = new DatabaseFunctions(this);
-                    myDb.insertRouteData("1", destination.getPosition().latitude + "," +
-                            destination.getPosition().longitude, inName.getText().toString(), 0);
+                    myDb.insertRouteData(destination.getPosition().latitude + "," +
+                            destination.getPosition().longitude, inName.getText().toString());
 
                 });
 

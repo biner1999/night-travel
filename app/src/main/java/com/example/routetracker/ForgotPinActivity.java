@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,19 +13,17 @@ import android.widget.Toast;
 public class ForgotPinActivity extends AppCompatActivity {
 
     private DatabaseFunctions myDb;
-    private Button submitBtn;
     private EditText editPin, editAns;
-    private TextView questionView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot);
         myDb  = new DatabaseFunctions(this);
-        submitBtn = findViewById(R.id.submitBtn);
+        Button submitBtn = findViewById(R.id.submitBtn);
         editPin = findViewById(R.id.editPin);
         editAns = findViewById(R.id.editAnswer);
-        questionView = findViewById(R.id.textViewQuestion);
+        TextView questionView = findViewById(R.id.textViewQuestion);
 
         Cursor res = myDb.getUserIDOne();
         res.moveToNext();
@@ -44,7 +41,7 @@ public class ForgotPinActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Please input new 4-digit PIN", Toast.LENGTH_LONG).show();
             }
             else {
-                boolean isUpdated = myDb.updateUserData("1",
+                boolean isUpdated = myDb.updateUserData(
                         res.getString(1),
                         res.getString(2),
                         res.getString(3),

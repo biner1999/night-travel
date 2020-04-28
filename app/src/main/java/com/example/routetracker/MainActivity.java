@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         isMapsEnabled();
 
         createNewUser();
-        sensorGoTo();
 
         Button testbtn = findViewById(R.id.testLoginBtn);
         testbtn.setOnClickListener(v -> {
@@ -100,10 +99,7 @@ public class MainActivity extends AppCompatActivity {
         btnCreateUser.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateUserActivity.class)));
     }
 
-    private void sensorGoTo(){
-        Button btnCreateUser = findViewById(R.id.buttonSensor);
-        btnCreateUser.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SensorActivity.class)));
-    }
+
 
 
 
