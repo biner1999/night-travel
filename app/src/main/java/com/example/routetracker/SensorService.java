@@ -22,8 +22,6 @@ import androidx.core.app.NotificationCompat;
 
 import java.util.Objects;
 
-
-//stopSelf(); will stop the service, some method to stop the service is required either from within or outside
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SensorService extends Service {
 
@@ -61,10 +59,6 @@ public class SensorService extends Service {
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
 
-        //Declarations
-        String input = intent.getStringExtra("inputExtra");
-
-
         //Checks if accelerometer is present in device
         if (accelSensor == null){
             Toast.makeText(this, "The device has no Accelerometer", Toast.LENGTH_SHORT).show();
@@ -86,11 +80,9 @@ public class SensorService extends Service {
                 if (sensorEvent.values[2] > 0.5f) {
                     //Resets timer
                     resetDisconnectTimer();
-                    System.out.println("GYRO CHANGED");
                 } else if (sensorEvent.values[2] < -0.5f) {
                     //Resets timer
                     resetDisconnectTimer();
-                    System.out.println("GYRO CHANGED");
                 }
             }
 
@@ -112,9 +104,6 @@ public class SensorService extends Service {
                     accelValuesZ = sensorEvent.values[2];
                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
                     if (rootSquare < 2.0) {
-
-                        //TODO add funcionality with bart's notification system, this is the accelerometer
-                        System.out.println("Fall Rootsquare = " + rootSquare);
                         NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         StatusBarNotification[] notifications = new StatusBarNotification[0];
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -158,15 +147,10 @@ public class SensorService extends Service {
         sensorManagerGyro.registerListener(gyroscopeEventListener, gyroscopeSensor,SensorManager.SENSOR_DELAY_FASTEST);
         sensorManagerAccel.registerListener(accelerometerEventListener, accelSensor,SensorManager.SENSOR_DELAY_NORMAL);
 
-
-
-
-        //TODO implement a stop condition?
         startForeground(1, notification);
 
         return START_REDELIVER_INTENT;
     }
-
 
 
     @Override
@@ -177,42 +161,22 @@ public class SensorService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //TODO unregister listeners when the stop command is given
-//        sensorManagerAccel.unregisterListener(accelerometerEventListener);
-//        sensorManagerGyro.unregisterListener(gyroscopeEventListener);
         trigger = true;
-        System.out.println("End Route?????");
-
     }
 
-    //ToDo change to 5mins
-    public static final long DISCONNECT_TIMEOUT = 300000; // 5 min = 5 * 60 * 1000 ms 5000;//
+    public static final long DISCONNECT_TIMEOUT = 300000;
 
-    private static Handler disconnectHandler = new Handler(msg -> {
-        return true;
-    });
+    private static Handler disconnectHandler = new Handler(msg -> true);
 
     //Resets the disconnect timer
     public void resetDisconnectTimer(){
-        System.out.println("Reset Disconnect Timer");
         disconnectHandler.removeCallbacks(disconnectCallback);
         disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
     }
-    //Stops the disconnect timer
-        public void stopDisconnectTimer(){
-        System.out.println("Stop Disconnect Timer");
-        disconnectHandler.removeCallbacks(disconnectCallback);
-    }
-    //Starts the disconnect timer
-        public void startDisconnectTimer(){
-        System.out.println("Start Disconnect Timer");
-        disconnectHandler.postDelayed(disconnectCallback, DISCONNECT_TIMEOUT);
-    }
+
     //When timer has elapsed this function is called
     private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
-        System.out.println("Disconnect test");
-
         DatabaseFunctions myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getUserIDOne();
         res.moveToNext();
@@ -226,17 +190,7 @@ public class SensorService extends Service {
         long time = journeyTime - timeSS;
 
 
-
-        if (SensorTriggerService.isRunning()) {
-            //do nothing
-        }
-        else if (NotificationRestartService.isRunning()) {
-            //do nothing
-        }
-        else if ((TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
-            //do nothing
-        }
-        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+         if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
             stopTimeTriggersService();
             stopTimeLeftTriggerService();
             startSensorTriggerService();
