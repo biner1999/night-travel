@@ -127,7 +127,7 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        //TODO delete this?
         //print the fastest route last so the colour shows
         //taskCallback.onTaskDone(fastestRoute);
 
