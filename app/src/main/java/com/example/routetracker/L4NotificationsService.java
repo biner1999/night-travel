@@ -83,7 +83,7 @@ public class L4NotificationsService extends Service {
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(2, notification);
-
+        //TODO Delete this?
 /*
         Window window = .getWindow();
 

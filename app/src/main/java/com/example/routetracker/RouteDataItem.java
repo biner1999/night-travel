@@ -3,9 +3,8 @@ package com.example.routetracker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class RouteDataItem {
+class RouteDataItem {
 
-    private int routeID;
     private int crimeCount;
     private String distance;
     private String time;
@@ -16,7 +15,6 @@ public class RouteDataItem {
 
     RouteDataItem(int inRouteID, int inCrimeCount, String inDistance, String inTime, String inNumTime, long inStartTime, int inImage, PolylineOptions inPolyline) {
 
-        routeID = inRouteID;
         crimeCount = inCrimeCount;
         distance = inDistance;
         time = inTime;
@@ -27,7 +25,6 @@ public class RouteDataItem {
 
     }
 
-    public int getID() {return routeID;}
     int getCrimeCount() {return crimeCount;}
     String getRouteDistance() {return distance;}
     String getRouteTime() {return time;}

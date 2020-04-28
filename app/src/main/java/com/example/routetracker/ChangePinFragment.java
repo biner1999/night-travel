@@ -39,7 +39,7 @@ public class ChangePinFragment extends Fragment {
      * @return A new instance of fragment ChangePinFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ChangePinFragment newInstance(Context c) {
+    static ChangePinFragment newInstance(Context c) {
         ChangePinFragment fragment = new ChangePinFragment();
         fragment.context = c;
         return fragment;

@@ -105,16 +105,6 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         return res;
     }
 
-    //Updates the AlertLevel in UserTable (Requires an ID as reference)
-    public boolean updateAlertLevel(String id, String AlertLevel){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(User_Table_Name_COL_0,id);
-        contentValues.put(User_Table_Name_COL_15,AlertLevel);
-
-        db.update(User_Table_Name, contentValues,"ID = ?", new String[] { id });
-        return true;
-    }
 
     //Updates User Data (Requires a ID as a reference)
     boolean updateUserData(String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){

@@ -2,16 +2,11 @@ package com.example.routetracker;
 
 import android.app.Application;
 import android.app.NotificationChannel;
-import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
-
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
 
 public class App extends Application {
 

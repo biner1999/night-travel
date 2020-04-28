@@ -2,16 +2,12 @@ package com.example.routetracker;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.SmsManager;
-import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +28,6 @@ public class CreateUserActivity extends AppCompatActivity {
     EditText editFirst_Name,editSurname, editPin, editAnswer, editNumber, editAge, editHeight, editWeight, editEthnicity, editHair;
     Button btnAddData;
     Spinner editQuestion, editGender;
-    private String phoneNumber;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -139,12 +134,7 @@ public class CreateUserActivity extends AppCompatActivity {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Welcome to Route Tracker! Please create an account to get started.\n" +
                 "NB - All information is stored on your device and is not shared with anyone.").setCancelable(false)
-                .setPositiveButton("Create Account", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setPositiveButton("Create Account", (dialog, which) -> dialog.dismiss());
         final AlertDialog alert = builder.create();
         alert.show();
 
@@ -217,7 +207,7 @@ public class CreateUserActivity extends AppCompatActivity {
         res.moveToNext();
         String FirstName = res.getString(1);
         String LastName = res.getString(2);
-        phoneNumber = res.getString(14);
+        String phoneNumber = res.getString(14);
 
         String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". You have been added by him as an emergency contact. If you receive an automated text from this app try to contact " + FirstName + " " + LastName + " ASAP and find out his whereabouts to make sure he's safe.";
 
@@ -226,8 +216,6 @@ public class CreateUserActivity extends AppCompatActivity {
                 Manifest.permission.SEND_SMS)
                 == PackageManager.PERMISSION_GRANTED) {
             mSMSPermissionGranted = true;
-        } else {
-
         }
 
         if (mSMSPermissionGranted) {
