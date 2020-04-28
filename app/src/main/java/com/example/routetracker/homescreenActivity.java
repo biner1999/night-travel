@@ -759,7 +759,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             int crimeCount = crimeCollector.execute(step).get();
 
             // Create new RouteDataItem to store information on each route and add to list of routes
-            routeDataList.add(new RouteDataItem(counter, crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
+            routeDataList.add(new RouteDataItem(crimeCount, distance, duration, numDuration, System.currentTimeMillis(), 0, polyLineList.get(counter-1)));
             counter++;
         }
 

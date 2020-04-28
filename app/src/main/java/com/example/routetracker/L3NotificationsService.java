@@ -8,31 +8,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import android.view.View;
-
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-//import static com.example.routetracker.App.CHANNEL_ID;
 
 public class L3NotificationsService extends Service {
 
-    public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
-    public static final String GROUP_ID_1 = "Group 1";
     DatabaseFunctions myDb;
     String dest;
     String curr;
@@ -47,11 +35,9 @@ public class L3NotificationsService extends Service {
         String LastName = res.getString(2);
         String phoneNumber = res.getString(14);
 
-        String x = "31";
         double timeAfter = time*0.60;
         long timeUntilPolice = TimeUnit.MILLISECONDS.toMinutes((long) timeAfter);
 
-        int EmergencyContact = res.getInt(14);
         String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in about " + timeUntilPolice + " minutes.";
 
         boolean mSMSPermissionGranted = false;

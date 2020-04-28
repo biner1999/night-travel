@@ -18,13 +18,10 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
-//import static com.example.routetracker.App.CHANNEL_ID;
 
 public class L4NotificationsService extends Service {
 
-    public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
-    public static final String GROUP_ID_1 = "Group 1";
     DatabaseFunctions myDb;
     String dest;
     String curr;
@@ -40,8 +37,6 @@ public class L4NotificationsService extends Service {
         int Weight = res.getInt(7);
         String HairColour = res.getString(6);
         String Ethnicity = res.getString(8);
-
-        String x = "3123123";
 
         String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
 

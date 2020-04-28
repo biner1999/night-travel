@@ -32,8 +32,6 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
         void onItemClick(int position);
     }
 
-    public void setOnItemClickListener(RoutesAdapter.onItemClickListener listener) {mListener = listener;}
-
     RoutesAdapter(Context inContext, ArrayList<RouteDataItem> inRouteList, homescreenActivity inActivity) {
         mRouteList = inRouteList;
         context = inContext;
@@ -70,10 +68,7 @@ public class RoutesAdapter extends RecyclerView.Adapter<RoutesAdapter.RouteVH> {
                                   + "  Distance: " + currentItem.getRouteDistance());
 
 
-        holder.parent_layout.setOnClickListener(v -> {
-
-            activity.highlightRoute(currentItem);
-        });
+        holder.parent_layout.setOnClickListener(v -> activity.highlightRoute(currentItem));
     }
 
     @Override

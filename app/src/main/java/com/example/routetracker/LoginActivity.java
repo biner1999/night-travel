@@ -4,31 +4,24 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.net.PasswordAuthentication;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText e2;
     private DatabaseFunctions db;
     private static final int ASK_MULTIPLE_PERMISSION_REQUEST_CODE = 1;
     private static final int PERMISSIONS_REQUEST_ENABLE_GPS = 9002;
-
-    private static final String TAG = "UserListFragment";
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -89,12 +82,9 @@ public class LoginActivity extends AppCompatActivity {
     private void alertMessageNoGPS() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("GPS is disabled; GPS is required for this app to work").setCancelable(false)
-                .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent enableGPSIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivityForResult(enableGPSIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
-                    }
+                .setPositiveButton("Enable", (dialog, which) -> {
+                    Intent enableGPSIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(enableGPSIntent, PERMISSIONS_REQUEST_ENABLE_GPS);
                 });
         final AlertDialog alert = builder.create();
         alert.show();

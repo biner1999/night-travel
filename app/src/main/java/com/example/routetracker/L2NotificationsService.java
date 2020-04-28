@@ -5,22 +5,17 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.IBinder;
-import android.view.Window;
-import android.view.WindowManager;
+
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-//import static com.example.routetracker.App.CHANNEL_ID;
 
 public class L2NotificationsService extends Service {
 
-    public static final String CHANNEL_ID_1 = "Foreground channel";
     public static final String CHANNEL_ID_2 = "Alerts channel";
-    public static final String GROUP_ID_1 = "Group 1";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
