@@ -38,7 +38,7 @@ public class L3NotificationsService extends Service {
         double timeAfter = time*0.60;
         long timeUntilPolice = TimeUnit.MILLISECONDS.toMinutes((long) timeAfter);
 
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". You should contact him ASAP. A text to the police will be sent if he doesn't respond in about " + timeUntilPolice + " minutes.";
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". They might be in danger on their journey to " + dest + ". Their phone is currently at " + curr + ". You should contact them ASAP. A text to the police will be sent if they don't respond in about " + timeUntilPolice + " minutes.";
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),

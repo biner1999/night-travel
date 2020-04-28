@@ -38,7 +38,7 @@ public class L4NotificationsService extends Service {
         String HairColour = res.getString(6);
         String Ethnicity = res.getString(8);
 
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". He might be in danger on his journey to " + dest + ". His phone is currently at " + curr + ". His age is " + Age + ". His height is " + Height + ". His weight is " + Weight + ". His hair colour is " + HairColour + ". His ethnicity is " + Ethnicity;
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". They might be in danger on their journey to " + dest + ". Their phone is currently at " + curr + ". Their age is " + Age + ". Their height is " + Height + ". Their weight is " + Weight + ". Their hair colour is " + HairColour + ". Their ethnicity is " + Ethnicity;
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
