@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class RoutesFragment extends Fragment {
      * @return A new instance of fragment RoutesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RoutesFragment newInstance(Context c, ArrayList<RouteDataItem> routeData, homescreenActivity inActivity) {
+    static RoutesFragment newInstance(Context c, ArrayList<RouteDataItem> routeData, homescreenActivity inActivity) {
         RoutesFragment fragment = new RoutesFragment();
         fragment.mParam1 = routeData;
         fragment.context = c;
@@ -66,7 +67,7 @@ public class RoutesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_routes,null);
+        @SuppressLint("InflateParams") View rootView = inflater.inflate(R.layout.fragment_routes,null);
 
         RecyclerView routesRecycler = rootView.findViewById(R.id.routeRecycler);
 
