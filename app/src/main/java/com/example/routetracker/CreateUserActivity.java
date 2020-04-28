@@ -21,7 +21,7 @@ public class CreateUserActivity extends AppCompatActivity {
 
     DatabaseFunctions myDb;
     EditText editFirst_Name,editSurname, editPin, editAnswer, editNumber, editAge, editHeight, editWeight, editEthnicity, editHair;
-    Button btnAddData, btnviewAll;
+    Button btnAddData;
     Spinner editQuestion, editGender;
 
     @Override
