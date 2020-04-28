@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         Button login = findViewById(R.id.login_btn);
         Button forgotPin = findViewById(R.id.forgotpin_btn);
         // TODO: Remove DEBUG when finished
-        Button DEBUG = findViewById(R.id.DEBUG);
         login.setOnClickListener(v -> {
 
             String password = e2.getText().toString();
@@ -68,11 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
-        DEBUG.setOnClickListener(v -> {
 
-            Intent DebugScreen = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(DebugScreen);
-        });
 
         forgotPin.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgotPinActivity.class)));
     }
