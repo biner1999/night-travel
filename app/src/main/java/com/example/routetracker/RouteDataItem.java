@@ -14,7 +14,7 @@ public class RouteDataItem {
     private long numTime;
     private long startTime;
 
-    public RouteDataItem(int inRouteID, int inCrimeCount, String inDistance, String inTime, String inNumTime, long inStartTime, int inImage, PolylineOptions inPolyline) {
+    RouteDataItem(int inRouteID, int inCrimeCount, String inDistance, String inTime, String inNumTime, long inStartTime, int inImage, PolylineOptions inPolyline) {
 
         routeID = inRouteID;
         crimeCount = inCrimeCount;
@@ -28,12 +28,12 @@ public class RouteDataItem {
     }
 
     public int getID() {return routeID;}
-    public int getCrimeCount() {return crimeCount;}
-    public String getRouteDistance() {return distance;}
-    public String getRouteTime() {return time;}
-    public int getImage() {return image;}
-    public PolylineOptions getPolyline() {return polyline;}
-    public void setImage(int inImage) {image = inImage;}
-    public long getNumTime() {return numTime;}
-    public long getStartTime() {return startTime;}
+    int getCrimeCount() {return crimeCount;}
+    String getRouteDistance() {return distance;}
+    String getRouteTime() {return time;}
+    int getImage() {return image;}
+    PolylineOptions getPolyline() {return polyline;}
+    void setImage(int inImage) {image = inImage;}
+    long getNumTime() {return numTime;}
+    long getStartTime() {return startTime;}
 }
