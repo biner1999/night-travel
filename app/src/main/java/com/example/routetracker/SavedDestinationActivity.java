@@ -24,13 +24,9 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
     DatabaseFunctions myDb;
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManger;
     private SaveAdapter mAdapter;
     public static homescreenActivity homescreen;
 
-    private Button buttonSelect;
-    private Button buttonFav;
     private Switch switchFilter;
 
     private int pos = -1;
@@ -65,8 +61,8 @@ public class SavedDestinationActivity extends AppCompatActivity{
     }
 
     public void buildRecyclerView(){
-        mRecyclerView = findViewById(R.id.recycler_view);
-        mLayoutManger = new LinearLayoutManager(this);
+        RecyclerView mRecyclerView = findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager mLayoutManger = new LinearLayoutManager(this);
         mAdapter = new SaveAdapter(mSaveList);
 
         mRecyclerView.setLayoutManager(mLayoutManger);
@@ -114,7 +110,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void setButtons(){
-        buttonSelect = findViewById(R.id.buttonSelect);
+        Button buttonSelect = findViewById(R.id.buttonSelect);
         if (selected) {
             buttonSelect.setOnClickListener(v -> {
                 startActivity(new Intent(SavedDestinationActivity.this, homescreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -128,7 +124,7 @@ public class SavedDestinationActivity extends AppCompatActivity{
             });
         }
 
-        buttonFav = findViewById(R.id.buttonFav);
+        Button buttonFav = findViewById(R.id.buttonFav);
         if (selected) {
             buttonFav.setOnClickListener(v -> {
                 myDb.favouriteRouteData(mSaveList.get(pos).getmDestination());
