@@ -94,12 +94,8 @@ public class CreateUserActivity extends AppCompatActivity {
                                 editPin.getText().toString(),
                                 editQuestion.getSelectedItem().toString(),
                                 editAnswer.getText().toString(),
-                                250,
-                                100,
-                                editNumber.getText().toString(),
-                                0,
-                                1,
-                                1);
+                                editNumber.getText().toString()
+                        );
 
                         if (isInserted) {
                             sendSMS();

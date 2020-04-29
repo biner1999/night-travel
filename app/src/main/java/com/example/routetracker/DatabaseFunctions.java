@@ -1,5 +1,6 @@
 package com.example.routetracker;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,7 +37,6 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     private static final String User_Table_Name_COL_17 = "FirstLogin";
 
 
-    public static final String Route_Table_Name_COL_0 = "ID";
     private static final String Route_Table_Name_COL_1 = "UserID";
     private static final String Route_Table_Name_COL_2 = "EndDestination";
     private static final String Route_Table_Name_COL_3 = "Name";
@@ -65,7 +65,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
 
     //Inserts User Data
-    boolean insertDataUser(String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, Integer Distance, Integer Time, String EmergencyContact, Integer Alert_Level, Integer AccelerometersAndGryo, Integer FirstLogin){
+    boolean insertDataUser(String First_Name, String Surname, String Gender, String Age, String Height, String HairColour, String Weight, String Ethnicity, String Password, String Question, String Answer, String EmergencyContact){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(User_Table_Name_COL_1,First_Name);
@@ -79,12 +79,12 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(User_Table_Name_COL_9, Password);
         contentValues.put(User_Table_Name_COL_10, Question);
         contentValues.put(User_Table_Name_COL_11, Answer);
-        contentValues.put(User_Table_Name_COL_12, Distance);
-        contentValues.put(User_Table_Name_COL_13, Time);
+        contentValues.put(User_Table_Name_COL_12, 250);
+        contentValues.put(User_Table_Name_COL_13, 100);
         contentValues.put(User_Table_Name_COL_14, EmergencyContact);
-        contentValues.put(User_Table_Name_COL_15, Alert_Level);
-        contentValues.put(User_Table_Name_COL_16, AccelerometersAndGryo);
-        contentValues.put(User_Table_Name_COL_17, FirstLogin);
+        contentValues.put(User_Table_Name_COL_15, 0);
+        contentValues.put(User_Table_Name_COL_16, 1);
+        contentValues.put(User_Table_Name_COL_17, 1);
 
 
 
@@ -101,8 +101,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
     Cursor getUserIDOne(){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from User_Table where ID = 1", null);
-        return res;
+        return db.rawQuery("select * from User_Table where ID = 1", null);
     }
 
 
@@ -137,14 +136,8 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
 
     Boolean checkpassword(String Password){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from User_Table where Password=?", new String[]{Password});
+        @SuppressLint("Recycle") Cursor cursor = db.rawQuery("select * from User_Table where Password=?", new String[]{Password});
         return cursor.getCount() > 0;
-    }
-
-    //Deletes a users data, will delete the entire row(Requires an ID as reference)
-    public Integer deleteUserData(String id){
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(User_Table_Name, "ID = ?",new String[] { id } );
     }
 
     //Inserts the EndDestination into the RouteTable
@@ -155,7 +148,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
         contentValues.put(Route_Table_Name_COL_2,EndDestination);
         contentValues.put(Route_Table_Name_COL_3,Name);
         contentValues.put(Route_Table_Name_COL_4, 0);
-        long result = db.insert(Route_Table_Name, null, contentValues);
+         db.insert(Route_Table_Name, null, contentValues);
     }
 
     //Deletes a users data, will delete the entire row(Requires an ID as reference)
