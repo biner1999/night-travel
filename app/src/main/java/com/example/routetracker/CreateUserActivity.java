@@ -209,7 +209,7 @@ public class CreateUserActivity extends AppCompatActivity {
         String LastName = res.getString(2);
         String phoneNumber = res.getString(14);
 
-        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". You have been added by him as an emergency contact. If you receive an automated text from this app try to contact " + FirstName + " " + LastName + " ASAP and find out his whereabouts to make sure he's safe.";
+        String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". You have been added by them as an emergency contact. If you receive an automated text from this app try to contact " + FirstName + " " + LastName + " ASAP and find out their whereabouts to make sure they're safe.";
 
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
