@@ -138,8 +138,7 @@ public class DatabaseFunctions extends SQLiteOpenHelper {
     Boolean checkpassword(String Password){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select * from User_Table where Password=?", new String[]{Password});
-        if(cursor.getCount()>0) return true;
-        else return false;
+        return cursor.getCount() > 0;
     }
 
     //Deletes a users data, will delete the entire row(Requires an ID as reference)
