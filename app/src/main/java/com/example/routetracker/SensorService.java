@@ -104,18 +104,17 @@ public class SensorService extends Service {
                     accelValuesZ = sensorEvent.values[2];
                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
                     if (rootSquare < 2.0) {
-                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        StatusBarNotification[] notifications = new StatusBarNotification[0];
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                            assert mNotificationManager != null;
-                            notifications = mNotificationManager.getActiveNotifications();
+                        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+                            //do nothing because notifications are already running as not to restart them
                         }
-                        for (StatusBarNotification notification : notifications) {
-                            //do nothing if notification is on the screen
-                            if (notification.getId() != 2) {
-                                sensorManagerAccel.unregisterListener(this);
-                                startSensorTriggerService();
-                            }
+                        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+                            stopTimeTriggersService();
+                            stopTimeLeftTriggerService();
+                            startSensorTriggerService();
+                        }
+                        else {
+                            //a little fail safe in case something else happens
+                            startSensorTriggerService();
                         }
                     }
                 }
@@ -186,12 +185,16 @@ public class SensorService extends Service {
         long time = journeyTime - timeSS;
 
 
-         if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+            //do nothing because notifications are already running as not to restart them
+        }
+        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
             stopTimeTriggersService();
             stopTimeLeftTriggerService();
             startSensorTriggerService();
         }
         else {
+            //a little fail safe in case something else happens
             startSensorTriggerService();
         }
     };

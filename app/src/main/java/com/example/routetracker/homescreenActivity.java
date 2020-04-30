@@ -706,17 +706,18 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             exceededTolerance = true;
         }
         if (exceededTolerance) {
-            //TODO Might be incorrect
-            if (!SensorTriggerService.isRunning() && !NotificationRestartService.isRunning() && (!TimeTriggerService.isRunning() || time >= 0) && (!TimeLeftTriggerService.isRunning() || time >= 0)) {
-                if ((TimeTriggerService.isRunning() && time > 0) || (TimeLeftTriggerService.isRunning() && time > 0)) {
-                    stopTimeTriggersService();
-                    stopTimeLeftTriggerService();
-                    startSensorTriggerService();
-                } else {
-                    startSensorTriggerService();
-                }
+            if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+                //do nothing because notifications are already running as not to restart them
             }
-
+            else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+                stopTimeTriggersService();
+                stopTimeLeftTriggerService();
+                startSensorTriggerService();
+            }
+            else {
+                //a little fail safe in case something else happens
+                startSensorTriggerService();
+            }
             System.out.println("User deviated from path");
             Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
         }
@@ -724,6 +725,9 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             System.out.println("User HAS NOT deviated from path");
             Toast.makeText(getApplicationContext(), "On track", Toast.LENGTH_SHORT).show();
         }
+
+        System.out.println("User deviated from path");
+        Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
     }
 
     public void listRoutes() throws ExecutionException, InterruptedException {
