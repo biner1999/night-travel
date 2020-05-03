@@ -267,7 +267,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 "informing your chosen emergency contact and/or the police when anomalies are detected")
                 .setPositiveButton("Continue", (dialog, which) -> dialog.dismiss()).setOnDismissListener(dialog -> {
             popupIndex.getAndIncrement();
-            if (popupIndex.get() < 9) {
+            if (popupIndex.get() < 10) {
                 popups.get(popupIndex.get()).show();
                 if (popupIndex.get() == 3) {
                     arrow1_1.setVisibility(View.VISIBLE);
@@ -313,13 +313,17 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
         AlertDialog pop7 = builder.create();
         popups.add(pop7);
         // Popup 8
-        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
+        builder.setMessage("An introductory text to your emergency contact has also been sent when creating an account.\nYou should contact your emergency contact and explain how RouteTracker works in more detail anyway.");
         AlertDialog pop8 = builder.create();
         popups.add(pop8);
         // Popup 9
-        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> dialog.dismiss()).setOnDismissListener(dialog -> { });
+        builder.setMessage("You can also save destinations for later with the 'Add Destination' button marked by the arrow");
         AlertDialog pop9 = builder.create();
         popups.add(pop9);
+        // Popup 10
+        builder.setMessage("We hope you stay safe using Route Tracker!").setPositiveButton("Finish", (dialog, which) -> dialog.dismiss()).setOnDismissListener(dialog -> { });
+        AlertDialog pop10 = builder.create();
+        popups.add(pop10);
 
         popups.get(0).show();
 
