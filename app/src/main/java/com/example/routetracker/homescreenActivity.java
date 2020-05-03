@@ -719,15 +719,12 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                 startSensorTriggerService();
             }
             System.out.println("User deviated from path");
-            Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
         }
         else {
             System.out.println("User HAS NOT deviated from path");
-            Toast.makeText(getApplicationContext(), "On track", Toast.LENGTH_SHORT).show();
         }
 
         System.out.println("User deviated from path");
-        Toast.makeText(getApplicationContext(), "Deviated from path", Toast.LENGTH_SHORT).show();
     }
 
     public void listRoutes() throws ExecutionException, InterruptedException {
