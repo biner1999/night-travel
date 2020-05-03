@@ -18,6 +18,7 @@ public class L1NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        //setting up and displaying the notification
         Intent activityIntent = new Intent(this, LoginActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

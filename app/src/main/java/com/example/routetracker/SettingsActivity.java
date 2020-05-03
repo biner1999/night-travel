@@ -53,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
         editTime = findViewById(R.id.seekBarTime);
         editEmergancyContact = findViewById(R.id.editTextEmergancyContact);
         btnSaveChanges = findViewById(R.id.buttonSaveChanges);
-
+        //setting the actual max value of the slider
         editDistance.setMax(distanceMax - distanceMin);
         editTime.setMax(timeMax - timeMin);
 
@@ -73,6 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         }
 
+        //making the string display an accurate data and setting up the slider to assign only values within the correct range
         textViewTime = findViewById(R.id.textViewTimeValue);
         textViewTime.setText(timeCurrent + "% of the journey time before the last alert goes off");
         editTime.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -93,6 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        //making the string display an accurate data and setting up the slider to assign only values within the correct range
         textViewDistance = findViewById(R.id.textViewDistanceValue);
         textViewDistance.setText(distanceCurrent/10 + "m before alert goes off");
         editDistance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

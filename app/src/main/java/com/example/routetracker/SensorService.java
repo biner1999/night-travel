@@ -36,6 +36,7 @@ public class SensorService extends Service {
     String curr;
     long time;
     long timeSS;
+    long journeyTime;
 
 
     @Nullable
@@ -52,12 +53,19 @@ public class SensorService extends Service {
         SensorManager sensorManagerGyro = (SensorManager) getSystemService(SENSOR_SERVICE);
         Sensor gyroscopeSensor = Objects.requireNonNull(sensorManagerGyro).getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
+        DatabaseFunctions myDb = new DatabaseFunctions(this);
+        Cursor res = myDb.getUserIDOne();
+        res.moveToNext();
 
+        double multiplier = res.getInt(13);
+        double hundred = 100;
+        double actualMultiplier = multiplier/hundred;
 
         time = intent.getLongExtra("timeID", 0);
         timeSS = intent.getLongExtra("timeSS", 0);
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
+        journeyTime = Math.round(time + time * 0.25 * actualMultiplier) + 300000;
 
         //Checks if accelerometer is present in device
         if (accelSensor == null){
@@ -104,10 +112,10 @@ public class SensorService extends Service {
                     accelValuesZ = sensorEvent.values[2];
                     double rootSquare = Math.sqrt(Math.pow(accelValuesX, 2) + Math.pow(accelValuesY, 2) + Math.pow(accelValuesZ, 2));
                     if (rootSquare < 2.0) {
-                        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+                        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && journeyTime<0) || (TimeLeftTriggerService.isRunning() && journeyTime<0)) {
                             //do nothing because notifications are already running as not to restart them
                         }
-                        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+                        else if ((TimeTriggerService.isRunning() && journeyTime>0) || (TimeLeftTriggerService.isRunning() && journeyTime>0)) {
                             stopTimeTriggersService();
                             stopTimeLeftTriggerService();
                             startSensorTriggerService();
@@ -172,23 +180,10 @@ public class SensorService extends Service {
     //When timer has elapsed this function is called
     private Runnable disconnectCallback = () -> {
         // Perform any required operation on disconnect
-        DatabaseFunctions myDb = new DatabaseFunctions(this);
-        Cursor res = myDb.getUserIDOne();
-        res.moveToNext();
-
-        double multiplier = res.getInt(13);
-        double hundred = 100;
-        double actualMultiplier = multiplier/hundred;
-
-
-        long journeyTime = Math.round(time + time * 0.25 * actualMultiplier) + 300000;
-        long time = journeyTime - timeSS;
-
-
-        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && time<0) || (TimeLeftTriggerService.isRunning() && time<0)) {
+        if (SensorTriggerService.isRunning() || NotificationRestartService.isRunning() || (TimeTriggerService.isRunning() && journeyTime<0) || (TimeLeftTriggerService.isRunning() && journeyTime<0)) {
             //do nothing because notifications are already running as not to restart them
         }
-        else if ((TimeTriggerService.isRunning() && time>0) || (TimeLeftTriggerService.isRunning() && time>0)) {
+        else if ((TimeTriggerService.isRunning() && journeyTime>0) || (TimeLeftTriggerService.isRunning() && journeyTime>0)) {
             stopTimeTriggersService();
             stopTimeLeftTriggerService();
             startSensorTriggerService();

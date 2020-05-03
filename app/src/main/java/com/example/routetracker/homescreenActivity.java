@@ -793,6 +793,8 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
+    //STARTING AND STOPPING METHODS FOR SERVICES
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void startForegroundService() {
         long journeyTimeSeconds = currentRouteData.getNumTime();
@@ -937,7 +939,6 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
 
         System.out.println(currentRouteData);
         if (currentRouteData != null) {
-            //TODO Potentiall remove
             DatabaseFunctions myDb;
             myDb = new DatabaseFunctions(this);
             Cursor res = myDb.getAllUserData();
@@ -950,38 +951,31 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
             long timeSinceStart = System.currentTimeMillis() - currentRouteData.getStartTime();
             long journeyTime = Math.round((currentRouteData.getNumTime() * 1000) + (currentRouteData.getNumTime() * 1000) * 0.25 * actualMultiplier) + 300000;
             long time = journeyTime - timeSinceStart;
-            //Toast.makeText(getApplicationContext(), time + " " + journeyTime + " " + timeSinceStart, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Successfully logged in", Toast.LENGTH_SHORT).show();
             // login if user has an active route and NotificationRestarService is running instead of TimeTriggerService
             if (NotificationRestartService.isRunning()) {
                 stopNotificationsRestartService();
                 startNotificationsRestartService();
-                //Toast.makeText(getApplicationContext(), "Successfully logged in" + "NRS", Toast.LENGTH_SHORT).show();
             }
-            // login if user has an active route and less than 3 minutes on the first timer
+            // login if user has an active route and less than 3 minutes on the timer
             else if ((TimeTriggerService.isRunning() && time<180000) || (TimeLeftTriggerService.isRunning() && time<180000)) {
                 stopTimeTriggersService();
                 stopTimeLeftTriggerService();
                 startNotificationsRestartService();
-                //Toast.makeText(getApplicationContext(), "Successfully logged in" + "TTS", Toast.LENGTH_SHORT).show();
             }
-            //login if sensor triggered the notifications
+            //login if sensor triggered the alarm
             else if (SensorTriggerService.isRunning()) {
-                stopSensorTriggerService();
-                startTimeLeftTriggerService();
+                //if theres less than 3 minutes left on the timer
                 if (time<18000) {
-                    stopTimeLeftTriggerService();
+                    stopSensorTriggerService();
                     startNotificationsRestartService();
                 }
-                //TODO Delete this bit?
-                //Toast.makeText(getApplicationContext(), "Successfully logged in" + "STS", Toast.LENGTH_SHORT).show();
+                else {
+                    stopSensorTriggerService();
+                    startTimeLeftTriggerService();
+                }
             }
-            //login if sensor got triggered earlier and the timer needs to run from a specific point along the journey
-            //Toast.makeText(getApplicationContext(), "Successfully logged in" + "TLTS", Toast.LENGTH_SHORT).show();
-            //login if user has no active route or has an active route and more than 3 minutes left on the first timer
-            //Toast.makeText(getApplicationContext(), "Successfully logged in" + "inside", Toast.LENGTH_SHORT).show();
-
         }
-
     }
 
     @Override

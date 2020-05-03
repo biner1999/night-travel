@@ -27,9 +27,12 @@ public class L4NotificationsService extends Service {
     String curr;
 
     public void sendSMS() {
+        //getting and calculating all the necessary variables to put in the text
+
         myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getAllUserData();
         res.moveToNext();
+
         String FirstName = res.getString(1);
         String LastName = res.getString(2);
         int Age = res.getInt(4);
@@ -40,6 +43,8 @@ public class L4NotificationsService extends Service {
 
         String textMessage = "This is an automated text sent by RouteTracker from " + FirstName + " " + LastName + ". They might be in danger on their journey to " + dest + ". Their phone is currently at " + curr + ". Their age is " + Age + ". Their height is " + Height + ". Their weight is " + Weight + ". Their hair colour is " + HairColour + ". Their ethnicity is " + Ethnicity;
 
+
+        //sending the text, phone number is set to Bart's for testing and demo purposes
         boolean mSMSPermissionGranted = false;
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.SEND_SMS)
@@ -57,11 +62,16 @@ public class L4NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        //getting the variables from the intent
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
+
         sendSMS();
+
+        //setting up and displaying the notification
         Intent activityIntent = new Intent(this, LoginActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)
                 .setContentTitle("Level 4 Alert")

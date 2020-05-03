@@ -19,8 +19,10 @@ public class L2NotificationsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID) {
+        //setting up and displaying the notification
         Intent activityIntent = new Intent(this, LoginActivity.class);
         PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setSmallIcon(R.drawable.ic_warning)
                 .setContentTitle("Level 2 Alert")
@@ -37,17 +39,6 @@ public class L2NotificationsService extends Service {
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(2, notification);
-
-/*
-        Window window = .getWindow();
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-
-*/
-
 
         return START_REDELIVER_INTENT;
 

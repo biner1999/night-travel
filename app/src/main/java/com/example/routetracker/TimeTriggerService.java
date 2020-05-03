@@ -21,12 +21,11 @@ public class TimeTriggerService extends Service {
     int level4 = 0;
 
 
-    // First Time Trigger //
-    public void FirstTriggerStart() {
+    public void TriggerStart() {
         long firstNotificationDelay = Math.round(time+time*0.25*actualMultiplier) + 300000; //25% + 5 mins
-        long secondNotificationDelay = 60000;
-        long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier);
-        long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier);
+        long secondNotificationDelay = 60000; //1 min
+        long thirdNotificationDelay = Math.round(time*0.15*actualMultiplier); //15%
+        long fourthNotificationDelay = Math.round(time*0.60*actualMultiplier); //60%
 
         handler.postDelayed(() -> {
             startL1Service();
@@ -47,28 +46,8 @@ public class TimeTriggerService extends Service {
             }, secondNotificationDelay);
         }, firstNotificationDelay);
     }
-    public void startL1Service() {
-        Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
-        startService(L1ServiceIntent);
-    }
-    public void startL2Service() {
-        Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
-        startService(L2ServiceIntent);
-    }
-    public void startL3Service() {
-        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
-        L3ServiceIntent.putExtra("dest", dest);
-        L3ServiceIntent.putExtra("curr", curr);
-        L3ServiceIntent.putExtra("time", time);
-        startService(L3ServiceIntent);
-    }
-    public void startL4Service() {
-        Intent L4ServiceIntent = new Intent(this, L4NotificationsService.class);
-        L4ServiceIntent.putExtra("dest", dest);
-        L4ServiceIntent.putExtra("curr", curr);
-        startService(L4ServiceIntent);
-    }
 
+    //flag to be used when making sure that the correct service is running
     public static boolean isRunning() {
         return isRunning;
     }
@@ -77,6 +56,7 @@ public class TimeTriggerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         isRunning = true;
 
+        //getting and calculating all the variables from DB
         myDb = new DatabaseFunctions(this);
         Cursor res = myDb.getAllUserData();
         res.moveToNext();
@@ -86,12 +66,38 @@ public class TimeTriggerService extends Service {
         actualMultiplier = multiplier/hundred;
 
         level4 = res.getInt(15);
-
         time = intent.getLongExtra("timeID", 0);
         dest = intent.getStringExtra("dest");
         curr = intent.getStringExtra("curr");
-        FirstTriggerStart();
+
+        TriggerStart();
+
         return START_REDELIVER_INTENT;
+    }
+
+    public void startL1Service() {
+        Intent L1ServiceIntent = new Intent(this, L1NotificationsService.class);
+        startService(L1ServiceIntent);
+    }
+
+    public void startL2Service() {
+        Intent L2ServiceIntent = new Intent(this, L2NotificationsService.class);
+        startService(L2ServiceIntent);
+    }
+
+    public void startL3Service() {
+        Intent L3ServiceIntent = new Intent(this, L3NotificationsService.class);
+        L3ServiceIntent.putExtra("dest", dest);
+        L3ServiceIntent.putExtra("curr", curr);
+        L3ServiceIntent.putExtra("time", time);
+        startService(L3ServiceIntent);
+    }
+
+    public void startL4Service() {
+        Intent L4ServiceIntent = new Intent(this, L4NotificationsService.class);
+        L4ServiceIntent.putExtra("dest", dest);
+        L4ServiceIntent.putExtra("curr", curr);
+        startService(L4ServiceIntent);
     }
 
     @Nullable
