@@ -277,7 +277,7 @@ public class homescreenActivity extends AppCompatActivity implements OnMapReadyC
                     arrow1_1.setVisibility(View.GONE);
                     arrow1_2.setVisibility(View.GONE);
                 }
-                if (popupIndex.get() == 7) {
+                if (popupIndex.get() == 8) {
                     arrow3_1.setVisibility(View.VISIBLE);
                 }
                 else {
