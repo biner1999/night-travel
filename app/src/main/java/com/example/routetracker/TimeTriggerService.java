@@ -8,7 +8,6 @@ import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
-//TODO 1. change phone numbers and set correct timers
 
 public class TimeTriggerService extends Service {
     DatabaseFunctions myDb;
